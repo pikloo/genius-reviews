@@ -53,6 +53,9 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 
+= 1.0.11 =
+* Traduction NL
+
 = 1.0.0 =
 * Première version publique
 * Import CSV
