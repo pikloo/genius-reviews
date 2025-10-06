@@ -43,7 +43,7 @@
 .swiper-button-prev,
 .swiper-button-next {
   svg {
-    fill: none;
+    fill: none !important;
   }
 }
 
