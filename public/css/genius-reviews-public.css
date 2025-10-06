@@ -1,0 +1,79 @@
+/**
+ * All of the CSS for your public-facing functionality should be
+ * included in this file.
+ */
+
+@import "tailwindcss";
+@import "swiper/swiper-bundle.css";
+
+@theme {
+  --font-sans: 'Lato', ui-sans-serif, system-ui, sans-serif;
+  --color-brand: #58AF59;
+  --color-brand-hover: #4a9c4a;
+
+  /* Palette notes */
+  --color-rating-5: #58AF59;
+  --color-rating-4: #92D329;
+  --color-rating-3: #FFCE0C;
+  --color-rating-2: #FF9232;
+  --color-rating-1: #EB3531;
+
+  --color-gray-light: #E5E5E5;
+  --color-gray-medium: #8F8E8E;
+}
+
+/* Bloc principal */
+.gr-bloc {
+  @apply font-sans;
+}
+
+.gr-bloc p {
+  @apply m-0;
+}
+
+.gr-btn {
+  @apply flex items-center justify-center gap-[10px] h-[45px] px-6 rounded-[12px] !text-white text-[16px] font-medium no-underline cursor-pointer transition-colors duration-200 ease-in-out;
+  background: var(--color-brand);
+}
+
+.gr-btn:hover {
+  background: var(--color-brand-hover);
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  svg {
+    fill: none;
+  }
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  @apply !size-7.5 !top-[75px];
+}
+
+
+.bg-brand-custom {
+  background-color: var(--color-brand-custom, var(--color-brand)) !important;
+}
+
+.text-brand-custom {
+  color: var(--color-brand-custom, var(--color-brand)) !important;
+}
+
+.border-brand-custom {
+  border-color: var(--color-brand-custom, var(--color-brand)) !important;
+}
+
+.stroke-brand-custom {
+  stroke: var(--color-brand-custom, var(--color-brand)) !important;
+}
+
+.hover\:bg-brand-custom-hover:hover {
+  background-color: var(--color-brand-custom-hover, var(--color-brand-hover)) !important;
+}
+
+.hover\:text-brand-custom-hover:hover {
+  color: var(--color-brand-custom-hover, var(--color-brand-hover)) !important;
+}
+

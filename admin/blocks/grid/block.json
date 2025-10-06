@@ -1,0 +1,21 @@
+{
+  "apiVersion": 2,
+  "name": "genius-reviews/grid",
+  "title": "Grid Reviews",
+  "category": "widgets",
+  "icon": "star-filled",
+  "description": "Affiche la grille des avis clients pour un produit.",
+  "attributes": {
+    "product_id": {
+      "type": "integer",
+      "default": 0
+    },
+    "limit": {
+      "type": "integer",
+      "default": 6
+    }
+  },
+  "supports": {
+    "align": true
+  }
+}

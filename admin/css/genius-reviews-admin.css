@@ -1,0 +1,15 @@
+/**
+ * All of the CSS for your admin-specific functionality should be
+ * included in this file.
+ */
+@import "tailwindcss";
+
+@theme {
+    --color-brand: #58AF59;
+    --color-brand-hover: #4a9c4a;
+}
+
+.gr-btn {
+    @apply flex items-center justify-center gap-[10px] h-[45px] px-6 rounded-[12px] !text-white text-[16px] font-medium no-underline cursor-pointer transition-colors duration-200 ease-in-out;
+    background: var(--color-brand);
+}
