@@ -82,3 +82,18 @@ function run_genius_reviews() {
 
 }
 run_genius_reviews();
+
+
+if ( ! class_exists( 'Puc_v5_Factory' ) ) {
+	require_once plugin_dir_path( __FILE__ ) . 'plugin-update-checker/plugin-update-checker.php';
+}
+
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$updateChecker = PucFactory::buildUpdateChecker(
+	'https://github.com/pikloo/genius-reviews',
+	__FILE__,
+	'genius-reviews'
+);
+
+$updateChecker->setBranch('master');
