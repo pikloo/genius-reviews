@@ -15,8 +15,6 @@ class Genius_Reviews_Admin_Page
 			[__CLASS__, 'render_page']
 		);
 
-		echo get_locale();
-
 	}
 
 	public static function render_page()

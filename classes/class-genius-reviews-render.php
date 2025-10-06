@@ -7,7 +7,6 @@ class Genius_Reviews_Render
     public static function inject_brand_color()
     {
         $color = get_option('gr_color_brand_custom', '#58AF59');
-        error_log(($color));
         if (!$color) return;
 
         // Génère automatiquement la couleur de hover
