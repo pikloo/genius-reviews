@@ -106,7 +106,7 @@ class Genius_Reviews_Admin
 		if ($hook_suffix !== 'genius_review_page_gr-options') return;
 
 		// Script admin
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . '../build/genius-reviews-admin.bundle.js', array('jquery'), $this->version, false);
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'build/genius-reviews-admin.bundle.js', array('jquery'), $this->version, false);
 		
 
 

@@ -53,7 +53,7 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 
-= 1.0.13 =
+= 1.0.14 =
 * Webpack
 
 = 1.0.12 =

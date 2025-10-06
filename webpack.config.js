@@ -8,7 +8,7 @@ module.exports = {
   },
   output: {
     filename: 'genius-reviews-[name].bundle.js',
-    path: path.resolve(__dirname, 'public/build'),
+    path: path.resolve(__dirname, 'build'),
   },
    module: {
     rules: [
