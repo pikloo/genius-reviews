@@ -53,6 +53,10 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 
+= 1.0.12 =
+* Slider: Boucle sur le carousel & pas d'affichage si aucun avis
+* Fix du nombres d'avis total
+
 = 1.0.11 =
 * Traduction NL
 
