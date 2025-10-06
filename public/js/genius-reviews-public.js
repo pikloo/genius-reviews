@@ -1,3 +1,6 @@
+import Swiper from 'swiper';
+import 'swiper/css';
+
 (function ($) {
 	'use strict';
 
@@ -95,7 +98,6 @@
 
 		// Carousel
 		if ($('.gr-swiper').length) {
-			// eslint-disable-next-line no-undef
 			$('.gr-swiper').each(function () {
 				const $el = $(this);
 

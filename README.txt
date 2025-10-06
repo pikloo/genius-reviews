@@ -53,6 +53,9 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 
+= 1.0.13 =
+* Webpack
+
 = 1.0.12 =
 * Slider: Boucle sur le carousel & pas d'affichage si aucun avis
 * Fix du nombres d'avis total

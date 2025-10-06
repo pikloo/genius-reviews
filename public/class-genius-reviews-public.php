@@ -106,7 +106,7 @@ class Genius_Reviews_Public
 		 * class.
 		 */
 
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'js/genius-reviews-public.js', array('jquery'), $this->version, false);
+		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . '../build/genius-reviews-public.bundle.js', array('jquery'), $this->version, false);
 
 		wp_localize_script($this->plugin_name, 'GR_PUBLIC', [
 			'ajax'  => admin_url('admin-ajax.php'),

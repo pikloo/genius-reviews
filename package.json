@@ -4,15 +4,22 @@
   "description": "=== Plugin Name === Contributors: (this should be a list of wordpress.org userid's) Donate link: http://example.com/ Tags: comments, spam Requires at least: 3.0.1 Tested up to: 3.4 Stable tag: 4.3 License: GPLv2 or later License URI: http://www.gnu.org/licenses/gpl-2.0.html",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npx @tailwindcss/cli -i ./admin/css/genius-reviews-admin.css -o ./admin/build/style-admin.css --watch\" \"npx @tailwindcss/cli -i ./public/css/genius-reviews-public.css -o ./public/build/style-public.css --watch\"",
-    "build": "concurrently \"npx @tailwindcss/cli -i ./admin/css/genius-reviews-admin.css -o ./admin/build/style-admin.css --minify\" \"npx @tailwindcss/cli -i ./public/css/genius-reviews-public.css -o ./public/build/style-public.css --minify\""
+    "dev": "concurrently \"npx @tailwindcss/cli -i ./admin/css/genius-reviews-admin.css -o ./admin/build/style-admin.css --watch\" \"npx @tailwindcss/cli -i ./public/css/genius-reviews-public.css -o ./public/build/style-public.css --watch\" \"webpack --mode development --watch\"",
+    "build": "concurrently \"npx @tailwindcss/cli -i ./admin/css/genius-reviews-admin.css -o ./admin/build/style-admin.css --minify\" \"npx @tailwindcss/cli -i ./public/css/genius-reviews-public.css -o ./public/build/style-public.css --minify\" \"webpack --mode production\""
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.14",
+    "autoprefixer": "^10.4.21",
     "concurrently": "^9.2.1",
-    "tailwindcss": "^4.1.14"
+    "css-loader": "^7.1.2",
+    "postcss": "^8.5.6",
+    "postcss-loader": "^8.2.0",
+    "style-loader": "^4.0.0",
+    "tailwindcss": "^4.1.14",
+    "webpack": "^5.102.0",
+    "webpack-cli": "^6.0.1"
   },
   "keywords": [],
   "dependencies": {
