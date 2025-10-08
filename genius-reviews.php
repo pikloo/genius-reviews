@@ -98,5 +98,3 @@ $updateChecker = PucFactory::buildUpdateChecker(
 
 
 $updateChecker->setBranch('master');
-
-$updateChecker->getVcsApi()->disableReleaseAssets();
