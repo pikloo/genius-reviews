@@ -263,7 +263,7 @@ class Genius_Reviews_Render
                     <?php echo get_the_post_thumbnail(
                         $post_id,
                         'medium',
-                        ['class' => '!w-full !h-full !object-cover !rounded-lg']
+                        ['class' => 'review-img']
                     ); ?>
                 </div>
             <?php endif; ?>
