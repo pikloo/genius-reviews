@@ -144,12 +144,12 @@ class Genius_Reviews
 		}
 
 		// Elementor widget
-		if (did_action('elementor/loaded')) {
-			require_once plugin_dir_path(dirname(__FILE__)) . 'classes/class-genius-reviews-elementor.php';
-			add_action('elementor/widgets/register', function ($widgets_manager) {
-				$widgets_manager->register(new \Genius_Reviews_Elementor());
-			});
-		}
+		// if (did_action('elementor/loaded')) {
+		// 	require_once plugin_dir_path(dirname(__FILE__)) . 'classes/class-genius-reviews-elementor.php';
+		// 	add_action('elementor/widgets/register', function ($widgets_manager) {
+		// 		$widgets_manager->register(new Genius_Reviews_Elementor());
+		// 	});
+		// }
 
 		// Shortcodes
 		require_once plugin_dir_path(dirname(__FILE__)) . 'classes/class-genius-reviews-shortcodes.php';
