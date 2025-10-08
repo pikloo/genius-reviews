@@ -5,6 +5,12 @@ if (!defined('ABSPATH'))
 class Genius_Reviews_Render
 {
 
+    /**
+     * Injecte les couleurs de marque (principale et hover) dans le <head>.
+     * Récupère la couleur personnalisée depuis les options
+     *
+     * @return void
+     */
     public static function inject_brand_color()
     {
         $color = get_option('gr_color_brand_custom', '#58AF59');
@@ -22,30 +28,19 @@ class Genius_Reviews_Render
     </style>';
     }
 
-    private static function adjust_brightness($hex, $steps)
-    {
-        $steps = max(-255, min(255, $steps));
-        $hex = str_replace('#', '', $hex);
-
-        if (strlen($hex) === 3) {
-            $hex = str_repeat(substr($hex, 0, 1), 2) . str_repeat(substr($hex, 1, 1), 2) . str_repeat(substr($hex, 2, 1), 2);
-        }
-
-        $r = hexdec(substr($hex, 0, 2));
-        $g = hexdec(substr($hex, 2, 2));
-        $b = hexdec(substr($hex, 4, 2));
-
-        $r = max(0, min(255, $r + $steps));
-        $g = max(0, min(255, $g + $steps));
-        $b = max(0, min(255, $b + $steps));
-
-        return '#' . str_pad(dechex($r), 2, '0', STR_PAD_LEFT)
-            . str_pad(dechex($g), 2, '0', STR_PAD_LEFT)
-            . str_pad(dechex($b), 2, '0', STR_PAD_LEFT);
-    }
-
-
-
+    /**
+     * Génère le bloc principal d’avis clients sous forme de grille.
+     *
+     * Récupère les avis liés à un produit spécifique,
+     * calcule les moyennes et compte les notes, puis affiche le template complet.
+     *
+     * @param array $args {
+     *     @type int    $product_id ID du produit (facultatif).
+     *     @type int    $limit      Nombre maximum d’avis à afficher.
+     *     @type string $sort       Type de tri (date_desc, rating_asc, etc.).
+     * }
+     * @return string HTML complet de la grille d’avis.
+     */
     public static function grid($args = [])
     {
         $defaults = [
@@ -125,7 +120,18 @@ class Genius_Reviews_Render
         return self::render_grid($q, $avg, $count, $args, $counts_by_rating);
     }
 
-
+    /**
+     * Génère un slider/carrousel d’avis clients.
+     *
+     * Utilisé notamment sur la page d’accueil ou les pages vitrines.
+     * Affiche les avis sous forme de slides.
+     *
+     * @param array $args {
+     *     @type int    $limit Nombre d’avis à afficher.
+     *     @type string $sort  Type de tri.
+     * }
+     * @return string|null HTML du carrousel ou null si aucun avis trouvé.
+     */
     public static function slider($args = [])
     {
         $defaults = [
@@ -178,10 +184,46 @@ class Genius_Reviews_Render
         return $html;
     }
 
+    /**
+     * Affiche un petit badge de note pour un produit donné.
+     *
+     * Montre la moyenne d’étoiles et le nombre total d’avis.
+     *
+     * @param array $args {
+     *     @type int $product_id ID du produit concerné.
+     * }
+     * @return string HTML du badge, vide si aucune donnée.
+     */
+    public static function badge($args = [])
+    {
+        $defaults = [
+            'product_id' => 0,
+        ];
+        $args = wp_parse_args($args, $defaults);
+
+        if (!$args['product_id'])
+            return '';
+
+        $avg = get_post_meta($args['product_id'], '_gr_avg_rating', true);
+        $count = get_post_meta($args['product_id'], '_gr_review_count', true);
+
+        if (empty($avg) || empty($count))
+            return '';
+
+        return self::render_badge($count, $avg);
+    }
 
 
-
-
+    /**
+     * Construit une carte d’avis individuelle.
+     *
+     * Utilisé dans la grille et le carrousel.
+     * Contient les étoiles, le titre, l’extrait, le nom et la date.
+     *
+     * @param int    $post_id ID du post (avis).
+     * @param string $mode    Mode d’affichage ("grid" ou "slider").
+     * @return string HTML complet de la carte.
+     */
     public static function review_card($post_id, $mode = '')
     {
         $rating = (int) get_post_meta($post_id, '_gr_rating', true);
@@ -254,7 +296,19 @@ class Genius_Reviews_Render
     }
 
 
-
+    /**
+     * Rendu HTML complet de la grille des avis.
+     *
+     * Génère les statistiques, les barres de répartition, le tri,
+     * le bouton “voir plus” et la liste des avis.
+     *
+     * @param WP_Query $query            Objet WP_Query des avis.
+     * @param float    $avg              Note moyenne.
+     * @param int      $count            Nombre total d’avis.
+     * @param array    $args             Paramètres initiaux de la grille.
+     * @param array    $counts_by_rating Détails par note.
+     * @return string HTML du bloc.
+     */
     private static function render_grid(WP_Query $query, $avg, $count, $args, $counts_by_rating)
     {
         ob_start();
@@ -300,7 +354,6 @@ class Genius_Reviews_Render
 
                 <!-- Détails -->
                 <?php
-                // Récup stats
                 $counts_by_rating = isset($counts_by_rating) ? $counts_by_rating : [];
                 $total = max(1, array_sum($counts_by_rating));
                 ?>
@@ -312,7 +365,6 @@ class Genius_Reviews_Render
                         $bg_class = $colors[$i]['bg'];
                         ?>
                         <div class="flex items-center gap-2.5">
-                            <!-- étoiles -->
                             <div class="flex gap-0.5">
                                 <?php for ($j = 1; $j <= 5; $j++): ?>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15"
@@ -326,13 +378,11 @@ class Genius_Reviews_Render
                                 <?php endfor; ?>
                             </div>
 
-                            <!-- barre -->
                             <div class="flex-1 h-3 w-[126px] bg-gray-light rounded-full overflow-hidden">
                                 <div class="h-full rounded-full <?php echo $bg_class; ?>" style="width: <?php echo $percent; ?>%">
                                 </div>
                             </div>
 
-                            <!-- nombre -->
                             <div class="w-6 text-right text-gray-medium text-sm">
                                 <?php echo $counts_by_rating[$i]; ?>
                             </div>
@@ -340,12 +390,25 @@ class Genius_Reviews_Render
                     <?php endfor; ?>
                 </div>
 
+                <?php if (is_user_logged_in()): ?>
+                    <a href="<?php echo esc_url(home_url("/questionnaire-feedback")); ?>"
+                        class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
+                        <?php _e('Écrire un avis', 'genius-reviews'); ?>
+                    </a>
+                <?php else: ?>
+                    <?php
+                    $login_url = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('myaccount') : wp_login_url(get_permalink());
+                    ?>
+                    <p class="text-sm text-gray-500 mt-4">
+                        <?php
+                        printf(
+                            __('Vous devez être <a href="%s" class="text-brand-custom hover:underline font-medium">connecté(e)</a> pour écrire un avis.', 'genius-reviews'),
+                            esc_url($login_url)
+                        );
+                        ?>
+                    </p>
+                <?php endif; ?>
 
-
-
-                <a href="#" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
-                    <?php _e('Écrire un avis', 'genius-reviews'); ?>
-                </a>
             </div>
 
             <!-- Tri -->
@@ -394,7 +457,6 @@ class Genius_Reviews_Render
             </form>
 
 
-            <!-- Masonry Grid -->
             <div id="gr-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 space-y-10"
                 data-product-id="<?php echo esc_attr($args['product_id']); ?>">
                 <?php while ($query->have_posts()):
@@ -404,7 +466,6 @@ class Genius_Reviews_Render
                 wp_reset_postdata(); ?>
             </div>
 
-            <!-- Bouton voir plus -->
             <?php if ($count > $args['limit']): ?>
                 <div class="flex justify-center mt-6">
                     <button id="gr-load-more" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
@@ -418,6 +479,17 @@ class Genius_Reviews_Render
         return ob_get_clean();
     }
 
+
+    /**
+     * Rendu HTML du carrousel d’avis.
+     *
+     * Construit la structure compatible Swiper.js avec les flèches et slides.
+     *
+     * @param WP_Query $query Objet WP_Query des avis.
+     * @param float    $avg   Moyenne des notes.
+     * @param int      $count Nombre total d’avis.
+     * @return string HTML du carrousel complet.
+     */
     private static function render_carousel(WP_Query $query, $avg, $count)
     {
         ob_start();
@@ -460,7 +532,6 @@ class Genius_Reviews_Render
                 </span>
             </div>
 
-            <!-- Carousel -->
             <div class="swiper gr-swiper md:!px-12">
                 <div class="swiper-wrapper max-w-[360px]  md:max-w-full">
                     <?php while ($query->have_posts()):
@@ -497,6 +568,43 @@ class Genius_Reviews_Render
         return ob_get_clean();
     }
 
+    /**
+     * Rendu du badge de note (étoiles + nombre d’avis).
+     *
+     * Utilisé sur les pages produits et collections.
+     *
+     * @param int   $count Nombre total d’avis.
+     * @param float $avg   Note moyenne du produit.
+     * @return string HTML du badge.
+     */
+    private static function render_badge($count, $avg)
+    {
+        ob_start();
+        ?>
+        <div class="gr-badge flex items-center gap-2 my-2">
+            <div class="flex gap-0.5">
+                <?php echo self::render_stars(round($avg), "w-4 h-4"); ?>
+            </div>
+            <span class="text-xs">
+                <?php
+                printf(
+                    __('%s avis', 'genius-reviews'),
+                    intval($count)
+                );
+                ?>
+            </span>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+
+
+    /**
+     * Affiche un message lorsqu’aucun avis n’est disponible.
+     *
+     * @return string HTML du message “Aucun avis”.
+     */
     private static function render_no_reviews()
     {
         ob_start(); ?>
@@ -517,10 +625,8 @@ class Genius_Reviews_Render
                 </div>
             </div>
 
-            <!-- texte -->
             <p class="text-sm"><?php esc_html_e('Aucun avis pour le moment', 'genius-reviews'); ?></p>
 
-            <!-- bouton -->
             <a href="#gr-review-form" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
                 <?php esc_html_e('Écrire un avis', 'genius-reviews'); ?>
             </a>
@@ -531,7 +637,11 @@ class Genius_Reviews_Render
 
 
 
-
+    /**
+     * Retourne les classes de couleur associées à chaque note (1 à 5).
+     *
+     * @return array Tableau associatif des classes CSS pour chaque rating.
+     */
     private static function rating_colors()
     {
         return [
@@ -543,12 +653,18 @@ class Genius_Reviews_Render
         ];
     }
 
+    /**
+     * Génère le code SVG des étoiles pour une note donnée.
+     *
+     * @param int    $rating Note entre 1 et 5.
+     * @param string $size   Classes CSS de taille à appliquer.
+     * @return string HTML contenant les 5 étoiles.
+     */
     private static function render_stars($rating, $size = 'w-5 h-5')
     {
         $colors = self::rating_colors();
         ob_start();
         for ($i = 1; $i <= 5; $i++) {
-            // si l’étoile est remplie on prend la couleur du niveau de note (ex: note=3 => text-rating-3)
             $class = $i <= $rating ? $colors[$rating]['text'] : 'text-gray-light';
             echo '<svg xmlns="http://www.w3.org/2000/svg" class="' . $size . ' ' . $class . '" viewBox="0 0 25 25">
             <path d="M25 0H0V25H25V0Z" fill="currentColor"/>
@@ -559,7 +675,14 @@ class Genius_Reviews_Render
         return ob_get_clean();
     }
 
-
+    /**
+     * Retourne la classe de couleur correspondant à la moyenne des notes.
+     *
+     * Permet de colorer les étoiles en fonction de la moyenne générale.
+     *
+     * @param float $avg Note moyenne du produit.
+     * @return string Classe CSS de couleur
+     */
     private static function avg_color_class($avg)
     {
         $colors = self::rating_colors();
@@ -567,8 +690,47 @@ class Genius_Reviews_Render
         return $colors[$rounded]['text'];
     }
 
+    /**
+     * Ajuste la luminosité d’une couleur hexadécimale.
+     *
+     * Sert à générer automatiquement la couleur de survol
+     * à partir de la couleur principale.
+     *
+     * @param string $hex   Code hexadécimal de la couleur.
+     * @param int    $steps Niveau de luminosité à ajouter ou retirer.
+     * @return string Nouvelle couleur hex.
+     */
+    private static function adjust_brightness($hex, $steps)
+    {
+        $steps = max(-255, min(255, $steps));
+        $hex = str_replace('#', '', $hex);
 
-    public static function rating_label($avg)
+        if (strlen($hex) === 3) {
+            $hex = str_repeat(substr($hex, 0, 1), 2) . str_repeat(substr($hex, 1, 1), 2) . str_repeat(substr($hex, 2, 1), 2);
+        }
+
+        $r = hexdec(substr($hex, 0, 2));
+        $g = hexdec(substr($hex, 2, 2));
+        $b = hexdec(substr($hex, 4, 2));
+
+        $r = max(0, min(255, $r + $steps));
+        $g = max(0, min(255, $g + $steps));
+        $b = max(0, min(255, $b + $steps));
+
+        return '#' . str_pad(dechex($r), 2, '0', STR_PAD_LEFT)
+            . str_pad(dechex($g), 2, '0', STR_PAD_LEFT)
+            . str_pad(dechex($b), 2, '0', STR_PAD_LEFT);
+    }
+
+
+    /**
+     * Retourne une étiquette de texte basée sur la moyenne des notes.
+     *
+     *
+     * @param float $avg Moyenne des avis.
+     * @return string Libellé correspondant.
+     */
+    private static function rating_label($avg)
     {
         if ($avg >= 4.5)
             return __('Excellent', 'genius-reviews');

@@ -153,7 +153,6 @@ class Genius_Reviews
 
 		// Shortcodes
 		require_once plugin_dir_path(dirname(__FILE__)) . 'classes/class-genius-reviews-shortcodes.php';
-		Genius_Reviews_Shortcodes::init();
 
 		//AJAX
 		require_once plugin_dir_path(dirname(__FILE__)) . 'classes/class-genius-reviews-ajax.php';
@@ -164,7 +163,7 @@ class Genius_Reviews
 
 		$this->loader = new Genius_Reviews_Loader();
 
-		
+
 	}
 
 	/**
@@ -200,8 +199,8 @@ class Genius_Reviews
 		$this->loader->add_action('admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts');
 
 		// Page Options/Import
-		$this->loader->add_action('admin_menu',              'Genius_Reviews_Admin_Page', 'add_menu');
-		$this->loader->add_action('wp_ajax_gr_upload_csv',   'Genius_Reviews_Ajax', 'ajax_upload_csv');
+		$this->loader->add_action('admin_menu', 'Genius_Reviews_Admin_Page', 'add_menu');
+		$this->loader->add_action('wp_ajax_gr_upload_csv', 'Genius_Reviews_Ajax', 'ajax_upload_csv');
 		$this->loader->add_action('wp_ajax_gr_process_chunk', 'Genius_Reviews_Ajax', 'ajax_process_chunk');
 	}
 
@@ -225,37 +224,57 @@ class Genius_Reviews
 		$this->loader->add_action('wp_head', 'Genius_Reviews_Render', 'inject_brand_color');
 		$this->loader->add_action('admin_head', 'Genius_Reviews_Render', 'inject_brand_color');
 
-		$this->loader->add_action('wp_ajax_load_reviews',   'Genius_Reviews_Ajax', 'gr_load_reviews');
+		$this->loader->add_action('wp_ajax_load_reviews', 'Genius_Reviews_Ajax', 'gr_load_reviews');
 		$this->loader->add_action('wp_ajax_nopriv_load_reviews', 'Genius_Reviews_Ajax', 'gr_load_reviews');
 
-		$hide_grid = get_option('gr_option_hide_grid');
-		$hide_slider = get_option('gr_option_hide_slider');
+		$active_reviews_on_product_page = get_option('gr_option_active_reviews_on_product_page');
+		$active_badge_on_product_page = get_option('gr_option_active_badge_on_product_page');
+		$active_badge_on_collection_page = get_option('gr_option_active_badge_on_collection_page');
 
 
-		if ($hide_grid != 0) {
+		$this->loader->add_action('init', 'Genius_Reviews', 'register_shortcodes');
+
+
+		if ($active_reviews_on_product_page != 0) {
 			add_action('woocommerce_after_single_product', function () {
 				global $product;
-				if (! $product) return;
+				if (!$product)
+					return;
 
 
 				echo Genius_Reviews_Render::grid([
 					'product_id' => $product->get_id(),
-					'limit'      => 6,
+					'limit' => 6,
 				]);
 			}, 14);
 		}
 
-		if (!$hide_slider) {
-			// $this->loader->add_action('woocommerce_single_product_summary', function () {
-			// 	global $product;
-			// 	if (! $product) return;
+		if ($active_badge_on_product_page != 0) {
+			add_action('woocommerce_single_product_summary', function () {
+				global $product;
+				if (!$product)
+					return;
 
-			// 	echo Genius_Reviews_Render::slider([
-			// 		'product_id' => $product->get_id(),
-			// 		'limit'      => 10,
-			// 	]);
-			// }, 9);
+				echo Genius_Reviews_Render::badge([
+					'product_id' => $product->get_id(),
+				]);
+			}, 6);
 		}
+
+
+		if ($active_badge_on_collection_page != 0) {
+			add_action('woocommerce_after_shop_loop_item_title', function () {
+				global $product;
+				if (!$product)
+					return;
+
+				echo Genius_Reviews_Render::badge([
+					'product_id' => $product->get_id(),
+				]);
+			}, 6);
+		}
+
+
 	}
 
 	private function register_cpt_hooks()
@@ -263,6 +282,20 @@ class Genius_Reviews
 		$this->loader->add_action('init', 'Genius_Reviews_CPT', 'register');
 		$this->loader->add_action('add_meta_boxes', 'Genius_Reviews_CPT', 'register_metaboxes');
 	}
+
+	/**
+	 * Enregistre les shortcodes du plugin.
+	 *
+	 * @since 1.0.0
+	 * @return void
+	 */
+	public static function register_shortcodes()
+	{
+		add_shortcode('genius_reviews_grid', ['Genius_Reviews_Shortcodes', 'grid']);
+		add_shortcode('genius_reviews_slider', ['Genius_Reviews_Shortcodes', 'slider']);
+		add_shortcode('genius_reviews_badge', ['Genius_Reviews_Shortcodes', 'badge']);
+	}
+
 
 
 	/**

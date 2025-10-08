@@ -16,7 +16,7 @@
  * Plugin Name:       Genius Reviews
  * Plugin URI:        http://example.com/genius-reviews-uri/
  * Description: Import d’avis via CSV, affichage sur les fiches produits WooCommerce, JSON-LD optimisé SEO.
- * Version:           1.0.142
+ * Version:           1.0.2
  * Author:            Ingenius Agency
  * Author URI:        http://example.com/
  * License:           GPL-2.0+
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'GENIUS_REVIEWS_VERSION', '1.0.142' );
+define( 'GENIUS_REVIEWS_VERSION', '1.0.2' );
 define( 'GR_PATH', plugin_dir_path( __FILE__ ) );
 
 
@@ -43,9 +43,9 @@ define( 'GR_PATH', plugin_dir_path( __FILE__ ) );
  * The code that runs during plugin activation.
  * This action is documented in includes/class-genius-reviews-activator.php
  */
-function activate_genius_reviews() {
-	require_once plugin_dir_path( __FILE__ ) . 'includes/class-genius-reviews-activator.php';
-	Genius_Reviews_Activator::activate();
+function activate_genius_reviews($network_wide) {
+	require_once plugin_dir_path(__FILE__) . 'includes/class-genius-reviews-activator.php';
+	Genius_Reviews_Activator::activate($network_wide);
 }
 
 /**

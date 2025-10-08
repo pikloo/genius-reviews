@@ -53,15 +53,12 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 
-= 1.0.14 =
-* Webpack
+= 1.0.2 =
+* Affichage du badge
+* Gestion multisite
 
-= 1.0.12 =
-* Slider: Boucle sur le carousel & pas d'affichage si aucun avis
-* Fix du nombres d'avis total
-
-= 1.0.11 =
-* Traduction NL
+= 1.0.1 =
+* Traductions
 
 = 1.0.0 =
 * Première version publique

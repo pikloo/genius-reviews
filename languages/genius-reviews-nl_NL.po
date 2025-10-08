@@ -78,7 +78,7 @@ msgid "Pour le carrousel, utilisez :"
 msgstr "Voor de carrousel, gebruik:"
 
 #: admin/class-genius-reviews-admin-page.php:61
-msgid "Activer la grille des avis"
+msgid "Activer la grille des avis sur la page produit"
 msgstr "Beoordelingsraster inschakelen"
 
 #: admin/class-genius-reviews-admin-page.php:82

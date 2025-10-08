@@ -22,8 +22,10 @@ class Genius_Reviews_Admin_Page
 		if (! current_user_can('manage_woocommerce')) wp_die('Nope.');
 
 		if (!empty($_POST['gr_options_nonce']) && wp_verify_nonce($_POST['gr_options_nonce'], 'gr_save_options')) {
-			update_option('gr_option_hide_grid', !empty($_POST['gr_option_hide_grid']) ? 1 : 0);
-			// update_option('gr_option_hide_slider', !empty($_POST['gr_option_hide_slider']) ? 1 : 0);
+			update_option('gr_option_active_reviews_on_product_page', !empty($_POST['gr_option_active_reviews_on_product_page']) ? 1 : 0);
+			update_option('gr_option_active_badge_on_product_page', !empty($_POST['gr_option_active_badge_on_product_page']) ? 1 : 0);
+			update_option('gr_option_active_badge_on_collection_page', !empty($_POST['gr_option_active_badge_on_collection_page']) ? 1 : 0);
+
 
 			if (isset($_POST['gr_color_brand_custom'])) {
 				update_option('gr_color_brand_custom', sanitize_hex_color($_POST['gr_color_brand_custom']));
@@ -31,11 +33,12 @@ class Genius_Reviews_Admin_Page
 			echo '<div class="notice notice-success is-dismissible"><p>' . __('Options sauvegardées.', 'genius-reviews') . '</p></div>';
 		}
 
-		$hide_grid   = (int) get_option('gr_option_hide_grid', 0);
-		$color_brand_custom = get_option('gr_color_brand_custom', '#58AF59');
+		$active_reviews_on_product_page   = (int) get_option('gr_option_active_reviews_on_product_page', 0);
+		$active_badge_on_product_page = (int) get_option('gr_option_active_badge_on_product_page', 0);
+		$active_badge_on_collection_page = (int) get_option('gr_option_active_badge_on_collection_page', 0);
 
-		// $hide_slider = (int) get_option('gr_option_hide_slider', 0);
-?>
+		$color_brand_custom = get_option('gr_color_brand_custom', '#58AF59');
+		?>
 		<div class="wrap !p-0">
 			<div class="tw bg-white container mx-auto p-6">
 				<h1 class="text-2xl font-semibold mb-6"><?php _e('Genius Reviews — Options & Import CSV', 'genius-reviews'); ?></h1>
@@ -56,27 +59,72 @@ class Genius_Reviews_Admin_Page
 						<?php _e('Pour le carrousel, utilisez :', 'genius-reviews'); ?> <code>[genius_reviews_slider]</code>.
 					</p>
 
+					<div class="space-y-2">
+						<div class="flex items-center gap-3">
+							<label for="gr-option-reviews-on-product-page" class="text-sm font-medium text-gray-800">
+								<?php _e('Activer la grille des avis sur la page produit', 'genius-reviews'); ?>
+							</label>
 
-					<div class="flex items-center gap-3">
-						<label for="gr-option-hide-grid" class="text-sm font-medium text-gray-800">
-							<?php _e('Activer la grille des avis', 'genius-reviews'); ?>
-						</label>
+							<label for="gr-option-reviews-on-product-page"
+								class="relative block h-6 w-11 rounded-full bg-gray-300 transition-colors cursor-pointer has-[:checked]:bg-[var(--color-brand)]">
 
-						<label for="gr-option-hide-grid"
-							class="relative block h-6 w-11 rounded-full bg-gray-300 transition-colors cursor-pointer has-[:checked]:bg-[var(--color-brand)]">
+								<input type="checkbox"
+									id="gr-option-reviews-on-product-page"
+									name="gr_option_active_reviews_on_product_page"
+									value="1"
+									class="sr-only peer"
+									<?php checked($active_reviews_on_product_page, 1); ?>>
 
-							<input type="checkbox"
-								id="gr-option-hide-grid"
-								name="gr_option_hide_grid"
-								value="1"
-								class="sr-only peer"
-								<?php checked($hide_grid, 1); ?>>
+								<span
+									class="absolute inset-y-0 start-0 m-[2px] size-5 rounded-full bg-white shadow transition-[inset-inline-start] peer-checked:start-5">
+								</span>
+							</label>
+						</div>
 
-							<span
-								class="absolute inset-y-0 start-0 m-[2px] size-5 rounded-full bg-white shadow transition-[inset-inline-start] peer-checked:start-5">
-							</span>
-						</label>
+						<div class="flex items-center gap-3">
+							<label for="gr-option-badge-on-product-page" class="text-sm font-medium text-gray-800">
+								<?php _e('Activer le badge d\'avis sur la page produit', 'genius-reviews'); ?>
+							</label>
+
+							<label for="gr-option-badge-on-product-page"
+								class="relative block h-6 w-11 rounded-full bg-gray-300 transition-colors cursor-pointer has-[:checked]:bg-[var(--color-brand)]">
+
+								<input type="checkbox"
+									id="gr-option-badge-on-product-page"
+									name="gr_option_active_badge_on_product_page"
+									value="1"
+									class="sr-only peer"
+									<?php checked($active_badge_on_product_page, 1); ?>>
+
+								<span
+									class="absolute inset-y-0 start-0 m-[2px] size-5 rounded-full bg-white shadow transition-[inset-inline-start] peer-checked:start-5">
+								</span>
+							</label>
+						</div>
+
+						<div class="flex items-center gap-3">
+							<label for="gr-option-badge-on-collection-page" class="text-sm font-medium text-gray-800">
+								<?php _e('Activer le badge d\'avis sur la page collection', 'genius-reviews'); ?>
+							</label>
+
+							<label for="gr-option-badge-on-collection-page"
+								class="relative block h-6 w-11 rounded-full bg-gray-300 transition-colors cursor-pointer has-[:checked]:bg-[var(--color-brand)]">
+
+								<input type="checkbox"
+									id="gr-option-badge-on-collection-page"
+									name="gr_option_active_badge_on_collection_page"
+									value="1"
+									class="sr-only peer"
+									<?php checked($active_badge_on_collection_page, 1); ?>>
+
+								<span
+									class="absolute inset-y-0 start-0 m-[2px] size-5 rounded-full bg-white shadow transition-[inset-inline-start] peer-checked:start-5">
+								</span>
+							</label>
+						</div>
+
 					</div>
+					
 
 					<div class="flex gap-2 items-center">
 						<label for="gr-color-brand-custom" class="block text-sm font-medium">
