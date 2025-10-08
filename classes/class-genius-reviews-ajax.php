@@ -192,12 +192,13 @@ class Genius_Reviews_Ajax
             else
                 $state['per_product'][$pid]['added']++;
         }
-
-        fclose($fh);
-
+        
         $total = max(0, self::count_lines($state['file']));
         $percent = $total ? min(100, round(($state['rows'] / $total) * 100)) : 100;
         $complete = feof($fh) || ($state['rows'] >= $total);
+
+        fclose($fh);
+
 
         if ($complete) {
             $percent = 100;
