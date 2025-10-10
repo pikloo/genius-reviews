@@ -166,6 +166,11 @@ class Genius_Reviews_Render
             ],
         ];
 
+        if (!empty($sort_args['meta_query'])) {
+            $q_args['meta_query'] = array_merge($q_args['meta_query'], (array) $sort_args['meta_query']);
+            unset($sort_args['meta_query']);
+        }
+
         $q_args = array_merge($q_args, $sort_args);
         $q = new WP_Query($q_args);
 
