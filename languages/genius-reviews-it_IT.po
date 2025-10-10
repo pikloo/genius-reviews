@@ -2,17 +2,17 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Genius Reviews 1.0.0\n"
+"Project-Id-Version: Genius Reviews 1.0.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/genius-reviews\n"
-"Last-Translator: Ingenius Agency <hello@ingenius.agency>\n"
-"Language-Team: Italian <it@li.org>\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: Italiano <translations@ingenius.agency>\n"
 "Language: it_IT\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2025-10-06T12:53:59+02:00\n"
-"PO-Revision-Date: 2025-10-06 15:40+0200\n"
-"X-Generator: ChatGPT GPT-5\n"
+"POT-Creation-Date: 2025-10-10T14:40:25+02:00\n"
+"PO-Revision-Date: 2025-10-10 15:30+0200\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: genius-reviews\n"
 
 #. Plugin Name of the plugin
@@ -30,7 +30,7 @@ msgstr "http://example.com/genius-reviews-uri/"
 #. Description of the plugin
 #: genius-reviews.php
 msgid "Import d’avis via CSV, affichage sur les fiches produits WooCommerce, JSON-LD optimisé SEO."
-msgstr "Importazione di recensioni tramite CSV, visualizzazione nelle schede prodotto WooCommerce e JSON-LD ottimizzato per la SEO."
+msgstr "Importa recensioni tramite CSV, visualizzale nelle pagine prodotto WooCommerce, JSON-LD ottimizzato per la SEO."
 
 #. Author of the plugin
 #: genius-reviews.php
@@ -47,107 +47,113 @@ msgstr "http://example.com/"
 msgid "Options & Import"
 msgstr "Opzioni e Importazione"
 
-#: admin/class-genius-reviews-admin-page.php:30
+#: admin/class-genius-reviews-admin-page.php:33
 msgid "Options sauvegardées."
 msgstr "Opzioni salvate."
 
-#: admin/class-genius-reviews-admin-page.php:40
+#: admin/class-genius-reviews-admin-page.php:44
 msgid "Genius Reviews — Options & Import CSV"
 msgstr "Genius Reviews — Opzioni e Importazione CSV"
 
-#: admin/class-genius-reviews-admin-page.php:45
+#: admin/class-genius-reviews-admin-page.php:49
 msgid "Options d’affichage"
 msgstr "Opzioni di visualizzazione"
 
-#: admin/class-genius-reviews-admin-page.php:47
+#: admin/class-genius-reviews-admin-page.php:51
 msgid ""
 "Vous pouvez activer automatiquement la <strong>grille d’avis</strong> en bas des pages produits WooCommerce, \n"
 "                        ou utiliser les shortcodes suivants :"
-msgstr ""
-"Puoi attivare automaticamente la <strong>griglia delle recensioni</strong> in fondo alle pagine dei prodotti WooCommerce,\n"
-"                        oppure utilizzare i seguenti shortcode:"
+msgstr "Puoi attivare automaticamente la <strong>griglia delle recensioni</strong> in fondo alle pagine prodotto WooCommerce oppure usare i seguenti shortcode:"
 
-#: admin/class-genius-reviews-admin-page.php:53
+#: admin/class-genius-reviews-admin-page.php:57
 msgid "ou simplement"
 msgstr "o semplicemente"
 
-#: admin/class-genius-reviews-admin-page.php:54
+#: admin/class-genius-reviews-admin-page.php:58
 msgid "pour le produit courant."
 msgstr "per il prodotto corrente."
 
-#: admin/class-genius-reviews-admin-page.php:55
+#: admin/class-genius-reviews-admin-page.php:59
 msgid "Pour le carrousel, utilisez :"
 msgstr "Per il carosello, usa:"
 
-#: admin/class-genius-reviews-admin-page.php:61
+#: admin/class-genius-reviews-admin-page.php:65
 msgid "Activer la grille des avis sur la page produit"
-msgstr "Attiva la griglia delle recensioni"
+msgstr "Attiva la griglia delle recensioni nella pagina prodotto"
 
-#: admin/class-genius-reviews-admin-page.php:82
+#: admin/class-genius-reviews-admin-page.php:86
+msgid "Activer le badge d'avis sur la page produit"
+msgstr "Attiva il badge recensioni nella pagina prodotto"
+
+#: admin/class-genius-reviews-admin-page.php:107
+msgid "Activer le badge d'avis sur la page collection"
+msgstr "Attiva il badge recensioni nella pagina categoria"
+
+#: admin/class-genius-reviews-admin-page.php:131
 msgid "Couleur principale"
 msgstr "Colore principale"
 
-#: admin/class-genius-reviews-admin-page.php:93
+#: admin/class-genius-reviews-admin-page.php:142
 msgid "Sauvegarder"
 msgstr "Salva"
 
-#: admin/class-genius-reviews-admin-page.php:99
+#: admin/class-genius-reviews-admin-page.php:148
 msgid "Import"
 msgstr "Importa"
 
-#: admin/class-genius-reviews-admin-page.php:112
+#: admin/class-genius-reviews-admin-page.php:161
 msgid "Lancer l’import"
 msgstr "Avvia importazione"
 
-#: admin/class-genius-reviews-admin-page.php:118
+#: admin/class-genius-reviews-admin-page.php:167
 msgid "Préparation…"
 msgstr "Preparazione…"
 
-#: admin/class-genius-reviews-admin-page.php:128
+#: admin/class-genius-reviews-admin-page.php:177
 msgid "Détail par produit"
-msgstr "Dettaglio per prodotto"
+msgstr "Dettagli per prodotto"
 
-#: admin/class-genius-reviews-admin-page.php:133
+#: admin/class-genius-reviews-admin-page.php:182
 msgid "Produit"
 msgstr "Prodotto"
 
-#: admin/class-genius-reviews-admin-page.php:134
+#: admin/class-genius-reviews-admin-page.php:183
 msgid "ID"
 msgstr "ID"
 
-#: admin/class-genius-reviews-admin-page.php:135
+#: admin/class-genius-reviews-admin-page.php:184
 msgid "Ajoutés"
 msgstr "Aggiunti"
 
-#: admin/class-genius-reviews-admin-page.php:136
+#: admin/class-genius-reviews-admin-page.php:185
 msgid "MàJ"
 msgstr "Aggiornati"
 
-#: admin/class-genius-reviews-admin-page.php:137
+#: admin/class-genius-reviews-admin-page.php:186
 msgid "Ignorés"
 msgstr "Ignorati"
 
-#: admin/class-genius-reviews-admin-page.php:138
+#: admin/class-genius-reviews-admin-page.php:187
 msgid "Moyenne"
 msgstr "Media"
 
-#: admin/class-genius-reviews-admin-page.php:139
+#: admin/class-genius-reviews-admin-page.php:188
 msgid "Total"
 msgstr "Totale"
 
-#: admin/class-genius-reviews-admin-page.php:148
+#: admin/class-genius-reviews-admin-page.php:197
 msgid "Colonnes :"
 msgstr "Colonne:"
 
-#: admin/class-genius-reviews-admin.php:116
+#: admin/class-genius-reviews-admin.php:117
 msgid "Téléversement…"
 msgstr "Caricamento…"
 
-#: admin/class-genius-reviews-admin.php:117
+#: admin/class-genius-reviews-admin.php:118
 msgid "Import en cours…"
 msgstr "Importazione in corso…"
 
-#: admin/class-genius-reviews-admin.php:118
+#: admin/class-genius-reviews-admin.php:119
 msgid "Import terminé"
 msgstr "Importazione completata"
 
@@ -174,7 +180,7 @@ msgstr "Nuova recensione"
 
 #: classes/class-genius-reviews-cpt.php:16
 msgid "Voir l’avis"
-msgstr "Vedi recensione"
+msgstr "Visualizza recensione"
 
 #: classes/class-genius-reviews-cpt.php:17
 msgid "Rechercher des avis"
@@ -206,84 +212,105 @@ msgstr "Numero di recensioni"
 
 #: classes/class-genius-reviews-output-json-ld.php:90
 #: classes/class-genius-reviews-output-json-ld.php:142
-#: classes/class-genius-reviews-render.php:240
+#: classes/class-genius-reviews-render.php:395
 msgid "Client"
 msgstr "Cliente"
 
-#: classes/class-genius-reviews-render.php:198
+#: classes/class-genius-reviews-render.php:343
 #, php-format
 msgid "Il y a %s"
 msgstr "%s fa"
 
-#: classes/class-genius-reviews-render.php:232
+#: classes/class-genius-reviews-render.php:386
 msgid "Voir plus"
-msgstr "Vedi di più"
+msgstr "Mostra di più"
 
-#: classes/class-genius-reviews-render.php:261
-#: classes/class-genius-reviews-render.php:464
+#: classes/class-genius-reviews-render.php:432
+#: classes/class-genius-reviews-render.php:773
 msgid "Avis de nos clients"
 msgstr "Recensioni dei nostri clienti"
 
-#: classes/class-genius-reviews-render.php:283
-#: classes/class-genius-reviews-render.php:423
+#: classes/class-genius-reviews-render.php:454
+#: classes/class-genius-reviews-render.php:670
 #, php-format
-msgid "Basé sur %s avis"
-msgstr "Basato su %s recensioni"
+msgid "Basé sur <span class=\"font-bold\">%s avis</span>"
+msgstr "Basato su <span class=\"font-bold\">%s recensioni</span>"
 
-#: classes/class-genius-reviews-render.php:334
-#: classes/class-genius-reviews-render.php:483
+#: classes/class-genius-reviews-render.php:501
+#: classes/class-genius-reviews-render.php:792
 msgid "Écrire un avis"
 msgstr "Scrivi una recensione"
 
-#: classes/class-genius-reviews-render.php:342
+#: classes/class-genius-reviews-render.php:510
+#, php-format
+msgid "Vous devez être <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">connecté(e)</a> pour écrire un avis."
+msgstr "Devi essere <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">connesso</a> per scrivere una recensione."
+
+#: classes/class-genius-reviews-render.php:524
 msgid "Plus récents"
 msgstr "Più recenti"
 
-#: classes/class-genius-reviews-render.php:343
+#: classes/class-genius-reviews-render.php:527
 msgid "Plus anciens"
 msgstr "Più vecchi"
 
-#: classes/class-genius-reviews-render.php:344
+#: classes/class-genius-reviews-render.php:530
 msgid "Meilleures notes"
-msgstr "Valutazioni migliori"
+msgstr "Migliori valutazioni"
 
-#: classes/class-genius-reviews-render.php:345
+#: classes/class-genius-reviews-render.php:533
 msgid "Moins bonnes notes"
-msgstr "Valutazioni peggiori"
+msgstr "Peggiori valutazioni"
 
-#: classes/class-genius-reviews-render.php:382
+#: classes/class-genius-reviews-render.php:573
+#, php-format
+msgid "Avis sur Produits (%d)"
+msgstr "Recensioni sui prodotti (%d)"
+
+#: classes/class-genius-reviews-render.php:576
+#, php-format
+msgid "Avis sur Boutique (%d)"
+msgstr "Recensioni sul negozio (%d)"
+
+#: classes/class-genius-reviews-render.php:594
+#: classes/class-genius-reviews-render.php:609
 msgid "Voir plus d’avis"
 msgstr "Mostra più recensioni"
 
-#: classes/class-genius-reviews-render.php:398
+#: classes/class-genius-reviews-render.php:641
 msgid "Aucun avis disponible."
 msgstr "Nessuna recensione disponibile."
 
-#: classes/class-genius-reviews-render.php:479
+#: classes/class-genius-reviews-render.php:733
+#, php-format
+msgid "%s avis"
+msgstr "%s recensioni"
+
+#: classes/class-genius-reviews-render.php:789
 msgid "Aucun avis pour le moment"
 msgstr "Nessuna recensione al momento"
 
-#: classes/class-genius-reviews-render.php:531
+#: classes/class-genius-reviews-render.php:897
 msgid "Excellent"
 msgstr "Eccellente"
 
-#: classes/class-genius-reviews-render.php:532
+#: classes/class-genius-reviews-render.php:899
 msgid "Très bien"
 msgstr "Molto buono"
 
-#: classes/class-genius-reviews-render.php:533
+#: classes/class-genius-reviews-render.php:901
 msgid "Bien"
 msgstr "Buono"
 
-#: classes/class-genius-reviews-render.php:534
+#: classes/class-genius-reviews-render.php:903
 msgid "Moyen"
 msgstr "Medio"
 
-#: classes/class-genius-reviews-render.php:535
+#: classes/class-genius-reviews-render.php:904
 msgid "À éviter"
-msgstr "Da evitare"
+msgstr "Scarso"
 
-#: includes/class-genius-reviews-activator.php:44
+#: includes/class-genius-reviews-activator.php:35
 #, php-format
 msgid "<b>%s</b> nécessite WooCommerce. Merci d’installer et d’activer WooCommerce."
 msgstr "<b>%s</b> richiede WooCommerce. Si prega di installare e attivare WooCommerce."
@@ -291,7 +318,7 @@ msgstr "<b>%s</b> richiede WooCommerce. Si prega di installare e attivare WooCom
 #: admin/blocks/grid/block.json
 msgctxt "block title"
 msgid "Grid Reviews"
-msgstr "Griglia recensioni"
+msgstr "Griglia Recensioni"
 
 #: admin/blocks/grid/block.json
 msgctxt "block description"

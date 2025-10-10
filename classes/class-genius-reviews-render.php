@@ -293,6 +293,15 @@ class Genius_Reviews_Render
 
         $args['mode'] = 'all';
 
+        $all_reviews = array_merge($q_products->posts, $q_shop->posts);
+        $json = Genius_Reviews_Output_Json_Ld::output_slider_jsonld($all_reviews);
+
+        if ($json) {
+            add_action('wp_footer', function () use ($json) {
+                echo '<script type="application/ld+json">' . $json . '</script>';
+            }, 5);
+        }
+
         return self::render_grid(
             [
                 'q_products' => $q_products,

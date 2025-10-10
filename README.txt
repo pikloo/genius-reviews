@@ -53,6 +53,10 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 
+= 1.1.0 =
+* Output json avis généraux
+* MAJ traductions
+
 = 1.0.3 =
 * Grille avis généraux
 

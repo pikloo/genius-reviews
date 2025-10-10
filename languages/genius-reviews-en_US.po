@@ -2,157 +2,158 @@
 # This file is distributed under the GPL-2.0+.
 msgid ""
 msgstr ""
-"Project-Id-Version: Genius Reviews 1.0.0\n"
+"Project-Id-Version: Genius Reviews 1.0.3\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/genius-reviews\n"
-"POT-Creation-Date: 2025-10-06T12:53:59+02:00\n"
-"PO-Revision-Date: 2025-10-06 13:05+0200\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: en\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: English (US) <translations@ingenius.agency>\n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.7\n"
+"POT-Creation-Date: 2025-10-10T14:40:25+02:00\n"
+"PO-Revision-Date: 2025-10-10 15:02+0200\n"
+"X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: genius-reviews\n"
 
 #. Plugin Name of the plugin
-#: genius-reviews.php classes/class-genius-reviews-cpt.php:20
+#: genius-reviews.php
+#: classes/class-genius-reviews-cpt.php:20
 #: classes/class-genius-reviews-elementor.php:9
 msgid "Genius Reviews"
-msgstr ""
+msgstr "Genius Reviews"
 
 #. Plugin URI of the plugin
 #: genius-reviews.php
 msgid "http://example.com/genius-reviews-uri/"
-msgstr ""
+msgstr "http://example.com/genius-reviews-uri/"
 
 #. Description of the plugin
 #: genius-reviews.php
-msgid ""
-"Import d’avis via CSV, affichage sur les fiches produits WooCommerce, JSON-"
-"LD optimisé SEO."
-msgstr ""
-"Import reviews via CSV, display on WooCommerce product pages, SEO-optimized "
-"JSON-LD."
+msgid "Import d’avis via CSV, affichage sur les fiches produits WooCommerce, JSON-LD optimisé SEO."
+msgstr "Import reviews via CSV, display on WooCommerce product pages, SEO-optimized JSON-LD."
 
 #. Author of the plugin
 #: genius-reviews.php
 msgid "Ingenius Agency"
-msgstr ""
+msgstr "Ingenius Agency"
 
 #. Author URI of the plugin
 #: genius-reviews.php
 msgid "http://example.com/"
-msgstr ""
+msgstr "http://example.com/"
 
 #: admin/class-genius-reviews-admin-page.php:11
 #: admin/class-genius-reviews-admin-page.php:12
 msgid "Options & Import"
-msgstr "Options & Import"
+msgstr "Settings & Import"
 
-#: admin/class-genius-reviews-admin-page.php:30
+#: admin/class-genius-reviews-admin-page.php:33
 msgid "Options sauvegardées."
 msgstr "Settings saved."
 
-#: admin/class-genius-reviews-admin-page.php:40
+#: admin/class-genius-reviews-admin-page.php:44
 msgid "Genius Reviews — Options & Import CSV"
-msgstr ""
+msgstr "Genius Reviews — Settings & CSV Import"
 
-#: admin/class-genius-reviews-admin-page.php:45
+#: admin/class-genius-reviews-admin-page.php:49
 msgid "Options d’affichage"
 msgstr "Display options"
 
-#: admin/class-genius-reviews-admin-page.php:47
+#: admin/class-genius-reviews-admin-page.php:51
 msgid ""
-"Vous pouvez activer automatiquement la <strong>grille d’avis</strong> en bas "
-"des pages produits WooCommerce, \n"
+"Vous pouvez activer automatiquement la <strong>grille d’avis</strong> en bas des pages produits WooCommerce, \n"
 "                        ou utiliser les shortcodes suivants :"
-msgstr ""
-"You can automatically enable the<strong> review grid at the bottom</strong>  "
-"of WooCommerce product pages,\n"
-"                         or use the following shortcodes:"
+msgstr "You can automatically enable the <strong>reviews grid</strong> at the bottom of WooCommerce product pages, or use the following shortcodes:"
 
-#: admin/class-genius-reviews-admin-page.php:53
+#: admin/class-genius-reviews-admin-page.php:57
 msgid "ou simplement"
 msgstr "or simply"
 
-#: admin/class-genius-reviews-admin-page.php:54
+#: admin/class-genius-reviews-admin-page.php:58
 msgid "pour le produit courant."
 msgstr "for the current product."
 
-#: admin/class-genius-reviews-admin-page.php:55
+#: admin/class-genius-reviews-admin-page.php:59
 msgid "Pour le carrousel, utilisez :"
 msgstr "For the carousel, use:"
 
-#: admin/class-genius-reviews-admin-page.php:61
+#: admin/class-genius-reviews-admin-page.php:65
 msgid "Activer la grille des avis sur la page produit"
-msgstr "Enable review grid"
+msgstr "Enable reviews grid on product page"
 
-#: admin/class-genius-reviews-admin-page.php:82
+#: admin/class-genius-reviews-admin-page.php:86
+msgid "Activer le badge d'avis sur la page produit"
+msgstr "Enable review badge on product page"
+
+#: admin/class-genius-reviews-admin-page.php:107
+msgid "Activer le badge d'avis sur la page collection"
+msgstr "Enable review badge on collection page"
+
+#: admin/class-genius-reviews-admin-page.php:131
 msgid "Couleur principale"
 msgstr "Primary color"
 
-#: admin/class-genius-reviews-admin-page.php:93
+#: admin/class-genius-reviews-admin-page.php:142
 msgid "Sauvegarder"
 msgstr "Save"
 
-#: admin/class-genius-reviews-admin-page.php:99
+#: admin/class-genius-reviews-admin-page.php:148
 msgid "Import"
-msgstr ""
+msgstr "Import"
 
-#: admin/class-genius-reviews-admin-page.php:112
+#: admin/class-genius-reviews-admin-page.php:161
 msgid "Lancer l’import"
 msgstr "Start import"
 
-#: admin/class-genius-reviews-admin-page.php:118
+#: admin/class-genius-reviews-admin-page.php:167
 msgid "Préparation…"
 msgstr "Preparing…"
 
-#: admin/class-genius-reviews-admin-page.php:128
+#: admin/class-genius-reviews-admin-page.php:177
 msgid "Détail par produit"
-msgstr "Details per product"
+msgstr "Details by product"
 
-#: admin/class-genius-reviews-admin-page.php:133
+#: admin/class-genius-reviews-admin-page.php:182
 msgid "Produit"
 msgstr "Product"
 
-#: admin/class-genius-reviews-admin-page.php:134
+#: admin/class-genius-reviews-admin-page.php:183
 msgid "ID"
-msgstr ""
+msgstr "ID"
 
-#: admin/class-genius-reviews-admin-page.php:135
+#: admin/class-genius-reviews-admin-page.php:184
 msgid "Ajoutés"
 msgstr "Added"
 
-#: admin/class-genius-reviews-admin-page.php:136
+#: admin/class-genius-reviews-admin-page.php:185
 msgid "MàJ"
 msgstr "Updated"
 
-#: admin/class-genius-reviews-admin-page.php:137
+#: admin/class-genius-reviews-admin-page.php:186
 msgid "Ignorés"
-msgstr "Skipped"
+msgstr "Ignored"
 
-#: admin/class-genius-reviews-admin-page.php:138
+#: admin/class-genius-reviews-admin-page.php:187
 msgid "Moyenne"
 msgstr "Average"
 
-#: admin/class-genius-reviews-admin-page.php:139
+#: admin/class-genius-reviews-admin-page.php:188
 msgid "Total"
-msgstr ""
+msgstr "Total"
 
-#: admin/class-genius-reviews-admin-page.php:148
+#: admin/class-genius-reviews-admin-page.php:197
 msgid "Colonnes :"
 msgstr "Columns:"
 
-#: admin/class-genius-reviews-admin.php:116
+#: admin/class-genius-reviews-admin.php:117
 msgid "Téléversement…"
 msgstr "Uploading…"
 
-#: admin/class-genius-reviews-admin.php:117
+#: admin/class-genius-reviews-admin.php:118
 msgid "Import en cours…"
 msgstr "Import in progress…"
 
-#: admin/class-genius-reviews-admin.php:118
+#: admin/class-genius-reviews-admin.php:119
 msgid "Import terminé"
 msgstr "Import completed"
 
@@ -167,7 +168,7 @@ msgstr "Add a review"
 
 #: classes/class-genius-reviews-cpt.php:13
 msgid "Ajouter un nouvel avis"
-msgstr "Add a new review"
+msgstr "Add new review"
 
 #: classes/class-genius-reviews-cpt.php:14
 msgid "Éditer l’avis"
@@ -175,7 +176,7 @@ msgstr "Edit review"
 
 #: classes/class-genius-reviews-cpt.php:15
 msgid "Nouvel avis"
-msgstr ""
+msgstr "New review"
 
 #: classes/class-genius-reviews-cpt.php:16
 msgid "Voir l’avis"
@@ -187,11 +188,11 @@ msgstr "Search reviews"
 
 #: classes/class-genius-reviews-cpt.php:18
 msgid "Aucun avis"
-msgstr "No reviews"
+msgstr "No reviews found"
 
 #: classes/class-genius-reviews-cpt.php:19
 msgid "Aucun avis dans la corbeille"
-msgstr ""
+msgstr "No reviews in trash"
 
 #: classes/class-genius-reviews-cpt.php:58
 msgid "Détails de l’avis"
@@ -199,7 +200,7 @@ msgstr "Review details"
 
 #: classes/class-genius-reviews-elementor.php:15
 msgid "Options"
-msgstr ""
+msgstr "Options"
 
 #: classes/class-genius-reviews-elementor.php:20
 msgid "Produit ID"
@@ -211,96 +212,115 @@ msgstr "Number of reviews"
 
 #: classes/class-genius-reviews-output-json-ld.php:90
 #: classes/class-genius-reviews-output-json-ld.php:142
-#: classes/class-genius-reviews-render.php:240
+#: classes/class-genius-reviews-render.php:395
 msgid "Client"
 msgstr "Customer"
 
-#: classes/class-genius-reviews-render.php:198
+#: classes/class-genius-reviews-render.php:343
 #, php-format
 msgid "Il y a %s"
 msgstr "%s ago"
 
-#: classes/class-genius-reviews-render.php:232
+#: classes/class-genius-reviews-render.php:386
 msgid "Voir plus"
-msgstr "See more"
+msgstr "Read more"
 
-#: classes/class-genius-reviews-render.php:261
-#: classes/class-genius-reviews-render.php:464
+#: classes/class-genius-reviews-render.php:432
+#: classes/class-genius-reviews-render.php:773
 msgid "Avis de nos clients"
 msgstr "Customer reviews"
 
-#: classes/class-genius-reviews-render.php:283
-#: classes/class-genius-reviews-render.php:423
+#: classes/class-genius-reviews-render.php:454
+#: classes/class-genius-reviews-render.php:670
 #, php-format
-msgid "Basé sur %s avis"
-msgstr "Based on %s reviews"
+msgid "Basé sur <span class=\"font-bold\">%s avis</span>"
+msgstr "Based on <span class=\"font-bold\">%s reviews</span>"
 
-#: classes/class-genius-reviews-render.php:334
-#: classes/class-genius-reviews-render.php:483
+#: classes/class-genius-reviews-render.php:501
+#: classes/class-genius-reviews-render.php:792
 msgid "Écrire un avis"
 msgstr "Write a review"
 
-#: classes/class-genius-reviews-render.php:342
+#: classes/class-genius-reviews-render.php:510
+#, php-format
+msgid "Vous devez être <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">connecté(e)</a> pour écrire un avis."
+msgstr "You must be <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">logged in</a> to write a review."
+
+#: classes/class-genius-reviews-render.php:524
 msgid "Plus récents"
 msgstr "Newest"
 
-#: classes/class-genius-reviews-render.php:343
+#: classes/class-genius-reviews-render.php:527
 msgid "Plus anciens"
 msgstr "Oldest"
 
-#: classes/class-genius-reviews-render.php:344
+#: classes/class-genius-reviews-render.php:530
 msgid "Meilleures notes"
-msgstr "Best ratings"
+msgstr "Highest rating"
 
-#: classes/class-genius-reviews-render.php:345
+#: classes/class-genius-reviews-render.php:533
 msgid "Moins bonnes notes"
-msgstr "Lowest ratings"
+msgstr "Lowest rating"
 
-#: classes/class-genius-reviews-render.php:382
+#: classes/class-genius-reviews-render.php:573
+#, php-format
+msgid "Avis sur Produits (%d)"
+msgstr "Product Reviews (%d)"
+
+#: classes/class-genius-reviews-render.php:576
+#, php-format
+msgid "Avis sur Boutique (%d)"
+msgstr "Shop Reviews (%d)"
+
+#: classes/class-genius-reviews-render.php:594
+#: classes/class-genius-reviews-render.php:609
 msgid "Voir plus d’avis"
 msgstr "See more reviews"
 
-#: classes/class-genius-reviews-render.php:398
+#: classes/class-genius-reviews-render.php:641
 msgid "Aucun avis disponible."
 msgstr "No reviews available."
 
-#: classes/class-genius-reviews-render.php:479
+#: classes/class-genius-reviews-render.php:733
+#, php-format
+msgid "%s avis"
+msgstr "%s reviews"
+
+#: classes/class-genius-reviews-render.php:789
 msgid "Aucun avis pour le moment"
 msgstr "No reviews yet"
 
-#: classes/class-genius-reviews-render.php:531
+#: classes/class-genius-reviews-render.php:897
 msgid "Excellent"
 msgstr "Excellent"
 
-#: classes/class-genius-reviews-render.php:532
+#: classes/class-genius-reviews-render.php:899
 msgid "Très bien"
 msgstr "Very good"
 
-#: classes/class-genius-reviews-render.php:533
+#: classes/class-genius-reviews-render.php:901
 msgid "Bien"
 msgstr "Good"
 
-#: classes/class-genius-reviews-render.php:534
+#: classes/class-genius-reviews-render.php:903
 msgid "Moyen"
 msgstr "Average"
 
-#: classes/class-genius-reviews-render.php:535
+#: classes/class-genius-reviews-render.php:904
 msgid "À éviter"
-msgstr "Avoid"
+msgstr "Poor"
 
-#: includes/class-genius-reviews-activator.php:44
+#: includes/class-genius-reviews-activator.php:35
 #, php-format
-msgid ""
-"<b>%s</b> nécessite WooCommerce. Merci d’installer et d’activer WooCommerce."
-msgstr ""
-"<b>%s</b> requires WooCommerce. Please install and activate WooCommerce."
+msgid "<b>%s</b> nécessite WooCommerce. Merci d’installer et d’activer WooCommerce."
+msgstr "<b>%s</b> requires WooCommerce. Please install and activate WooCommerce."
 
 #: admin/blocks/grid/block.json
 msgctxt "block title"
 msgid "Grid Reviews"
-msgstr ""
+msgstr "Grid Reviews"
 
 #: admin/blocks/grid/block.json
 msgctxt "block description"
 msgid "Affiche la grille des avis clients pour un produit."
-msgstr ""
+msgstr "Displays the customer reviews grid for a product."
