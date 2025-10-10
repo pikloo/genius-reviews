@@ -56,6 +56,13 @@
   @apply !size-7.5 !top-[75px];
 }
 
+.gr-tab{
+  @apply flex items-center justify-center gap-[10px] h-[45px] px-6 !text-white text-[16px] font-medium no-underline cursor-pointer;
+}
+
+.gr-tab-active{
+  @apply border-b-4 border-brand;
+}
 
 .bg-brand-custom {
   background-color: var(--color-brand-custom, var(--color-brand)) !important;
@@ -80,4 +87,5 @@
 .hover\:text-brand-custom-hover:hover {
   color: var(--color-brand-custom-hover, var(--color-brand-hover)) !important;
 }
+
 

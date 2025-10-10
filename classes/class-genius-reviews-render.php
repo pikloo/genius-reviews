@@ -45,7 +45,7 @@ class Genius_Reviews_Render
     {
         $defaults = [
             'product_id' => 0,
-            'limit' => 12,
+            'limit' => 6,
             'sort' => 'date_desc',
         ];
 
@@ -60,24 +60,26 @@ class Genius_Reviews_Render
         $q_args = [
             'post_type' => 'genius_review',
             'posts_per_page' => $args['limit'],
+            'meta_query' => [
+                [
+                    'key' => '_gr_curated',
+                    'value' => 'ok',
+                    'compare' => '=',
+                ],
+            ],
         ];
 
-        $meta_query = [];
         if ($args['product_id']) {
-            $meta_query[] = [
+            $q_args['meta_query'][] = [
                 'key' => '_gr_product_id',
                 'value' => $args['product_id'],
             ];
         }
 
-        // fusion meta_query si déjà présent dans $sort_args
+        // Fusionne meta_query éventuelle issue du tri
         if (!empty($sort_args['meta_query'])) {
-            $meta_query[] = $sort_args['meta_query'];
+            $q_args['meta_query'][] = $sort_args['meta_query'];
             unset($sort_args['meta_query']);
-        }
-
-        if (!empty($meta_query)) {
-            $q_args['meta_query'] = $meta_query;
         }
 
         $q_args = array_merge($q_args, $sort_args);
@@ -88,24 +90,33 @@ class Genius_Reviews_Render
             return self::render_no_reviews();
         }
 
-
-        // Stats produit
+        // Stats produit basées uniquement sur curated "ok"
         $avg = (float) get_post_meta($args['product_id'], '_gr_avg_rating', true);
         $count = (int) get_post_meta($args['product_id'], '_gr_review_count', true);
 
         // Détails par note
         $counts_by_rating = [1 => 0, 2 => 0, 3 => 0, 4 => 0, 5 => 0];
 
+        $meta_query_stats = [
+            [
+                'key' => '_gr_curated',
+                'value' => 'ok',
+                'compare' => '=',
+            ],
+        ];
+
+        if ($args['product_id']) {
+            $meta_query_stats[] = [
+                'key' => '_gr_product_id',
+                'value' => $args['product_id'],
+            ];
+        }
+
         $q_stats = new WP_Query([
             'post_type' => 'genius_review',
             'posts_per_page' => -1,
             'fields' => 'ids',
-            'meta_query' => $args['product_id'] ? [
-                [
-                    'key' => '_gr_product_id',
-                    'value' => $args['product_id'],
-                ]
-            ] : [],
+            'meta_query' => $meta_query_stats,
         ]);
 
         if ($q_stats->have_posts()) {
@@ -120,8 +131,9 @@ class Genius_Reviews_Render
         return self::render_grid($q, $avg, $count, $args, $counts_by_rating);
     }
 
+
     /**
-     * Génère un slider/carrousel d’avis clients.
+     * Génère un carrousel d’avis clients.
      *
      * Utilisé notamment sur la page d’accueil ou les pages vitrines.
      * Affiche les avis sous forme de slides.
@@ -145,29 +157,25 @@ class Genius_Reviews_Render
         $q_args = [
             'post_type' => 'genius_review',
             'posts_per_page' => $args['limit'],
+            'meta_query' => [
+                [
+                    'key' => '_gr_curated',
+                    'value' => 'ok',
+                    'compare' => '=',
+                ],
+            ],
         ];
 
         $q_args = array_merge($q_args, $sort_args);
         $q = new WP_Query($q_args);
 
-        global $wpdb;
-        $ratings = $wpdb->get_col("
-            SELECT pm.meta_value
-            FROM {$wpdb->postmeta} AS pm
-            INNER JOIN {$wpdb->posts} AS p ON p.ID = pm.post_id
-            WHERE pm.meta_key = '_gr_rating'
-            AND p.post_type = 'genius_review'
-            AND p.post_status = 'publish'
-        ");
+        $stats = Genius_Reviews_Query_Helper::get_global_stats();
+        $avg = $stats['avg'];
+        $count = $stats['count'];
 
-
-        $ratings = array_map('intval', $ratings);
-
-        $count = count($ratings);
-        $avg = $count ? array_sum($ratings) / $count : 0;
-
-        if ($count < 1)
+        if ($count < 1) {
             return;
+        }
 
         $html = self::render_carousel($q, $avg, $count);
 
@@ -176,13 +184,14 @@ class Genius_Reviews_Render
             $json = Genius_Reviews_Output_Json_Ld::output_slider_jsonld($q->posts);
             if ($json) {
                 add_action('wp_footer', function () use ($json) {
-                    echo '<script type="application/ld+json">' . $json . '</script>';
+                    echo '<script type=\"application/ld+json\">' . $json . '</script>';
                 }, 5);
             }
         }
 
         return $html;
     }
+
 
     /**
      * Affiche un petit badge de note pour un produit donné.
@@ -213,6 +222,91 @@ class Genius_Reviews_Render
         return self::render_badge($count, $avg);
     }
 
+    /**
+     * Affiche une grille complète avec onglets :
+     * - Avis Produits (product_id > 0)
+     * - Avis Boutique (product_id = 0)
+     *
+     * @param array $args
+     * @return string
+     */
+    public static function grid_all_reviews($args = [])
+    {
+        $defaults = [
+            'limit' => 12,
+            'sort' => 'date_desc',
+        ];
+        $args = wp_parse_args($args, $defaults);
+
+        if (isset($_GET['gr-sort'])) {
+            $args['sort'] = sanitize_text_field($_GET['gr-sort']);
+        }
+
+        $sort_args = Genius_Reviews_Query_Helper::map_sort($args['sort']);
+
+        $base_meta = [
+            [
+                'key' => '_gr_curated',
+                'value' => 'ok',
+                'compare' => '=',
+            ],
+        ];
+
+        $meta_products = array_merge($base_meta, [
+            [
+                'key' => '_gr_product_id',
+                'value' => 0,
+                'compare' => '>',
+            ]
+        ]);
+
+        $meta_shop = array_merge($base_meta, [
+            [
+                'key' => '_gr_product_id',
+                'value' => 0,
+                'compare' => '=',
+            ]
+        ]);
+
+        if (!empty($sort_args['meta_query'])) {
+            $meta_products = array_merge($meta_products, (array) $sort_args['meta_query']);
+            $meta_shop = array_merge($meta_shop, (array) $sort_args['meta_query']);
+            unset($sort_args['meta_query']);
+        }
+
+        $q_products = new WP_Query(array_merge([
+            'post_type' => 'genius_review',
+            'posts_per_page' => $args['limit'],
+            'meta_query' => $meta_products,
+        ], $sort_args));
+
+        $q_shop = new WP_Query(array_merge([
+            'post_type' => 'genius_review',
+            'posts_per_page' => $args['limit'],
+            'meta_query' => $meta_shop,
+        ], $sort_args));
+
+        $stats = Genius_Reviews_Query_Helper::get_global_stats();
+        $avg = $stats['avg'];
+        $count = $stats['count'];
+        $counts_by_rating = $stats['counts_by_rating'];
+
+        $args['mode'] = 'all';
+
+        return self::render_grid(
+            [
+                'q_products' => $q_products,
+                'q_shop' => $q_shop,
+            ],
+            $avg,
+            $count,
+            $args,
+            $counts_by_rating
+        );
+    }
+
+
+
 
     /**
      * Construit une carte d’avis individuelle.
@@ -229,8 +323,9 @@ class Genius_Reviews_Render
         $rating = (int) get_post_meta($post_id, '_gr_rating', true);
         $reviewer = get_post_meta($post_id, '_gr_reviewer_name', true);
         $date = get_post_meta($post_id, '_gr_review_date', true);
-        $title = get_the_title($post_id);
+        $title = self::truncate_text(get_the_title($post_id));
         $excerpt = get_the_excerpt($post_id);
+        $product_id = (int) get_post_meta($post_id, '_gr_product_id', true);
 
         ob_start(); ?>
         <div class="break-inside-avoid flex flex-col gap-2 h-full w-full">
@@ -255,6 +350,15 @@ class Genius_Reviews_Render
                     ?>
                 </div>
             </div>
+            <?php if ($mode === 'all' && $product_id > 0): ?>
+                <?php $product = wc_get_product($product_id); ?>
+                <?php if ($product): ?>
+                    <a href="<?php echo esc_url(get_permalink($product_id)); ?>"
+                        class="text-brand-custom hover:text-brand-custom-hover hover:underline">
+                        <?php echo esc_html($product->get_name()); ?>
+                    </a>
+                <?php endif; ?>
+            <?php endif; ?>
 
             <p class="font-semibold text-base leading-[26px]"><?php echo esc_html($title); ?></p>
 
@@ -302,18 +406,21 @@ class Genius_Reviews_Render
      * Génère les statistiques, les barres de répartition, le tri,
      * le bouton “voir plus” et la liste des avis.
      *
-     * @param WP_Query $query            Objet WP_Query des avis.
+     * @param $query            Objet WP_Query des avis.
      * @param float    $avg              Note moyenne.
      * @param int      $count            Nombre total d’avis.
      * @param array    $args             Paramètres initiaux de la grille.
      * @param array    $counts_by_rating Détails par note.
      * @return string HTML du bloc.
      */
-    private static function render_grid(WP_Query $query, $avg, $count, $args, $counts_by_rating)
+    private static function render_grid($query, $avg, $count, $args, $counts_by_rating)
     {
+        $is_all_mode = isset($args['mode']) && $args['mode'] === 'all' && is_array($query);
+
         ob_start();
         $colors = self::rating_colors();
-
+        $counts_by_rating = isset($counts_by_rating) ? $counts_by_rating : [];
+        $total = max(1, array_sum($counts_by_rating));
         ?>
 
         <div class="gr-bloc max-w-[1260px] p-4 md:p-12.5 mx-auto space-y-8.5">
@@ -352,42 +459,40 @@ class Genius_Reviews_Render
 
                 </div>
 
-                <!-- Détails -->
-                <?php
-                $counts_by_rating = isset($counts_by_rating) ? $counts_by_rating : [];
-                $total = max(1, array_sum($counts_by_rating));
-                ?>
 
                 <div class="space-y-0.5">
-                    <?php for ($i = 5; $i >= 1; $i--):
-                        $percent = ($counts_by_rating[$i] / $total) * 100;
-                        $text_class = $colors[$i]['text'];
-                        $bg_class = $colors[$i]['bg'];
-                        ?>
-                        <div class="flex items-center gap-2.5">
-                            <div class="flex gap-0.5">
-                                <?php for ($j = 1; $j <= 5; $j++): ?>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15"
-                                        class="<?php echo $j <= $i ? $text_class : 'text-gray-light'; ?>">
-                                        <path d="M15.5 0H0.5V15H15.5V0Z" fill="currentColor" />
-                                        <path
-                                            d="M7.80752 2.40002L9.01147 6.10539H12.9075L9.75555 8.39543L8.78153 9.1031L7.80752 9.81076L4.65555 12.1008L5.85949 8.39543L2.70752 6.10539H6.60357L7.80752 2.40002Z"
-                                            fill="white" />
-                                        <path d="M11.3137 12.2999L10.0762 8.58746L8.21997 10.0312L11.3137 12.2999Z" fill="white" />
-                                    </svg>
-                                <?php endfor; ?>
-                            </div>
+                    <div class="space-y-0.5">
+                        <?php for ($i = 5; $i >= 1; $i--):
+                            $percent = ($counts_by_rating[$i] / $total) * 100;
+                            $text_class = $colors[$i]['text'];
+                            $bg_class = $colors[$i]['bg'];
+                            ?>
+                            <div class="flex items-center gap-2.5">
+                                <div class="flex gap-0.5">
+                                    <?php for ($j = 1; $j <= 5; $j++): ?>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15"
+                                            class="<?php echo $j <= $i ? $text_class : 'text-gray-light'; ?>">
+                                            <path d="M15.5 0H0.5V15H15.5V0Z" fill="currentColor" />
+                                            <path
+                                                d="M7.80752 2.40002L9.01147 6.10539H12.9075L9.75555 8.39543L8.78153 9.1031L7.80752 9.81076L4.65555 12.1008L5.85949 8.39543L2.70752 6.10539H6.60357L7.80752 2.40002Z"
+                                                fill="white" />
+                                            <path d="M11.3137 12.2999L10.0762 8.58746L8.21997 10.0312L11.3137 12.2999Z" fill="white" />
+                                        </svg>
+                                    <?php endfor; ?>
+                                </div>
 
-                            <div class="flex-1 h-3 w-[126px] bg-gray-light rounded-full overflow-hidden">
-                                <div class="h-full rounded-full <?php echo $bg_class; ?>" style="width: <?php echo $percent; ?>%">
+                                <div class="flex-1 h-3 w-[126px] bg-gray-light rounded-full overflow-hidden">
+                                    <div class="h-full rounded-full <?php echo $bg_class; ?>"
+                                        style="width: <?php echo $percent; ?>%">
+                                    </div>
+                                </div>
+
+                                <div class="w-6 text-right text-gray-medium text-sm">
+                                    <?php echo $counts_by_rating[$i]; ?>
                                 </div>
                             </div>
-
-                            <div class="w-6 text-right text-gray-medium text-sm">
-                                <?php echo $counts_by_rating[$i]; ?>
-                            </div>
-                        </div>
-                    <?php endfor; ?>
+                        <?php endfor; ?>
+                    </div>
                 </div>
 
                 <?php if (is_user_logged_in()): ?>
@@ -408,7 +513,6 @@ class Genius_Reviews_Render
                         ?>
                     </p>
                 <?php endif; ?>
-
             </div>
 
             <!-- Tri -->
@@ -456,28 +560,66 @@ class Genius_Reviews_Render
                 </div>
             </form>
 
-
-            <div id="gr-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 space-y-10"
-                data-product-id="<?php echo esc_attr($args['product_id']); ?>">
-                <?php while ($query->have_posts()):
-                    $query->the_post();
-                    echo self::review_card(get_the_ID(), 'grid');
-                endwhile;
-                wp_reset_postdata(); ?>
-            </div>
-
-            <?php if ($count > $args['limit']): ?>
-                <div class="flex justify-center mt-6">
-                    <button id="gr-load-more" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
-                        <?php _e('Voir plus d’avis', 'genius-reviews'); ?>
+            <!-- Contenu -->
+            <?php if ($is_all_mode): ?>
+                <?php
+                $q_products = $query['q_products'];
+                $q_shop = $query['q_shop'];
+                $total_products = $q_products->found_posts;
+                $total_shop = $q_shop->found_posts;
+                ?>
+                <div class="flex gap-4 border-b border-gray-200 mb-6">
+                    <button class="gr-tab text-brand-custom hover:text-brand-custom-hover gr-tab-active" data-tab="products">
+                        <?php printf(__('Avis sur Produits (%d)', 'genius-reviews'), $q_products->found_posts); ?>
+                    </button>
+                    <button class="gr-tab text-brand-custom hover:text-brand-custom-hover" data-tab="shop">
+                        <?php printf(__('Avis sur Boutique (%d)', 'genius-reviews'), $q_shop->found_posts); ?>
                     </button>
                 </div>
+
+                <div id="gr-tab-products" class="gr-tab-content">
+                    <?php self::render_grid_inner($q_products, $args); ?>
+                </div>
+
+                <div id="gr-tab-shop" class="gr-tab-content hidden">
+                    <?php self::render_grid_inner($q_shop, $args); ?>
+                </div>
+
+                <?php if ($total_products > ($args['limit'] ?? 12) || $total_shop > ($args['limit'] ?? 12)): ?>
+                    <div class="flex justify-center mt-6">
+                        <button id="gr-load-more" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover"
+                            data-limit="<?php echo esc_attr($args['limit']); ?>"
+                            data-total-products="<?php echo esc_attr($total_products); ?>"
+                            data-total-shop="<?php echo esc_attr($total_shop); ?>" data-mode="all_reviews">
+                            <?php _e('Voir plus d’avis', 'genius-reviews'); ?>
+                        </button>
+                    </div>
+                <?php endif; ?>
+
+            <?php else: ?>
+                <div id="gr-tab-products" class="gr-tab-content">
+                    <?php self::render_grid_inner($query, $args); ?>
+                </div>
+
+                <?php if ($count > ($args['limit'] ?? 12)): ?>
+                    <div class="flex justify-center mt-6">
+                        <button id="gr-load-more" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover"
+                            data-limit="<?php echo esc_attr($args['limit']); ?>" data-total-products="<?php echo esc_attr($count); ?>"
+                            data-total-shop="0">
+                            <?php _e('Voir plus d’avis', 'genius-reviews'); ?>
+                        </button>
+                    </div>
+                <?php endif; ?>
+
             <?php endif; ?>
+
+
         </div>
 
         <?php
         return ob_get_clean();
     }
+
 
 
     /**
@@ -597,6 +739,25 @@ class Genius_Reviews_Render
         <?php
         return ob_get_clean();
     }
+
+
+    // Génère juste la grille (cartes d’avis)
+    private static function render_grid_inner(WP_Query $query, $args)
+    {
+        ?>
+        <div class="gr-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 space-y-10"
+            data-product-id="<?php echo esc_attr($args['product_id'] ?? 0); ?>">
+            <?php
+            while ($query->have_posts()) {
+                $query->the_post();
+                echo self::review_card(get_the_ID(), $args['mode'] ?: 'grid');
+            }
+            wp_reset_postdata();
+            ?>
+        </div>
+        <?php
+    }
+
 
 
 
@@ -741,5 +902,33 @@ class Genius_Reviews_Render
         if ($avg >= 2.0)
             return __('Moyen', 'genius-reviews');
         return __('À éviter', 'genius-reviews');
+    }
+
+
+    /**
+     * Tronque un texte à un nombre de caractères sans couper les mots.
+     *
+     * @param string $text     Le texte original
+     * @param int    $limit    Nombre max de caractères
+     * @param string $ellipsis Texte ajouté à la fin si tronqué
+     * @return string
+     */
+    private static function truncate_text($text, $limit = 50, $ellipsis = '…')
+    {
+        $text = trim(wp_strip_all_tags($text));
+
+        if (mb_strlen($text) <= $limit) {
+            return $text;
+        }
+
+        $cut = mb_substr($text, 0, $limit);
+
+        $lastSpace = mb_strrpos($cut, ' ');
+
+        if ($lastSpace !== false) {
+            $cut = mb_substr($cut, 0, $lastSpace);
+        }
+
+        return rtrim($cut) . $ellipsis;
     }
 }

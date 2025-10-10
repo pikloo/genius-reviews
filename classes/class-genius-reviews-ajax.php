@@ -53,7 +53,6 @@ class Genius_Reviews_Ajax
         if (!$fh)
             wp_send_json_error(['msg' => 'open-failed']);
 
-        // Initialisation du CSV si première passe
         if (empty($state['delimiter'])) {
             $probe = fgets($fh);
             $state['delimiter'] = (substr_count($probe, ';') > substr_count($probe, ',')) ? ';' : ',';
@@ -104,10 +103,13 @@ class Genius_Reviews_Ajax
                 $data[$col] = isset($idx[$col]) ? trim((string) $row[$idx[$col]]) : '';
             }
 
-            //Temporaire : ignorer les lignes avec product id non renseigné
-            if (empty($data['product_id']) || (int) $data['product_id'] <= 0) {
-                $state['skipped']++;
-                continue;
+            $pid_raw = trim((string) $data['product_id']);
+
+            if ($pid_raw === '' || strtolower($pid_raw) === 'all-reviews-page') {
+                // Avis global (non lié à un produit)
+                $data['product_id'] = 0;
+            } else {
+                $data['product_id'] = (int) $pid_raw;
             }
 
             $post_title = !empty($data['title'])
@@ -147,7 +149,7 @@ class Genius_Reviews_Ajax
             update_post_meta($rid, '_gr_rating', (float) $data['rating']);
             update_post_meta($rid, '_gr_review_date', sanitize_text_field($data['review_date']));
             update_post_meta($rid, '_gr_source', sanitize_text_field($data['source']));
-            update_post_meta($rid, '_gr_curated', ($data['curated'] == '1' || strtolower($data['curated']) === 'true'));
+            update_post_meta($rid, '_gr_curated', sanitize_text_field($data['curated']));
             update_post_meta($rid, '_gr_reviewer_name', sanitize_text_field($data['reviewer_name']));
             update_post_meta($rid, '_gr_reviewer_hash', hash('sha256', strtolower($data['reviewer_email'])));
             update_post_meta($rid, '_gr_product_id', (int) $data['product_id']);
@@ -192,7 +194,7 @@ class Genius_Reviews_Ajax
             else
                 $state['per_product'][$pid]['added']++;
         }
-        
+
         $total = max(0, self::count_lines($state['file']));
         $percent = $total ? min(100, round(($state['rows'] / $total) * 100)) : 100;
         $complete = feof($fh) || ($state['rows'] >= $total);
@@ -233,8 +235,18 @@ class Genius_Reviews_Ajax
             'posts_per_page' => -1,
             'fields' => 'ids',
             'no_found_rows' => true,
-            'meta_key' => '_gr_product_id',
-            'meta_value' => (int) $product_id
+            'meta_query' => [
+                [
+                    'key' => '_gr_product_id',
+                    'value' => (int) $product_id,
+                    'compare' => '=',
+                ],
+                [
+                    'key' => '_gr_curated',
+                    'value' => 'ok',
+                    'compare' => '=',
+                ],
+            ],
         ]);
         $total = 0;
         $count = 0;
@@ -300,12 +312,23 @@ class Genius_Reviews_Ajax
         $page = isset($_POST['page']) ? (int) $_POST['page'] : 1;
         $offset = ($page - 1) * $limit;
         $sort = isset($_POST['sort']) ? sanitize_text_field($_POST['sort']) : 'date_desc';
+        $mode = isset($_POST['mode']) ? sanitize_text_field($_POST['mode']) : '';
 
         $sort_args = Genius_Reviews_Query_Helper::map_sort($sort);
+        if ($mode === 'all_reviews') {
+            $offset += 1;
+        }
 
         $args = [
             'post_type' => 'genius_review',
             'posts_per_page' => $limit,
+            'meta_query' => [
+                [
+                    'key' => '_gr_curated',
+                    'value' => 'ok',
+                    'compare' => '=',
+                ],
+            ],
             'offset' => $offset,
         ];
 
@@ -327,7 +350,7 @@ class Genius_Reviews_Ajax
         if ($q->have_posts()) {
             while ($q->have_posts()) {
                 $q->the_post();
-                $html .= Genius_Reviews_Render::review_card(get_the_ID(), 'grid');
+                $html .= Genius_Reviews_Render::review_card(get_the_ID(), $mode === 'all_reviews' ? 'all' : 'grid');
             }
             wp_reset_postdata();
         }

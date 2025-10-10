@@ -53,6 +53,9 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 
+= 1.0.3 =
+* Grille avis généraux
+
 = 1.0.2 =
 * Affichage du badge
 * Gestion multisite

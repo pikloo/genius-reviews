@@ -6,10 +6,9 @@ import 'swiper/css/bundle';
 	'use strict';
 
 	$(document).ready(function () {
-		let page = 1;
-		const productId = $('#gr-grid').data('product-id');
-		const grid = $('#gr-grid');
 		const btn = $('#gr-load-more');
+		let page = 1;
+
 
 		const urlParams = new URLSearchParams(window.location.search);
 		const sortParam = urlParams.get('gr-sort');
@@ -27,30 +26,43 @@ import 'swiper/css/bundle';
 			}
 		}
 
-		//Load more reviews
+
 		btn.on('click', function () {
 			page++;
+
+			// Onglet actif (products ou shop)
+			const activeTab = $('.gr-tab.gr-tab-active').data('tab') || 'products';
+			const activeGrid = $(`#gr-tab-${activeTab} .gr-grid`);
+			const activeProductId = activeGrid.data('product-id') || 0;
+
+			// Totaux et limite récupérés depuis le bouton global
+			const limit = parseInt(btn.data('limit')) || 12;
+			const totalProducts = parseInt(btn.data('total-products')) || 0;
+			const totalShop = parseInt(btn.data('total-shop')) || 0;
+			const totalForTab = activeTab === 'shop' ? totalShop : totalProducts;
+			const mode = btn.data('mode') || '';
+			const currentCount = activeGrid.children().length;
+
+			if (currentCount >= totalForTab) {
+				btn.fadeOut();
+				return;
+			}
+
 			$.post(GR_PUBLIC.ajax, {
 				action: 'load_reviews',
 				nonce: GR_PUBLIC.nonce,
-				product_id: productId,
-				page: page,
-				sort: $('#gr-sort').val()
+				product_id: activeProductId,
+				page,
+				limit,
+				sort: $('#gr-sort').val(),
+				mode
 			}, function (res) {
 				if (res.success) {
-					const $items = $(res.data.html).css({
-						opacity: 0,
-					});
-
-					grid.append($items);
+					const $items = $(res.data.html).css({ opacity: 0 });
+					activeGrid.append($items);
 
 					$items.each(function (i, el) {
-						$(el).delay(i * 30).animate(
-							{ opacity: 1, top: 0 },
-							{
-								duration: 200,
-							}
-						);
+						$(el).delay(i * 30).animate({ opacity: 1, top: 0 }, 200);
 					});
 
 					const firstNew = $items.first();
@@ -60,12 +72,40 @@ import 'swiper/css/bundle';
 						}, 600);
 					}
 
-					if (!res.data.has_more) {
+					const updatedCount = activeGrid.children().length;
+					if (updatedCount >= totalForTab || !res.data.has_more) {
 						btn.fadeOut();
 					}
 				}
 			});
 		});
+
+		// Gestion du changement d’onglet
+		$(document).on('click', '.gr-tab', function () {
+			const $tab = $(this);
+			const id = $tab.data('tab');
+
+			$('.gr-tab').removeClass('gr-tab-active');
+			$tab.addClass('gr-tab-active');
+
+			$('.gr-tab-content').addClass('hidden');
+			$(`#gr-tab-${id}`).removeClass('hidden');
+
+			const btn = $('#gr-load-more');
+			const limit = parseInt(btn.data('limit')) || 12;
+			const totalProducts = parseInt(btn.data('total-products')) || 0;
+			const totalShop = parseInt(btn.data('total-shop')) || 0;
+			const totalForTab = id === 'shop' ? totalShop : totalProducts;
+			const activeGrid = $(`#gr-tab-${id} .gr-grid`);
+			const currentCount = activeGrid.children().length;
+
+			if (currentCount >= totalForTab) {
+				btn.fadeOut();
+			} else {
+				btn.fadeIn();
+			}
+		});
+
 
 
 		// Carousel

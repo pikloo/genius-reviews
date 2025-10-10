@@ -90,18 +90,18 @@ class Genius_Reviews_CPT
     }
 
 
-    /**
-     * Recalcul automatique quand on enregistre une review
-     */
-    public function recalc_on_save($post_id, $post, $update)
-    {
-        if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) return;
+    // /**
+    //  * Recalcul automatique quand on enregistre une review
+    //  */
+    // public function recalc_on_save($post_id, $post, $update)
+    // {
+    //     if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) return;
 
-        $product_id = (int) get_post_meta($post_id, '_gr_product_id', true);
-        if ($product_id) {
-            if (method_exists('Genius_Reviews_Admin_Page', 'recalc_product')) {
-                Genius_Reviews_Admin_Page::recalc_product($product_id);
-            }
-        }
-    }
+    //     $product_id = (int) get_post_meta($post_id, '_gr_product_id', true);
+    //     if ($product_id) {
+    //         if (method_exists('Genius_Reviews_Admin_Page', 'recalc_product')) {
+    //             Genius_Reviews_Admin_Page::recalc_product($product_id);
+    //         }
+    //     }
+    // }
 }

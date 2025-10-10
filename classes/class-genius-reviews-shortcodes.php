@@ -5,15 +5,6 @@ if (!defined('ABSPATH'))
 class Genius_Reviews_Shortcodes
 {
 
-    // public static function init()
-    // {
-    //     // Grille d’avis
-    //     add_shortcode('genius_reviews_grid', [__CLASS__, 'grid']);
-
-    //     // Slider d'avis 
-    //     add_shortcode('genius_reviews_slider', [__CLASS__, 'slider']);
-    // }
-
     /**
      * Shortcode [genius_reviews_grid product_id="123" limit="6"] ou  [genius_reviews_grid]
      */
@@ -71,6 +62,22 @@ class Genius_Reviews_Shortcodes
 
         ob_start();
         echo Genius_Reviews_Render::badge($atts);
+        return ob_get_clean();
+    }
+
+    /**
+     * Shortcode [genius_reviews_all limit="12"]
+     * Affiche les avis produits + avis boutique avec onglets.
+     */
+    public static function grid_all_reviews($atts = [])
+    {
+        $atts = shortcode_atts([
+            'limit' => 12,
+            'sort' => 'date_desc',
+        ], $atts, 'genius_reviews_all');
+
+        ob_start();
+        echo Genius_Reviews_Render::grid_all_reviews($atts);
         return ob_get_clean();
     }
 }
