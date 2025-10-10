@@ -36,6 +36,7 @@ class Genius_Reviews_CPT
         register_post_type('genius_review', $args);
 
         // Meta clés normalisées
+        register_post_meta('genius_review', '_gr_display_title',        ['type' => 'string', 'single' => true, 'show_in_rest' => false]);
         register_post_meta('genius_review', '_gr_rating',        ['type' => 'number', 'single' => true, 'show_in_rest' => false]);
         register_post_meta('genius_review', '_gr_review_date',   ['type' => 'string', 'single' => true, 'show_in_rest' => false]);
         register_post_meta('genius_review', '_gr_source',        ['type' => 'string', 'single' => true, 'show_in_rest' => false]);
@@ -66,6 +67,7 @@ class Genius_Reviews_CPT
     public static function render_metabox($post)
     {
         $fields = [
+            '_gr_display_title' => 'Titre affiché',
             '_gr_rating'        => 'Note',
             '_gr_review_date'   => 'Date',
             '_gr_source'        => 'Source',

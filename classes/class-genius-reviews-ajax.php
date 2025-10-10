@@ -146,6 +146,7 @@ class Genius_Reviews_Ajax
                 $state['created']++;
             }
 
+            update_post_meta($rid, '_gr_display_title', sanitize_text_field($data['title']));
             update_post_meta($rid, '_gr_rating', (float) $data['rating']);
             update_post_meta($rid, '_gr_review_date', sanitize_text_field($data['review_date']));
             update_post_meta($rid, '_gr_source', sanitize_text_field($data['source']));

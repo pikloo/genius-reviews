@@ -337,8 +337,8 @@ class Genius_Reviews_Render
         $rating = (int) get_post_meta($post_id, '_gr_rating', true);
         $reviewer = get_post_meta($post_id, '_gr_reviewer_name', true);
         $date = get_post_meta($post_id, '_gr_review_date', true);
-        $title = self::truncate_text(get_the_title($post_id));
-        $excerpt = get_the_excerpt($post_id);
+        $title = get_post_meta($post_id, '_gr_display_title', true);
+        $content = get_the_content($post_id);
         $product_id = (int) get_post_meta($post_id, '_gr_product_id', true);
 
         ob_start(); ?>
@@ -389,20 +389,20 @@ class Genius_Reviews_Render
             <?php if ($mode === 'slider'): ?>
                 <?php
                 $limit = 120;
-                $truncated = mb_strlen($excerpt) > $limit;
-                $excerpt_display = $truncated ? mb_substr($excerpt, 0, $limit) . '…' : $excerpt;
+                $truncated = mb_strlen($content) > $limit;
+                $excerpt_display = $truncated ? mb_substr($content, 0, $limit) . '…' : $content;
                 ?>
                 <p class="text-[14px] gr-excerpt line-clamp-none flex flex-col gap-1 items-start">
                     <?php echo esc_html($excerpt_display); ?>
                     <?php if ($truncated): ?>
-                        <span class="hidden gr-full-text"><?php echo esc_html($excerpt); ?></span>
+                        <span class="hidden gr-full-text"><?php echo esc_html($content); ?></span>
                         <button type="button" class="gr-read-more text-brand-custom text-sm ml-1 hover:underline">
                             <?php _e('Voir plus', 'genius-reviews'); ?>
                         </button>
                     <?php endif; ?>
                 </p>
             <?php else: ?>
-                <p class="text-[14px]"><?php echo esc_html($excerpt); ?></p>
+                <p class="text-[14px]"><?php echo esc_html($content); ?></p>
             <?php endif; ?>
 
             <p class="text-gray-medium text-sm leading-[22px]">
@@ -465,9 +465,10 @@ class Genius_Reviews_Render
                     <p class="text-base">
                         <?php
                         printf(
-                            __('Basé sur <span class="font-bold">%s avis</span>', 'genius-reviews'),
+                            __("Basé sur <span class=\"font-bold\">%s avis</span>", "genius-reviews"),
                             intval($count)
                         );
+
                         ?>
                     </p>
 
@@ -521,7 +522,7 @@ class Genius_Reviews_Render
                     <p class="text-sm text-gray-500 mt-4">
                         <?php
                         printf(
-                            __('Vous devez être <a href="%s" class="text-brand-custom hover:underline font-medium">connecté(e)</a> pour écrire un avis.', 'genius-reviews'),
+                            __("Vous devez être <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">connecté(e)</a> pour écrire un avis.", "genius-reviews"),
                             esc_url($login_url)
                         );
                         ?>
@@ -584,10 +585,10 @@ class Genius_Reviews_Render
                 ?>
                 <div class="flex gap-4 border-b border-gray-200 mb-6">
                     <button class="gr-tab text-brand-custom hover:text-brand-custom-hover gr-tab-active" data-tab="products">
-                        <?php printf(__('Avis sur Produits (%d)', 'genius-reviews'), $q_products->found_posts); ?>
+                        <?php printf(__("Avis sur Produits (%d)", "genius-reviews"), $q_products->found_posts); ?>
                     </button>
                     <button class="gr-tab text-brand-custom hover:text-brand-custom-hover" data-tab="shop">
-                        <?php printf(__('Avis sur Boutique (%d)', 'genius-reviews'), $q_shop->found_posts); ?>
+                        <?php printf(__("Avis sur Boutique (%d)", "genius-reviews"), $q_shop->found_posts); ?>
                     </button>
                 </div>
 
@@ -681,7 +682,7 @@ class Genius_Reviews_Render
                 <span class="text-base whitespace-nowrap">
                     <?php
                     printf(
-                        __('Basé sur <span class="font-bold">%s avis</span>', 'genius-reviews'),
+                        __("Basé sur <span class=\"font-bold\">%s avis</span>", "genius-reviews"),
                         intval($count)
                     );
                     ?>
@@ -744,7 +745,7 @@ class Genius_Reviews_Render
             <span class="text-xs">
                 <?php
                 printf(
-                    __('%s avis', 'genius-reviews'),
+                    __("%s avis", "genius-reviews"),
                     intval($count)
                 );
                 ?>
