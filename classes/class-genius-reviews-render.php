@@ -464,10 +464,13 @@ class Genius_Reviews_Render
 
                     <p class="text-base">
                         <?php
-                        printf(
-                            __("Basé sur <span class=\"font-bold\">%s avis</span>", "genius-reviews"),
-                            intval($count)
+                        echo wp_kses_post(
+                            sprintf(
+                                __('Basé sur <span class="font-bold">%s avis</span>', 'genius-reviews'),
+                                intval($count)
+                            )
                         );
+
 
                         ?>
                     </p>
@@ -521,10 +524,13 @@ class Genius_Reviews_Render
                     ?>
                     <p class="text-sm text-gray-500 mt-4">
                         <?php
-                        printf(
-                            __("Vous devez être <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">connecté(e)</a> pour écrire un avis.", "genius-reviews"),
-                            esc_url($login_url)
+                        echo wp_kses_post(
+                            sprintf(
+                                __("Vous devez être <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">connecté(e)</a> pour écrire un avis.", "genius-reviews"),
+                                esc_url($login_url)
+                            )
                         );
+
                         ?>
                     </p>
                 <?php endif; ?>
@@ -585,10 +591,19 @@ class Genius_Reviews_Render
                 ?>
                 <div class="flex gap-4 border-b border-gray-200 mb-6">
                     <button class="gr-tab text-brand-custom hover:text-brand-custom-hover gr-tab-active" data-tab="products">
-                        <?php printf(__("Avis sur Produits (%d)", "genius-reviews"), $q_products->found_posts); ?>
+                        <?php
+                        echo wp_kses_post(
+                            sprintf(
+                                __("Avis sur Produits (%d)", "genius-reviews"),
+                                $q_products->found_posts
+                            )
+                        ); ?>
                     </button>
                     <button class="gr-tab text-brand-custom hover:text-brand-custom-hover" data-tab="shop">
-                        <?php printf(__("Avis sur Boutique (%d)", "genius-reviews"), $q_shop->found_posts); ?>
+                        <?php echo wp_kses_post(
+                            sprintf(__("Avis sur Boutique (%d)", "genius-reviews"), $q_shop->found_posts)
+                        );
+                        ?>
                     </button>
                 </div>
 
@@ -681,10 +696,13 @@ class Genius_Reviews_Render
 
                 <span class="text-base whitespace-nowrap">
                     <?php
-                    printf(
-                        __("Basé sur <span class=\"font-bold\">%s avis</span>", "genius-reviews"),
-                        intval($count)
+                    echo wp_kses_post(
+                        sprintf(
+                            __('Basé sur <span class="font-bold">%s avis</span>', 'genius-reviews'),
+                            intval($count)
+                        )
                     );
+
                     ?>
                 </span>
             </div>
@@ -744,9 +762,11 @@ class Genius_Reviews_Render
             </div>
             <span class="text-xs">
                 <?php
-                printf(
-                    __("%s avis", "genius-reviews"),
-                    intval($count)
+                echo esc_html(
+                    sprintf(
+                        __('%s avis', 'genius-reviews'),
+                        intval($count)
+                    )
                 );
                 ?>
             </span>
@@ -814,9 +834,11 @@ class Genius_Reviews_Render
                 ?>
                 <p class="text-sm text-gray-500 mt-4">
                     <?php
-                    printf(
-                        __("Vous devez être <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">connecté(e)</a> pour écrire un avis.", "genius-reviews"),
-                        esc_url($login_url)
+                    echo wp_kses_post(
+                        sprintf(
+                            __("Vous devez être <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">connecté(e)</a> pour écrire un avis.", "genius-reviews"),
+                            esc_url($login_url)
+                        )
                     );
                     ?>
                 </p>
