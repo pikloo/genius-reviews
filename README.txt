@@ -53,6 +53,9 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 
+= 1.1.6 =
+* Fix force allow csv upload
+
 = 1.1.4 =
 * Fix traduction php-format
 

@@ -205,7 +205,18 @@ class Genius_Reviews
 		$this->loader->add_action('admin_menu', 'Genius_Reviews_Admin_Page', 'add_menu');
 		$this->loader->add_action('wp_ajax_gr_upload_csv', 'Genius_Reviews_Ajax', 'ajax_upload_csv');
 		$this->loader->add_action('wp_ajax_gr_process_chunk', 'Genius_Reviews_Ajax', 'ajax_process_chunk');
+		add_filter('upload_mimes', [$this, 'allow_csv_uploads']);
+
 	}
+
+	public function allow_csv_uploads($mimes)
+	{
+		if (current_user_can('manage_options')) {
+			$mimes['csv'] = 'text/csv';
+		}
+		return $mimes;
+	}
+
 
 	/**
 	 * Register all of the hooks related to the public-facing functionality
