@@ -762,12 +762,11 @@ class Genius_Reviews_Render
             </div>
             <span class="text-xs">
                 <?php
-                echo esc_html(
-                    sprintf(
+                echo sprintf(
                         __('%s avis', 'genius-reviews'),
                         intval($count)
                     )
-                );
+                ;
                 ?>
             </span>
         </div>
