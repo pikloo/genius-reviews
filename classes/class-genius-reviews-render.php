@@ -738,7 +738,7 @@ class Genius_Reviews_Render
     {
         ob_start();
         ?>
-        <div class="gr-badge flex items-center gap-2 my-2">
+        <div class="gr-badge cursor-pointer flex items-center gap-2 my-2">
             <div class="flex gap-0.5">
                 <?php echo self::render_stars(round($avg), "w-4 h-4"); ?>
             </div>
@@ -803,9 +803,24 @@ class Genius_Reviews_Render
 
             <p class="text-sm"><?php esc_html_e('Aucun avis pour le moment', 'genius-reviews'); ?></p>
 
-            <a href="#gr-review-form" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
-                <?php esc_html_e('Écrire un avis', 'genius-reviews'); ?>
-            </a>
+            <?php if (is_user_logged_in()): ?>
+                <a href="<?php echo esc_url(home_url("/questionnaire-feedback")); ?>"
+                    class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
+                    <?php _e('Écrire un avis', 'genius-reviews'); ?>
+                </a>
+            <?php else: ?>
+                <?php
+                $login_url = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('myaccount') : wp_login_url(get_permalink());
+                ?>
+                <p class="text-sm text-gray-500 mt-4">
+                    <?php
+                    printf(
+                        __("Vous devez être <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">connecté(e)</a> pour écrire un avis.", "genius-reviews"),
+                        esc_url($login_url)
+                    );
+                    ?>
+                </p>
+            <?php endif; ?>
         </div>
         <?php
         return ob_get_clean();

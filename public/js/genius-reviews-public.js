@@ -26,6 +26,18 @@ import 'swiper/css/bundle';
 			}
 		}
 
+		$(document).on('click', '.gr-badge', function (e) {
+			e.preventDefault();
+
+			const reviewBlock = $('.gr-bloc');
+			if (reviewBlock.length) {
+				$('html, body').animate(
+					{ scrollTop: reviewBlock.offset().top - 100 },
+					600
+				);
+			}
+		});
+
 
 		btn.on('click', function () {
 			page++;

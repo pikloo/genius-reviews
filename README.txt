@@ -53,6 +53,9 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 
+= 1.1.3 =
+* Fix traduction php-format
+
 = 1.1.2 =
 * Ajout du titre affiché
 
