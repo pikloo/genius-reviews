@@ -53,7 +53,7 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 
-= 1.1.7 =
+= 1.1.8 =
 * CSS ajustements
 * lien questionnaire fb internationaux
 * Fix traduction

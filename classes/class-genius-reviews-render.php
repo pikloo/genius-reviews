@@ -374,7 +374,7 @@ class Genius_Reviews_Render
                 <?php endif; ?>
             <?php endif; ?>
 
-            <p class="font-semibold text-base leading-[26px]"><?php echo esc_html($title); ?></p>
+            <p class="!font-semibold text-base leading-[26px]"><?php echo esc_html($title); ?></p>
 
             <?php if (has_post_thumbnail($post_id) && $mode === 'grid'): ?>
                 <div class="w-full aspect-[360/198.33] max-h-[198.33px] flex-shrink-0 self-stretch">
@@ -602,7 +602,7 @@ class Genius_Reviews_Render
                 $total_shop = $q_shop->found_posts;
                 ?>
                 <div class="flex gap-4 border-b border-gray-200 mb-6">
-                    <button class="gr-tab text-brand-custom hover:text-brand-custom-hover gr-tab-active" data-tab="products">
+                    <button class="gr-tab !bg-transparent text-brand-custom hover:text-brand-custom-hover gr-tab-active" data-tab="products">
                         <?php
                         echo wp_kses_post(
                             sprintf(
@@ -613,7 +613,7 @@ class Genius_Reviews_Render
                         ?>
                     </button>
 
-                    <button class="gr-tab text-brand-custom hover:text-brand-custom-hover" data-tab="shop">
+                    <button class="gr-tab !bg-transparent text-brand-custom hover:text-brand-custom-hover" data-tab="shop">
                         <?php
                         echo wp_kses_post(
                             sprintf(
