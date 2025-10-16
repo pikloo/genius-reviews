@@ -52,7 +52,7 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
-= 1.1.8a =
+= 1.1.8.1 =
 * CSS ajustements
 
 = 1.1.8 =
