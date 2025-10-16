@@ -28,7 +28,7 @@
 }
 
 .gr-bloc p {
-  @apply m-0 !font-semibold;
+  @apply m-0;
 }
 
 .gr-btn {

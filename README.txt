@@ -52,9 +52,10 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.1.8a =
+* CSS ajustements
 
 = 1.1.8 =
-* CSS ajustements
 * lien questionnaire fb internationaux
 * Fix traduction
 * Couleur hex dans la page d'options
