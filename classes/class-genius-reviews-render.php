@@ -464,14 +464,13 @@ class Genius_Reviews_Render
 
                     <p class="text-base">
                         <?php
-                        echo wp_kses_post(
-                            sprintf(
-                                __('Basé sur <span class="font-bold">%s avis</span>', 'genius-reviews'),
-                                intval($count)
-                            )
+                        $label = sprintf(
+                            __('Basé sur %1$s%3$s avis%2$s', 'genius-reviews'),
+                            '<span class="font-bold">',
+                            '</span>',
+                            number_format_i18n((int) $count)
                         );
-
-
+                        echo wp_kses_post($label);
                         ?>
                     </p>
 
@@ -512,10 +511,23 @@ class Genius_Reviews_Render
                         <?php endfor; ?>
                     </div>
                 </div>
+                <?php
+                $lang = substr(get_locale(), 0, 2);
+
+                $gr_slugs = [
+                    'fr' => 'questionnaire-feedback',
+                    'nl' => 'feedbackvragenlijst',
+                    'de' => 'fragebogen-feedback',
+                    'it' => 'questionario-di-feedback',
+                    'es' => 'cuestionario-de-opinion',
+                ];
+
+                $target_slug = isset($gr_slugs[$lang]) ? $gr_slugs[$lang] : $gr_slugs['fr'];
+                $target_url = home_url('/' . $target_slug . '/');
+                ?>
 
                 <?php if (is_user_logged_in()): ?>
-                    <a href="<?php echo esc_url(home_url("/questionnaire-feedback")); ?>"
-                        class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
+                    <a href="<?php echo esc_url($target_url); ?>" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
                         <?php _e('Écrire un avis', 'genius-reviews'); ?>
                     </a>
                 <?php else: ?>
@@ -540,7 +552,7 @@ class Genius_Reviews_Render
             <form method="get">
                 <div class="flex justify-end relative">
                     <select id="gr-sort" name="gr-sort" onchange="this.form.submit()"
-                        class="!appearance-none !bg-none !rounded-lg !border-none !h-auto !pl-10 !p-3.5 !shadow-lg !text-lg !font-bold">
+                        class="!appearance-none !bg-none !rounded-lg !border-none !h-auto !pl-10 !p-3.5 !shadow-lg !text-lg !font-bold !w-full">
                         <option value="date_desc" <?php selected($args['sort'], 'date_desc'); ?>>
                             <?php _e('Plus récents', 'genius-reviews'); ?>
                         </option>
@@ -594,17 +606,24 @@ class Genius_Reviews_Render
                         <?php
                         echo wp_kses_post(
                             sprintf(
-                                __("Avis sur Produits (%d)", "genius-reviews"),
-                                $q_products->found_posts
+                                __('Avis sur Produits (%s)', 'genius-reviews'),
+                                number_format_i18n((int) $q_products->found_posts)
                             )
-                        ); ?>
-                    </button>
-                    <button class="gr-tab text-brand-custom hover:text-brand-custom-hover" data-tab="shop">
-                        <?php echo wp_kses_post(
-                            sprintf(__("Avis sur Boutique (%d)", "genius-reviews"), $q_shop->found_posts)
                         );
                         ?>
                     </button>
+
+                    <button class="gr-tab text-brand-custom hover:text-brand-custom-hover" data-tab="shop">
+                        <?php
+                        echo wp_kses_post(
+                            sprintf(
+                                __('Avis sur Boutique (%s)', 'genius-reviews'),
+                                number_format_i18n((int) $q_shop->found_posts)
+                            )
+                        );
+                        ?>
+                    </button>
+
                 </div>
 
                 <div id="gr-tab-products" class="gr-tab-content">
@@ -696,13 +715,13 @@ class Genius_Reviews_Render
 
                 <span class="text-base whitespace-nowrap">
                     <?php
-                    echo wp_kses_post(
-                        sprintf(
-                            __('Basé sur <span class="font-bold">%s avis</span>', 'genius-reviews'),
-                            intval($count)
-                        )
+                    $label = sprintf(
+                        __('Basé sur %1$s%3$s avis%2$s', 'genius-reviews'),
+                        '<span class="font-bold">',
+                        '</span>',
+                        number_format_i18n((int) $count)
                     );
-
+                    echo wp_kses_post($label);
                     ?>
                 </span>
             </div>
@@ -762,11 +781,11 @@ class Genius_Reviews_Render
             </div>
             <span class="text-xs">
                 <?php
-                echo sprintf(
-                        __('%s avis', 'genius-reviews'),
-                        intval($count)
-                    )
-                ;
+                $label = sprintf(
+                    _n('%s avis', '%s avis', (int) $count, 'genius-reviews'),
+                    number_format_i18n((int) $count)
+                );
+                echo esc_html($label);
                 ?>
             </span>
         </div>

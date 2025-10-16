@@ -53,6 +53,12 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 
+= 1.1.7 =
+* CSS ajustements
+* lien questionnaire fb internationaux
+* Fix traduction
+* Couleur hex dans la page d'options
+
 = 1.1.6 =
 * Fix force allow csv upload
 

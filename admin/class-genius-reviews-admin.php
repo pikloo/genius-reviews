@@ -74,8 +74,18 @@ class Genius_Reviews_Admin
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
-		
- 		if ($hook_suffix !== 'genius_review_page_gr-options') return;
+
+		if ($hook_suffix !== 'genius_review_page_gr-options')
+			return;
+
+		// Coloris CSS
+		wp_enqueue_style(
+			'coloris',
+			'https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.css',
+			[],
+			null,
+			'all'
+		);
 
 
 		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'build/style-admin.css', array(), $this->version, 'all');
@@ -100,23 +110,31 @@ class Genius_Reviews_Admin
 		 * between the defined hooks and the functions defined in this
 		 * class.
 		 */
+
+
+
+		if ($hook_suffix !== 'genius_review_page_gr-options')
+			return;
+
+		wp_enqueue_script(
+			'coloris',
+			'https://cdn.jsdelivr.net/gh/mdbassit/Coloris@latest/dist/coloris.min.js',
+			[],
+			null,
+			true
+		);
 		
-
-
-		if ($hook_suffix !== 'genius_review_page_gr-options') return;
-
-		// Script admin
 		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'build/genius-reviews-admin.bundle.js', array('jquery'), $this->version, false);
-		
+
 
 
 		wp_localize_script($this->plugin_name, 'GR_ADMIN', [
-			'ajax'  => admin_url('admin-ajax.php'),
+			'ajax' => admin_url('admin-ajax.php'),
 			'nonce' => wp_create_nonce('gr_import_nonce'),
-			'i18n'  => [
+			'i18n' => [
 				'uploading' => __('Téléversement…', 'genius-reviews'),
 				'importing' => __('Import en cours…', 'genius-reviews'),
-				'done'      => __('Import terminé', 'genius-reviews'),
+				'done' => __('Import terminé', 'genius-reviews'),
 			],
 		]);
 	}

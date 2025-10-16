@@ -28,7 +28,7 @@
 }
 
 .gr-bloc p {
-  @apply m-0;
+  @apply m-0 !font-semibold;
 }
 
 .gr-btn {
@@ -57,7 +57,7 @@
 }
 
 .gr-tab{
-  @apply flex items-center justify-center gap-[10px] h-[45px] px-6 !text-white text-[16px] font-medium no-underline cursor-pointer;
+  @apply flex items-center justify-center gap-[10px] h-[45px] px-6 !text-white text-[16px] font-medium no-underline cursor-pointer !bg-inherit;
 }
 
 .gr-tab-active{

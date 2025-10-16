@@ -5,8 +5,8 @@ msgstr ""
 "Project-Id-Version: Genius Reviews 1.1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/genius-reviews\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: Nederlands\n"
-"Language: nl_NL\n"
+"Language-Team: Svenska\n"
+"Language: sv_SE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -32,7 +32,7 @@ msgstr "http://example.com/genius-reviews-uri/"
 #. Description of the plugin
 #: genius-reviews.php
 msgid "Import d’avis via CSV, affichage sur les fiches produits WooCommerce, JSON-LD optimisé SEO."
-msgstr "Importeer reviews via CSV, toon ze op WooCommerce-productpagina’s en genereer SEO-geoptimaliseerde JSON-LD."
+msgstr "Importera omdömen via CSV, visa dem på WooCommerce-produktsidor och generera SEO-optimerad JSON-LD."
 
 #. Author of the plugin
 #: genius-reviews.php
@@ -47,63 +47,63 @@ msgstr "http://example.com/"
 #: admin/class-genius-reviews-admin-page.php:11
 #: admin/class-genius-reviews-admin-page.php:12
 msgid "Options & Import"
-msgstr "Opties en import"
+msgstr "Alternativ och import"
 
 #: admin/class-genius-reviews-admin-page.php:33
 msgid "Options sauvegardées."
-msgstr "Instellingen opgeslagen."
+msgstr "Inställningar sparade."
 
 #: admin/class-genius-reviews-admin-page.php:44
 msgid "Genius Reviews — Options & Import CSV"
-msgstr "Genius Reviews — Opties en CSV-import"
+msgstr "Genius Reviews — Alternativ och CSV-import"
 
 #: admin/class-genius-reviews-admin-page.php:54
 msgid "Options d’affichage"
-msgstr "Weergave-opties"
+msgstr "Visningsalternativ"
 
 #: admin/class-genius-reviews-admin-page.php:57
 msgid "Activez automatiquement les blocs côté boutique et/ou utilise les shortcodes ci-dessous selon vos besoins."
-msgstr "Schakel automatisch blokken in aan de shop-kant en/of gebruik de shortcodes hieronder naar behoefte."
+msgstr "Aktivera automatiskt butikssidorna och/eller använd shortcodes nedan efter behov."
 
 #: admin/class-genius-reviews-admin-page.php:74
 msgid "Activer la grille des avis sur la page produit"
-msgstr "Reviews-raster op productpagina inschakelen"
+msgstr "Aktivera omdömesrutnät på produktsidor"
 
 #: admin/class-genius-reviews-admin-page.php:78
 msgid "Affiche la grille en bas de chaque fiche produit (si des avis sont disponibles)."
-msgstr "Toont het raster onderaan elke productpagina (indien er reviews zijn)."
+msgstr "Visar rutnätet längst ned på varje produktsida (om omdömen finns)."
 
 #: admin/class-genius-reviews-admin-page.php:95
 msgid "Activer le badge d'avis sur la page produit"
-msgstr "Review-badge op productpagina inschakelen"
+msgstr "Aktivera omdömesmärke på produktsidor"
 
 #: admin/class-genius-reviews-admin-page.php:99
 msgid "Petit badge (moyenne + nombre d’avis) visible en haut de la fiche produit."
-msgstr "Kleine badge (gemiddelde + aantal reviews) bovenaan de productpagina."
+msgstr "Litet märke (snittbetyg + antal omdömen) visas högst upp på produktsidan."
 
 #: admin/class-genius-reviews-admin-page.php:116
 msgid "Activer le badge d'avis sur la page collection"
-msgstr "Badge op categoriepagina inschakelen"
+msgstr "Aktivera märke på kategorisidor"
 
 #: admin/class-genius-reviews-admin-page.php:120
 msgid "Affiche le badge dans les listings/collections produits."
-msgstr "Toont de badge in productlijsten/categorieën."
+msgstr "Visar märket i produktlistor/kategorier."
 
 #: admin/class-genius-reviews-admin-page.php:140
 msgid "Couleur principale"
-msgstr "Hoofdkleur"
+msgstr "Huvudfärg"
 
 #: admin/class-genius-reviews-admin-page.php:149
 msgid "Utilisée pour les boutons et accents (hover auto-généré)."
-msgstr "Gebruikt voor knoppen en accenten (hover automatisch gegenereerd)."
+msgstr "Används för knappar och accenter (hover genereras automatiskt)."
 
 #: admin/class-genius-reviews-admin-page.php:155
 msgid "Shortcodes disponibles"
-msgstr "Beschikbare shortcodes"
+msgstr "Tillgängliga shortcodes"
 
 #: admin/class-genius-reviews-admin-page.php:159
 msgid "Grille d’avis (produit courant ou ID précis)"
-msgstr "Reviews-raster (huidig product of specifiek ID)"
+msgstr "Omdömesrutnät (aktuella produkten eller specifikt ID)"
 
 #: admin/class-genius-reviews-admin-page.php:163
 #: admin/class-genius-reviews-admin-page.php:169
@@ -112,51 +112,51 @@ msgstr "Reviews-raster (huidig product of specifiek ID)"
 #: admin/class-genius-reviews-admin-page.php:201
 #: admin/class-genius-reviews-admin-page.php:229
 msgid "Copier"
-msgstr "Kopiëren"
+msgstr "Kopiera"
 
 #: admin/class-genius-reviews-admin-page.php:175
 msgid "Carrousel (sélection d’avis globales)"
-msgstr "Carrousel (globale selectie reviews)"
+msgstr "Karusell (globalt urval av omdömen)"
 
 #: admin/class-genius-reviews-admin-page.php:185
 msgid "Badge (dans un template/page au choix)"
-msgstr "Badge (in eender welke template/pagina)"
+msgstr "Märke (i valfri mall/sida)"
 
 #: admin/class-genius-reviews-admin-page.php:196
 msgid "Tous les avis (onglets Produits / Boutique + stats globales)"
-msgstr "Alle reviews (tabbladen Producten / Winkel + globale statistieken)"
+msgstr "Alla omdömen (flikar Produkter / Butik + globala siffror)"
 
 #: admin/class-genius-reviews-admin-page.php:208
 msgid "Paramètres de tri disponibles : date_desc, date_asc, rating_desc, rating_asc."
-msgstr "Beschikbare sorteervolgordes: date_desc, date_asc, rating_desc, rating_asc."
+msgstr "Tillgängliga sorteringar: date_desc, date_asc, rating_desc, rating_asc."
 
 #: admin/class-genius-reviews-admin-page.php:217
 msgid "Sauvegarder"
-msgstr "Opslaan"
+msgstr "Spara"
 
 #: admin/class-genius-reviews-admin-page.php:228
 msgid "Copié !"
-msgstr "Gekopieerd!"
+msgstr "Kopierat!"
 
 #: admin/class-genius-reviews-admin-page.php:237
 msgid "Import"
-msgstr "Importeren"
+msgstr "Importera"
 
 #: admin/class-genius-reviews-admin-page.php:250
 msgid "Lancer l’import"
-msgstr "Import starten"
+msgstr "Starta import"
 
 #: admin/class-genius-reviews-admin-page.php:256
 msgid "Préparation…"
-msgstr "Voorbereiden…"
+msgstr "Förbereder…"
 
 #: admin/class-genius-reviews-admin-page.php:266
 msgid "Détail par produit"
-msgstr "Details per product"
+msgstr "Detaljer per produkt"
 
 #: admin/class-genius-reviews-admin-page.php:271
 msgid "Produit"
-msgstr "Product"
+msgstr "Produkt"
 
 #: admin/class-genius-reviews-admin-page.php:272
 msgid "ID"
@@ -164,208 +164,207 @@ msgstr "ID"
 
 #: admin/class-genius-reviews-admin-page.php:273
 msgid "Ajoutés"
-msgstr "Toegevoegd"
+msgstr "Tillagda"
 
 #: admin/class-genius-reviews-admin-page.php:274
 msgid "MàJ"
-msgstr "Bijgewerkt"
+msgstr "Uppdaterade"
 
 #: admin/class-genius-reviews-admin-page.php:275
 msgid "Ignorés"
-msgstr "Genegeerd"
+msgstr "Ignorerade"
 
 #: admin/class-genius-reviews-admin-page.php:276
 msgid "Moyenne"
-msgstr "Gemiddelde"
+msgstr "Snitt"
 
 #: admin/class-genius-reviews-admin-page.php:277
 msgid "Total"
-msgstr "Totaal"
+msgstr "Totalt"
 
 #: admin/class-genius-reviews-admin-page.php:286
 msgid "Colonnes :"
-msgstr "Kolommen:"
+msgstr "Kolumner:"
 
 #: admin/class-genius-reviews-admin.php:117
 msgid "Téléversement…"
-msgstr "Uploaden…"
+msgstr "Laddar upp…"
 
 #: admin/class-genius-reviews-admin.php:118
 msgid "Import en cours…"
-msgstr "Bezig met importeren…"
+msgstr "Import pågår…"
 
 #: admin/class-genius-reviews-admin.php:119
 msgid "Import terminé"
-msgstr "Import voltooid"
+msgstr "Import klar"
 
 #: classes/class-genius-reviews-cpt.php:10
 #: classes/class-genius-reviews-cpt.php:11
 msgid "Avis"
-msgstr "Reviews"
+msgstr "Omdömen"
 
 #: classes/class-genius-reviews-cpt.php:12
 msgid "Ajouter un avis"
-msgstr "Review toevoegen"
+msgstr "Lägg till omdöme"
 
 #: classes/class-genius-reviews-cpt.php:13
 msgid "Ajouter un nouvel avis"
-msgstr "Nieuwe review toevoegen"
+msgstr "Lägg till nytt omdöme"
 
 #: classes/class-genius-reviews-cpt.php:14
 msgid "Éditer l’avis"
-msgstr "Review bewerken"
+msgstr "Redigera omdöme"
 
 #: classes/class-genius-reviews-cpt.php:15
 msgid "Nouvel avis"
-msgstr "Nieuwe review"
+msgstr "Nytt omdöme"
 
 #: classes/class-genius-reviews-cpt.php:16
 msgid "Voir l’avis"
-msgstr "Review bekijken"
+msgstr "Visa omdöme"
 
 #: classes/class-genius-reviews-cpt.php:17
 msgid "Rechercher des avis"
-msgstr "Reviews zoeken"
+msgstr "Sök omdömen"
 
 #: classes/class-genius-reviews-cpt.php:18
 msgid "Aucun avis"
-msgstr "Geen reviews"
+msgstr "Inga omdömen"
 
 #: classes/class-genius-reviews-cpt.php:19
 msgid "Aucun avis dans la corbeille"
-msgstr "Geen reviews in de prullenbak"
+msgstr "Inga omdömen i papperskorgen"
 
 #: classes/class-genius-reviews-cpt.php:59
 msgid "Détails de l’avis"
-msgstr "Reviewdetails"
+msgstr "Omdömesdetaljer"
 
 #: classes/class-genius-reviews-elementor.php:15
 msgid "Options"
-msgstr "Opties"
+msgstr "Alternativ"
 
 #: classes/class-genius-reviews-elementor.php:20
 msgid "Produit ID"
-msgstr "Product-ID"
+msgstr "Produkt-ID"
 
 #: classes/class-genius-reviews-elementor.php:26
 msgid "Nombre d’avis"
-msgstr "Aantal reviews"
+msgstr "Antal omdömen"
 
 #: classes/class-genius-reviews-output-json-ld.php:96
 #: classes/class-genius-reviews-output-json-ld.php:150
 #: classes/class-genius-reviews-render.php:409
 msgid "Client"
-msgstr "Klant"
+msgstr "Kund"
 
 #: classes/class-genius-reviews-render.php:357
 #, php-format
 msgid "Il y a %s"
-msgstr "%s geleden"
+msgstr "För %s sedan"
 
 #: classes/class-genius-reviews-render.php:400
 msgid "Voir plus"
-msgstr "Meer lezen"
+msgstr "Läs mer"
 
 #: classes/class-genius-reviews-render.php:446
 #: classes/class-genius-reviews-render.php:826
 msgid "Avis de nos clients"
-msgstr "Klantbeoordelingen"
+msgstr "Kundomdömen"
 
 #: classes/class-genius-reviews-render.php:468
 #: classes/class-genius-reviews-render.php:719
 #, php-format
 msgid "Basé sur %1$s%3$s avis%2$s"
-msgstr "Gebaseerd op %1$s%3$s reviews%2$s"
+msgstr "Baserat på %1$s%3$s omdömen%2$s"
 
 #: classes/class-genius-reviews-render.php:531
 #: classes/class-genius-reviews-render.php:847
 msgid "Écrire un avis"
-msgstr "Schrijf een review"
+msgstr "Skriv ett omdöme"
 
 #: classes/class-genius-reviews-render.php:541
 #: classes/class-genius-reviews-render.php:857
 #, php-format
 msgid "Vous devez être <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">connecté(e)</a> pour écrire un avis."
-msgstr "Je moet <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">ingelogd</a> zijn om een review te schrijven."
+msgstr "Du måste vara <a href=\"%s\" class=\"text-brand-custom hover:underline font-medium\">inloggad</a> för att skriva ett omdöme."
 
 #: classes/class-genius-reviews-render.php:557
 msgid "Plus récents"
-msgstr "Nieuwste"
+msgstr "Nyaste"
 
 #: classes/class-genius-reviews-render.php:560
 msgid "Plus anciens"
-msgstr "Oudste"
+msgstr "Äldsta"
 
 #: classes/class-genius-reviews-render.php:563
 msgid "Meilleures notes"
-msgstr "Hoogst beoordeeld"
+msgstr "Högst betyg"
 
 #: classes/class-genius-reviews-render.php:566
 msgid "Moins bonnes notes"
-msgstr "Laagst beoordeeld"
+msgstr "Lägst betyg"
 
 #: classes/class-genius-reviews-render.php:609
 #, php-format
 msgid "Avis sur Produits (%s)"
-msgstr "Productreviews (%s)"
+msgstr "Produktomdömen (%s)"
 
 #: classes/class-genius-reviews-render.php:620
 #, php-format
 msgid "Avis sur Boutique (%s)"
-msgstr "Winkelreviews (%s)"
+msgstr "Butikomdömen (%s)"
 
 #: classes/class-genius-reviews-render.php:643
 #: classes/class-genius-reviews-render.php:658
 msgid "Voir plus d’avis"
-msgstr "Meer reviews laden"
+msgstr "Ladda fler omdömen"
 
 #: classes/class-genius-reviews-render.php:690
 msgid "Aucun avis disponible."
-msgstr "Geen reviews beschikbaar."
+msgstr "Inga omdömen tillgängliga."
 
 #: classes/class-genius-reviews-render.php:785
 #, php-format
 msgid "%s avis"
 msgid_plural "%s avis"
-msgstr[0] "%s review"
-msgstr[1] "%s reviews"
+msgstr[0] "%s omdöme"
+msgstr[1] "%s omdömen"
 
 #: classes/class-genius-reviews-render.php:842
 msgid "Aucun avis pour le moment"
-msgstr "Nog geen reviews"
+msgstr "Inga omdömen ännu"
 
 #: classes/class-genius-reviews-render.php:967
 msgid "Excellent"
-msgstr "Uitstekend"
+msgstr "Utmärkt"
 
 #: classes/class-genius-reviews-render.php:969
 msgid "Très bien"
-msgstr "Zeer goed"
+msgstr "Mycket bra"
 
 #: classes/class-genius-reviews-render.php:971
 msgid "Bien"
-msgstr "Goed"
+msgstr "Bra"
 
 #: classes/class-genius-reviews-render.php:973
 msgid "Moyen"
-msgstr "Gemiddeld"
+msgstr "Medel"
 
 #: classes/class-genius-reviews-render.php:974
 msgid "À éviter"
-msgstr "Matig"
+msgstr "Svagt"
 
 #: includes/class-genius-reviews-activator.php:35
 #, php-format
 msgid "<b>%s</b> nécessite WooCommerce. Merci d’installer et d’activer WooCommerce."
-msgstr "<b>%s</b> vereist WooCommerce. Installeer en activeer WooCommerce."
+msgstr "<b>%s</b> kräver WooCommerce. Installera och aktivera WooCommerce."
 
 #: admin/blocks/grid/block.json
 msgctxt "block title"
 msgid "Grid Reviews"
-msgstr "Raster met reviews"
+msgstr "Rutnät med omdömen"
 
 #: admin/blocks/grid/block.json
 msgctxt "block description"
 msgid "Affiche la grille des avis clients pour un produit."
-msgstr "Toont het raster met klantbeoordelingen voor een product."
-
+msgstr "Visar kundomdömen i ett rutnät för en produkt."
