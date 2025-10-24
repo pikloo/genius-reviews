@@ -44,15 +44,15 @@
   background: var(--color-brand-hover);
 }
 
-.swiper-button-prev,
-.swiper-button-next {
+.gr-bloc .swiper-button-prev,
+.gr-bloc .swiper-button-next {
   svg {
     fill: none !important;
   }
 }
 
-.swiper-button-prev,
-.swiper-button-next {
+.gr-bloc  .swiper-button-prev,
+.gr-bloc  .swiper-button-next {
   @apply !size-7.5 !top-[75px];
 }
 

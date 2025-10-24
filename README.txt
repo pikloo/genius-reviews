@@ -53,6 +53,9 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 = 1.1.8.3 =
+* Fix swiper pagination css
+
+= 1.1.8.3 =
 * Fix spanish trad
 
 = 1.1.8.2 =
