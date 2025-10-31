@@ -340,6 +340,16 @@ class Genius_Reviews_Render
         $title = get_post_meta($post_id, '_gr_display_title', true);
         $content = get_the_content($post_id);
         $product_id = (int) get_post_meta($post_id, '_gr_product_id', true);
+        $picture_urls_raw = get_post_meta($post_id, '_gr_picture_urls', true);
+        $picture_urls = [];
+
+        if (is_array($picture_urls_raw)) {
+            foreach ($picture_urls_raw as $picture_url) {
+                if (is_string($picture_url) && filter_var($picture_url, FILTER_VALIDATE_URL)) {
+                    $picture_urls[] = $picture_url;
+                }
+            }
+        }
 
         ob_start(); ?>
         <div class="break-inside-avoid flex flex-col gap-2 h-full w-full">
@@ -376,7 +386,19 @@ class Genius_Reviews_Render
 
             <p class="!font-semibold text-base leading-[26px]"><?php echo esc_html($title); ?></p>
 
-            <?php if (has_post_thumbnail($post_id) && $mode === 'grid'): ?>
+            <?php if ($mode !== 'slider' && count($picture_urls) > 1): ?>
+                <div class="flex flex-wrap gap-2">
+                    <?php foreach ($picture_urls as $picture_url): ?>
+                        <img src="<?php echo esc_url($picture_url); ?>" alt="<?php echo esc_attr($title); ?>"
+                            class="w-24 h-24 rounded-lg object-cover flex-shrink-0" loading="lazy" />
+                    <?php endforeach; ?>
+                </div>
+            <?php elseif ($mode !== 'slider' && count($picture_urls) === 1): ?>
+                <div class="w-full aspect-[360/198.33] max-h-[198.33px] flex-shrink-0 self-stretch">
+                    <img src="<?php echo esc_url($picture_urls[0]); ?>" alt="<?php echo esc_attr($title); ?>" class="review-img"
+                        loading="lazy" />
+                </div>
+            <?php elseif ($mode === 'grid' && has_post_thumbnail($post_id)): ?>
                 <div class="w-full aspect-[360/198.33] max-h-[198.33px] flex-shrink-0 self-stretch">
                     <?php echo get_the_post_thumbnail(
                         $post_id,

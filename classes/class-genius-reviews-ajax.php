@@ -160,21 +160,28 @@ class Genius_Reviews_Ajax
             update_post_meta($rid, '_gr_ip', sanitize_text_field($data['ip_address']));
             update_post_meta($rid, '_gr_location', sanitize_text_field($data['location']));
 
+            $picture_urls = self::normalize_picture_urls($data['picture_urls']);
+            if (!empty($picture_urls)) {
+                update_post_meta($rid, '_gr_picture_urls', $picture_urls);
+            } else {
+                delete_post_meta($rid, '_gr_picture_urls');
+            }
+
             // Image
-            if (!empty($data['picture_urls'])) {
-                $urls = preg_split('/[\s,]+/', $data['picture_urls']);
-                $url = $urls ? trim($urls[0]) : '';
-                if ($url && filter_var($url, FILTER_VALIDATE_URL)) {
-                    require_once ABSPATH . 'wp-admin/includes/file.php';
-                    require_once ABSPATH . 'wp-admin/includes/media.php';
-                    require_once ABSPATH . 'wp-admin/includes/image.php';
-                    $tmp = download_url($url, 15);
-                    if (!is_wp_error($tmp)) {
-                        $file_array = ['name' => wp_basename(parse_url($url, PHP_URL_PATH)), 'tmp_name' => $tmp];
-                        $att_id = media_handle_sideload($file_array, $rid);
-                        if (!is_wp_error($att_id) && !has_post_thumbnail($rid)) {
-                            set_post_thumbnail($rid, $att_id);
-                        }
+            $primary_picture = reset($picture_urls);
+            if ($primary_picture) {
+                require_once ABSPATH . 'wp-admin/includes/file.php';
+                require_once ABSPATH . 'wp-admin/includes/media.php';
+                require_once ABSPATH . 'wp-admin/includes/image.php';
+                $tmp = download_url($primary_picture, 15);
+                if (!is_wp_error($tmp)) {
+                    $file_array = [
+                        'name' => wp_basename(parse_url($primary_picture, PHP_URL_PATH)),
+                        'tmp_name' => $tmp,
+                    ];
+                    $att_id = media_handle_sideload($file_array, $rid);
+                    if (!is_wp_error($att_id) && !has_post_thumbnail($rid)) {
+                        set_post_thumbnail($rid, $att_id);
                     }
                 }
             }
@@ -278,6 +285,37 @@ class Genius_Reviews_Ajax
             $date . '|' .
             mb_substr($clean($data['body']), 0, 50)
         );
+    }
+
+    private static function normalize_picture_urls($raw_urls)
+    {
+        if (empty($raw_urls)) {
+            return [];
+        }
+
+        if (is_array($raw_urls)) {
+            $candidates = $raw_urls;
+        } else {
+            $candidates = preg_split('/\s*,\s*/', (string) $raw_urls);
+        }
+
+        $normalized = [];
+        foreach ($candidates as $candidate) {
+            if (!is_string($candidate)) {
+                continue;
+            }
+            $candidate = trim($candidate);
+            if ($candidate === '') {
+                continue;
+            }
+
+            $sanitized = esc_url_raw($candidate);
+            if ($sanitized && filter_var($sanitized, FILTER_VALIDATE_URL)) {
+                $normalized[$sanitized] = true;
+            }
+        }
+
+        return array_keys($normalized);
     }
 
     private static function state_key()

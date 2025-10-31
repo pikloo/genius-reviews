@@ -5,7 +5,7 @@ Tags: reviews, woocommerce, testimonials, import, csv, json-ld, schema
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.0.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,9 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.0 =
+* Gestion de plusieurs image + Allègement du plugin + exclusions de répertoires
+
 = 1.1.9 =
 * Champs reviews éditable
 

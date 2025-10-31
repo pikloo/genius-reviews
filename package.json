@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"npx @tailwindcss/cli -i ./admin/css/genius-reviews-admin.css -o ./admin/build/style-admin.css --watch\" \"npx @tailwindcss/cli -i ./public/css/genius-reviews-public.css -o ./public/build/style-public.css --watch\" \"webpack --mode development --watch\"",
-    "build": "concurrently \"npx @tailwindcss/cli -i ./admin/css/genius-reviews-admin.css -o ./admin/build/style-admin.css --minify\" \"npx @tailwindcss/cli -i ./public/css/genius-reviews-public.css -o ./public/build/style-public.css --minify\" \"webpack --mode production\""
+    "build": "concurrently \"npx @tailwindcss/cli -i ./admin/css/genius-reviews-admin.css -o ./admin/build/style-admin.css --minify\" \"npx @tailwindcss/cli -i ./public/css/genius-reviews-public.css -o ./public/build/style-public.css --minify\" \"webpack --mode production\"",
+    "package": "npm run build && rm -rf dist && mkdir -p dist && rsync -a --exclude \"dist\" --exclude \"node_modules\" --exclude \".git\" --exclude \".gitignore\" ./ dist/genius-reviews && cd dist && zip -rq genius-reviews.zip genius-reviews && rm -rf genius-reviews"
   },
   "author": "",
   "license": "ISC",
