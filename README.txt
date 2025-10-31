@@ -52,7 +52,13 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.1.9 =
+* Champs reviews éditable
+
 = 1.1.8.5 =
+* Fix swiper pagination css + build
+
+= 1.1.8.4 =
 * Fix swiper pagination css
 
 = 1.1.8.3 =

@@ -295,6 +295,7 @@ class Genius_Reviews
 	{
 		$this->loader->add_action('init', 'Genius_Reviews_CPT', 'register');
 		$this->loader->add_action('add_meta_boxes', 'Genius_Reviews_CPT', 'register_metaboxes');
+		$this->loader->add_action('save_post_genius_review', 'Genius_Reviews_CPT', 'save_metabox', 10, 3);
 	}
 
 	/**

@@ -4,6 +4,79 @@ if (! defined('ABSPATH')) exit;
 class Genius_Reviews_CPT
 {
 
+    private static function get_meta_fields()
+    {
+        return [
+            '_gr_display_title' => [
+                'label'    => 'Titre affiché',
+                'input'    => 'text',
+                'sanitize' => 'text',
+            ],
+            '_gr_rating' => [
+                'label'    => 'Note',
+                'input'    => 'number',
+                'attributes' => [
+                    'min'  => '0',
+                    'step' => '0.1',
+                ],
+                'sanitize' => 'float',
+            ],
+            '_gr_review_date' => [
+                'label'    => 'Date',
+                'input'    => 'text',
+                'sanitize' => 'text',
+            ],
+            '_gr_source' => [
+                'label'    => 'Source',
+                'input'    => 'text',
+                'sanitize' => 'text',
+            ],
+            '_gr_curated' => [
+                'label'    => 'Curated ?',
+                'input'    => 'text',
+                'sanitize' => 'text',
+            ],
+            '_gr_reviewer_name' => [
+                'label'    => 'Auteur',
+                'input'    => 'text',
+                'sanitize' => 'text',
+            ],
+            '_gr_product_id' => [
+                'label'    => 'Produit ID',
+                'input'    => 'number',
+                'attributes' => [
+                    'min' => '0',
+                ],
+                'sanitize' => 'int',
+            ],
+            '_gr_product_handle' => [
+                'label'    => 'Handle',
+                'input'    => 'text',
+                'sanitize' => 'text',
+            ],
+            '_gr_reply' => [
+                'label'    => 'Réponse',
+                'input'    => 'textarea',
+                'sanitize' => 'textarea',
+            ],
+            '_gr_reply_date' => [
+                'label'    => 'Date réponse',
+                'input'    => 'text',
+                'sanitize' => 'text',
+            ],
+            '_gr_ip' => [
+                'label'    => 'IP',
+                'input'    => 'text',
+                'sanitize' => 'text',
+            ],
+            '_gr_location' => [
+                'label'    => 'Localisation',
+                'input'    => 'text',
+                'sanitize' => 'text',
+            ],
+        ];
+    }
+
     public static function register()
     {
         $labels = [
@@ -66,29 +139,104 @@ class Genius_Reviews_CPT
 
     public static function render_metabox($post)
     {
-        $fields = [
-            '_gr_display_title' => 'Titre affiché',
-            '_gr_rating'        => 'Note',
-            '_gr_review_date'   => 'Date',
-            '_gr_source'        => 'Source',
-            '_gr_curated'       => 'Curated ?',
-            '_gr_reviewer_name' => 'Auteur',
-            '_gr_product_id'    => 'Produit ID',
-            '_gr_product_handle' => 'Handle',
-            '_gr_reply'         => 'Réponse',
-            '_gr_reply_date'    => 'Date réponse',
-            '_gr_ip'            => 'IP',
-            '_gr_location'      => 'Localisation',
-        ];
+        $fields = self::get_meta_fields();
+        $can_edit = current_user_can('manage_options');
+
+        if ($can_edit) {
+            wp_nonce_field('gr_meta_save', 'gr_meta_nonce');
+        }
 
         echo '<table class="form-table">';
         foreach ($fields as $key => $label) {
+            $field = is_array($label) ? $label : ['label' => $label, 'input' => 'text', 'sanitize' => 'text'];
             $val = get_post_meta($post->ID, $key, true);
-            echo '<tr><th><label>' . esc_html($label) . '</label></th><td>';
-            echo '<input type="text" readonly class="widefat" value="' . esc_attr($val) . '"/>';
+            echo '<tr><th><label>' . esc_html($field['label']) . '</label></th><td>';
+            if ($can_edit) {
+                $attributes = ['class' => 'widefat'];
+                if (!empty($field['attributes']) && is_array($field['attributes'])) {
+                    $attributes = array_merge($attributes, $field['attributes']);
+                }
+                if ($field['input'] === 'textarea') {
+                    echo '<textarea name="gr_meta[' . esc_attr($key) . ']" class="widefat" rows="3">' . esc_textarea($val) . '</textarea>';
+                } else {
+                    $type = in_array($field['input'], ['text', 'number'], true) ? $field['input'] : 'text';
+                    $attrs = '';
+                    foreach ($attributes as $attr_key => $attr_value) {
+                        $attrs .= ' ' . esc_attr($attr_key) . '="' . esc_attr($attr_value) . '"';
+                    }
+                    echo '<input type="' . esc_attr($type) . '" name="gr_meta[' . esc_attr($key) . ']" value="' . esc_attr($val) . '"' . $attrs . ' />';
+                }
+            } else {
+                if ($field['input'] === 'textarea') {
+                    echo '<textarea readonly class="widefat" rows="3">' . esc_textarea($val) . '</textarea>';
+                } else {
+                    echo '<input type="text" readonly class="widefat" value="' . esc_attr($val) . '"/>';
+                }
+            }
             echo '</td></tr>';
         }
         echo '</table>';
+    }
+
+    public static function save_metabox($post_id, $post, $update)
+    {
+        if (! isset($_POST['gr_meta_nonce']) || ! wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['gr_meta_nonce'])), 'gr_meta_save')) {
+            return;
+        }
+
+        if (! current_user_can('manage_options')) {
+            return;
+        }
+
+        if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+            return;
+        }
+
+        if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
+            return;
+        }
+
+        if (! isset($_POST['gr_meta']) || ! is_array($_POST['gr_meta'])) {
+            return;
+        }
+
+        $fields = self::get_meta_fields();
+        $input = wp_unslash($_POST['gr_meta']);
+
+        foreach ($fields as $meta_key => $field) {
+            if (! array_key_exists($meta_key, $input)) {
+                continue;
+            }
+
+            $sanitize_type = isset($field['sanitize']) ? $field['sanitize'] : 'text';
+            $raw_value = $input[$meta_key];
+
+            if (is_array($raw_value)) {
+                continue;
+            }
+
+            $value = self::sanitize_meta_value($raw_value, $sanitize_type);
+
+            update_post_meta($post_id, $meta_key, $value);
+        }
+    }
+
+    private static function sanitize_meta_value($value, $type)
+    {
+        switch ($type) {
+            case 'int':
+                return (string) absint($value);
+            case 'float':
+                if ($value === '' || $value === null) {
+                    return '';
+                }
+                return (string) floatval($value);
+            case 'textarea':
+                return sanitize_textarea_field($value);
+            case 'text':
+            default:
+                return sanitize_text_field($value);
+        }
     }
 
 
