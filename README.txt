@@ -52,6 +52,9 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.0.1 =
+* Correction url feedback pour reviews grid
+
 = 1.2.0 =
 * Gestion de plusieurs image + Allègement du plugin + exclusions de répertoires
 

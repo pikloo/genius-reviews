@@ -624,7 +624,8 @@ class Genius_Reviews_Render
                 $total_shop = $q_shop->found_posts;
                 ?>
                 <div class="flex gap-4 border-b border-gray-200 mb-6">
-                    <button class="gr-tab !bg-transparent text-brand-custom hover:text-brand-custom-hover gr-tab-active" data-tab="products">
+                    <button class="gr-tab !bg-transparent text-brand-custom hover:text-brand-custom-hover gr-tab-active"
+                        data-tab="products">
                         <?php
                         echo wp_kses_post(
                             sprintf(
@@ -863,9 +864,23 @@ class Genius_Reviews_Render
 
             <p class="text-sm"><?php esc_html_e('Aucun avis pour le moment', 'genius-reviews'); ?></p>
 
+            <?php
+            $lang = substr(get_locale(), 0, 2);
+
+            $gr_slugs = [
+                'fr' => 'questionnaire-feedback',
+                'nl' => 'feedbackvragenlijst',
+                'de' => 'fragebogen-feedback',
+                'it' => 'questionario-di-feedback',
+                'es' => 'cuestionario-de-opinion',
+            ];
+
+            $target_slug = isset($gr_slugs[$lang]) ? $gr_slugs[$lang] : $gr_slugs['fr'];
+            $target_url = home_url('/' . $target_slug . '/');
+            ?>
+
             <?php if (is_user_logged_in()): ?>
-                <a href="<?php echo esc_url(home_url("/questionnaire-feedback")); ?>"
-                    class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
+                <a href="<?php echo esc_url($target_url); ?>" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
                     <?php _e('Écrire un avis', 'genius-reviews'); ?>
                 </a>
             <?php else: ?>
