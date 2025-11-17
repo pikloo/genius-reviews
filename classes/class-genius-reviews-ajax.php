@@ -282,6 +282,7 @@ class Genius_Reviews_Ajax
             'post_type' => 'genius_review',
             'posts_per_page' => -1,
             'fields' => 'ids',
+            'post_status' => 'publish',
             'no_found_rows' => true,
             'meta_query' => [
                 [
@@ -401,6 +402,7 @@ class Genius_Reviews_Ajax
         $args = [
             'post_type' => 'genius_review',
             'posts_per_page' => $limit,
+            'post_status' => 'publish',
             'meta_query' => [
                 [
                     'key' => '_gr_curated',

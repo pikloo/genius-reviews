@@ -60,6 +60,7 @@ class Genius_Reviews_Render
         $q_args = [
             'post_type' => 'genius_review',
             'posts_per_page' => $args['limit'],
+            'post_status' => 'publish',
             'meta_query' => [
                 [
                     'key' => '_gr_curated',
@@ -115,6 +116,7 @@ class Genius_Reviews_Render
         $q_stats = new WP_Query([
             'post_type' => 'genius_review',
             'posts_per_page' => -1,
+            'post_status' => 'publish',
             'fields' => 'ids',
             'meta_query' => $meta_query_stats,
         ]);
@@ -157,6 +159,7 @@ class Genius_Reviews_Render
         $q_args = [
             'post_type' => 'genius_review',
             'posts_per_page' => $args['limit'],
+            'post_status' => 'publish',
             'meta_query' => [
                 [
                     'key' => '_gr_curated',
@@ -282,12 +285,14 @@ class Genius_Reviews_Render
         $q_products = new WP_Query(array_merge([
             'post_type' => 'genius_review',
             'posts_per_page' => $args['limit'],
+            'post_status' => 'publish',
             'meta_query' => $meta_products,
         ], $sort_args));
 
         $q_shop = new WP_Query(array_merge([
             'post_type' => 'genius_review',
             'posts_per_page' => $args['limit'],
+            'post_status' => 'publish',
             'meta_query' => $meta_shop,
         ], $sort_args));
 

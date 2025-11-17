@@ -224,7 +224,7 @@ class Genius_Reviews_Admin_Page
 </form>
 
 				<!-- Synchronisation -->
-				<div class="bg-white border rounded-2xl shadow-sm p-6 space-y-4 !mt-8">
+				<div class="bg-white border rounded-2xl shadow-sm p-6 space-y-4 my-8">
 					<h2 class="text-lg font-medium"><?php _e('Synchronisation', 'genius-reviews'); ?></h2>
 					<p class="text-sm text-gray-600">
 						<?php _e('Recalcule la moyenne et le volume d’avis stockés sur vos fiches produits.', 'genius-reviews'); ?>
