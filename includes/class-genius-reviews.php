@@ -205,13 +205,14 @@ class Genius_Reviews
 		$this->loader->add_action('admin_menu', 'Genius_Reviews_Admin_Page', 'add_menu');
 		$this->loader->add_action('wp_ajax_gr_upload_csv', 'Genius_Reviews_Ajax', 'ajax_upload_csv');
 		$this->loader->add_action('wp_ajax_gr_process_chunk', 'Genius_Reviews_Ajax', 'ajax_process_chunk');
+		$this->loader->add_action('wp_ajax_gr_sync_products', 'Genius_Reviews_Ajax', 'ajax_sync_products');
 		add_filter('upload_mimes', [$this, 'allow_csv_uploads']);
 
 	}
 
 	public function allow_csv_uploads($mimes)
 	{
-		if (current_user_can('manage_options')) {
+		if (current_user_can('manage_options') || current_user_can('manage_woocommerce')) {
 			$mimes['csv'] = 'text/csv';
 		}
 		return $mimes;
@@ -296,6 +297,10 @@ class Genius_Reviews
 		$this->loader->add_action('init', 'Genius_Reviews_CPT', 'register');
 		$this->loader->add_action('add_meta_boxes', 'Genius_Reviews_CPT', 'register_metaboxes');
 		$this->loader->add_action('save_post_genius_review', 'Genius_Reviews_CPT', 'save_metabox', 10, 3);
+		$this->loader->add_action('save_post_genius_review', 'Genius_Reviews_CPT', 'sync_product_on_save', 20, 3);
+		$this->loader->add_action('before_delete_post', 'Genius_Reviews_CPT', 'sync_product_on_status_change');
+		$this->loader->add_action('trashed_post', 'Genius_Reviews_CPT', 'sync_product_on_status_change');
+		$this->loader->add_action('untrashed_post', 'Genius_Reviews_CPT', 'sync_product_on_status_change');
 	}
 
 	/**

@@ -223,6 +223,24 @@ class Genius_Reviews_Admin_Page
 	</div>
 </form>
 
+				<!-- Synchronisation -->
+				<div class="bg-white border rounded-2xl shadow-sm p-6 space-y-4 !mt-8">
+					<h2 class="text-lg font-medium"><?php _e('Synchronisation', 'genius-reviews'); ?></h2>
+					<p class="text-sm text-gray-600">
+						<?php _e('Recalcule la moyenne et le volume d’avis stockés sur vos fiches produits.', 'genius-reviews'); ?>
+					</p>
+					<div class="flex flex-col gap-3 sm:flex-row sm:items-center">
+						<button type="button"
+							id="gr-sync-ratings"
+							class="gr-btn w-full sm:w-auto"
+							data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
+							data-nonce="<?php echo esc_attr(wp_create_nonce('gr_sync_products')); ?>">
+							<?php _e('Synchroniser les notes produits', 'genius-reviews'); ?>
+						</button>
+						<span id="gr-sync-status" class="text-sm text-gray-600"></span>
+					</div>
+				</div>
+
 <script>
 	// Petit copier/coller pour les shortcodes
 	document.querySelectorAll('.gr-copy').forEach(btn => {
@@ -234,6 +252,55 @@ class Genius_Reviews_Admin_Page
 			});
 		});
 	});
+
+	const syncBtn = document.getElementById('gr-sync-ratings');
+	if (syncBtn) {
+		const syncStatus = document.getElementById('gr-sync-status');
+		const syncingLabel = '<?php echo esc_js(__('Synchronisation en cours…', 'genius-reviews')); ?>';
+		const successLabel = '<?php echo esc_js(__('Synchronisation terminée : %d produit(s) mis à jour.', 'genius-reviews')); ?>';
+		const errorLabel = '<?php echo esc_js(__('Erreur lors de la synchronisation.', 'genius-reviews')); ?>';
+
+		syncBtn.addEventListener('click', () => {
+			const ajaxUrl = syncBtn.getAttribute('data-ajax');
+			const nonce = syncBtn.getAttribute('data-nonce');
+			if (!ajaxUrl || !nonce) {
+				return;
+			}
+
+			syncBtn.disabled = true;
+			syncBtn.classList.add('opacity-70', 'cursor-not-allowed');
+			syncStatus.textContent = syncingLabel;
+
+			const body = 'action=gr_sync_products&nonce=' + encodeURIComponent(nonce);
+
+			fetch(ajaxUrl, {
+				method: 'POST',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+				},
+				body
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (!data || !data.success) {
+						throw new Error('sync_failed');
+					}
+					const count = data.data && typeof data.data.count !== 'undefined'
+						? parseInt(data.data.count, 10)
+						: 0;
+					const safeCount = isNaN(count) ? 0 : count;
+					syncStatus.textContent = successLabel.replace('%d', safeCount);
+				})
+				.catch(() => {
+					syncStatus.textContent = errorLabel;
+				})
+				.then(() => {
+					syncBtn.disabled = false;
+					syncBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+				});
+		});
+	}
 </script>
 
 				<!-- Import -->

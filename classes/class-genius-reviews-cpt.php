@@ -221,11 +221,11 @@ class Genius_Reviews_CPT
         }
     }
 
-    private static function sanitize_meta_value($value, $type)
-    {
-        switch ($type) {
-            case 'int':
-                return (string) absint($value);
+	private static function sanitize_meta_value($value, $type)
+	{
+		switch ($type) {
+			case 'int':
+				return (string) absint($value);
             case 'float':
                 if ($value === '' || $value === null) {
                     return '';
@@ -234,16 +234,50 @@ class Genius_Reviews_CPT
             case 'textarea':
                 return sanitize_textarea_field($value);
             case 'text':
-            default:
-                return sanitize_text_field($value);
-        }
-    }
+			default:
+				return sanitize_text_field($value);
+		}
+	}
+
+	public static function sync_product_on_save($post_id, $post, $update)
+	{
+		if (! $post instanceof WP_Post || $post->post_type !== 'genius_review') {
+			return;
+		}
+
+		if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) {
+			return;
+		}
+
+		self::recalc_related_product($post_id);
+	}
+
+	public static function sync_product_on_status_change($post_id)
+	{
+		if (get_post_type($post_id) !== 'genius_review') {
+			return;
+		}
+
+		self::recalc_related_product($post_id);
+	}
+
+	private static function recalc_related_product($review_id)
+	{
+		$product_id = (int) get_post_meta($review_id, '_gr_product_id', true);
+		if ($product_id <= 0) {
+			return;
+		}
+
+		if (is_callable(['Genius_Reviews_Ajax', 'recalc_product'])) {
+			Genius_Reviews_Ajax::recalc_product($product_id);
+		}
+	}
 
 
-    // /**
-    //  * Recalcul automatique quand on enregistre une review
-    //  */
-    // public function recalc_on_save($post_id, $post, $update)
+	// /**
+	//  * Recalcul automatique quand on enregistre une review
+	//  */
+	// public function recalc_on_save($post_id, $post, $update)
     // {
     //     if (wp_is_post_autosave($post_id) || wp_is_post_revision($post_id)) return;
 

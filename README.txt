@@ -53,6 +53,9 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 = 1.2.0.1 =
+* Patch synchronisation nouveaux avis 
+
+= 1.2.0.1 =
 * Correction url feedback pour reviews grid
 
 = 1.2.0 =

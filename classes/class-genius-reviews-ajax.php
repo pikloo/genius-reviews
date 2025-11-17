@@ -235,6 +235,46 @@ class Genius_Reviews_Ajax
         ]);
     }
 
+    public static function ajax_sync_products()
+    {
+        check_ajax_referer('gr_sync_products', 'nonce');
+        if (!current_user_can('manage_woocommerce')) {
+            wp_send_json_error('perm');
+        }
+
+        global $wpdb;
+
+        $product_ids = $wpdb->get_col(
+            "SELECT DISTINCT pm.meta_value
+            FROM {$wpdb->postmeta} pm
+            INNER JOIN {$wpdb->posts} p ON p.ID = pm.post_id
+            WHERE pm.meta_key = '_gr_product_id'
+              AND p.post_type = 'genius_review'
+              AND p.post_status != 'trash'"
+        );
+
+        if (empty($product_ids)) {
+            wp_send_json_success([
+                'count' => 0,
+            ]);
+        }
+
+        $synced = 0;
+        foreach ($product_ids as $pid) {
+            $pid = (int) $pid;
+            if ($pid <= 0) {
+                continue;
+            }
+
+            self::recalc_product($pid);
+            $synced++;
+        }
+
+        wp_send_json_success([
+            'count' => $synced,
+        ]);
+    }
+
 
     public static function recalc_product($product_id)
     {
