@@ -547,6 +547,8 @@ class Genius_Reviews_Render
                     'de' => 'fragebogen-feedback',
                     'it' => 'questionario-di-feedback',
                     'es' => 'cuestionario-de-opinion',
+                    'sv' => 'frageformular-feedback',
+                    'pl' => 'kwestionariusz-feedback',     
                 ];
 
                 $target_slug = isset($gr_slugs[$lang]) ? $gr_slugs[$lang] : $gr_slugs['fr'];

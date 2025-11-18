@@ -52,6 +52,9 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.0.4 =
+* Ajout slug feedback PL et NL
+
 = 1.2.0.3 =
 * Correction nom de fichier de trad suédois 
 
