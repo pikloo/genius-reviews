@@ -52,7 +52,10 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
-= 1.2.0.1 =
+= 1.2.0.3 =
+* Correction nom de fichier de trad suédois 
+
+= 1.2.0.2 =
 * Patch synchronisation nouveaux avis 
 
 = 1.2.0.1 =
