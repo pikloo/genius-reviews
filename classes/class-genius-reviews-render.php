@@ -358,7 +358,6 @@ class Genius_Reviews_Render
 
         ob_start(); ?>
         <div class="break-inside-avoid flex flex-col gap-2 h-full w-full">
-            <!-- Header -->
             <div class="flex items-center justify-between">
                 <div class="flex gap-0.5">
                     <?php echo self::render_stars($rating, 'w-4.5 h-4.5'); ?>
@@ -388,9 +387,7 @@ class Genius_Reviews_Render
                     </a>
                 <?php endif; ?>
             <?php endif; ?>
-
             <p class="!font-semibold text-base leading-[26px]"><?php echo esc_html($title); ?></p>
-
             <?php if ($mode !== 'slider' && count($picture_urls) > 1): ?>
                 <div class="flex flex-wrap gap-2">
                     <?php foreach ($picture_urls as $picture_url): ?>
@@ -412,7 +409,6 @@ class Genius_Reviews_Render
                     ); ?>
                 </div>
             <?php endif; ?>
-
             <?php if ($mode === 'slider'): ?>
                 <?php
                 $limit = 120;
@@ -431,7 +427,6 @@ class Genius_Reviews_Render
             <?php else: ?>
                 <p class="text-[14px]"><?php echo esc_html($content); ?></p>
             <?php endif; ?>
-
             <p class="text-gray-medium text-sm leading-[22px]">
                 <?php echo esc_html($reviewer ?: __('Client', 'genius-reviews')); ?>
             </p>
@@ -464,9 +459,7 @@ class Genius_Reviews_Render
         $total = max(1, array_sum($counts_by_rating));
         ?>
 
-        <div class="gr-bloc max-w-[1260px] p-4 md:p-12.5 mx-auto space-y-8.5">
-
-            <!-- Header avec stats -->
+        <div class="gr-bloc !max-w-[1260px] !p-4 md:!p-12.5 !mx-auto !space-y-8.5">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <div class="flex flex-col gap-2">
@@ -488,7 +481,6 @@ class Genius_Reviews_Render
                             <span class="text-base font-medium"><?php echo number_format($avg, 1); ?></span>
                         </div>
                     </div>
-
                     <p class="text-base">
                         <?php
                         $label = sprintf(
@@ -500,10 +492,7 @@ class Genius_Reviews_Render
                         echo wp_kses_post($label);
                         ?>
                     </p>
-
                 </div>
-
-
                 <div class="space-y-0.5">
                     <div class="space-y-0.5">
                         <?php for ($i = 5; $i >= 1; $i--):
@@ -524,7 +513,6 @@ class Genius_Reviews_Render
                                         </svg>
                                     <?php endfor; ?>
                                 </div>
-
                                 <div class="flex-1 h-3 w-[126px] bg-gray-light rounded-full overflow-hidden">
                                     <div class="h-full rounded-full <?php echo $bg_class; ?>"
                                         style="width: <?php echo $percent; ?>%">
@@ -540,7 +528,6 @@ class Genius_Reviews_Render
                 </div>
                 <?php
                 $lang = substr(get_locale(), 0, 2);
-
                 $gr_slugs = [
                     'fr' => 'questionnaire-feedback',
                     'nl' => 'feedbackvragenlijst',
@@ -550,11 +537,9 @@ class Genius_Reviews_Render
                     'sv' => 'frageformular-feedback',
                     'pl' => 'kwestionariusz-feedback',     
                 ];
-
                 $target_slug = isset($gr_slugs[$lang]) ? $gr_slugs[$lang] : $gr_slugs['fr'];
                 $target_url = home_url('/' . $target_slug . '/');
                 ?>
-
                 <?php if (is_user_logged_in()): ?>
                     <a href="<?php echo esc_url($target_url); ?>" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
                         <?php _e('Écrire un avis', 'genius-reviews'); ?>
@@ -571,13 +556,10 @@ class Genius_Reviews_Render
                                 esc_url($login_url)
                             )
                         );
-
                         ?>
                     </p>
                 <?php endif; ?>
             </div>
-
-            <!-- Tri -->
             <form method="get">
                 <div class="flex justify-end relative">
                     <select id="gr-sort" name="gr-sort" onchange="this.form.submit()"
@@ -595,7 +577,6 @@ class Genius_Reviews_Render
                             <?php _e('Moins bonnes notes', 'genius-reviews'); ?>
                         </option>
                     </select>
-
                     <span class=" pointer-events-none absolute left-3 top-1/2 translate-y-[-70%]">
                         <svg xmlns="http://www.w3.org/2000/svg" width="17" height="12" viewBox="0 0 17 12" fill="none">
                             <path
@@ -603,7 +584,6 @@ class Genius_Reviews_Render
                                 fill="black" />
                         </svg>
                     </span>
-
                     <span class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 10 10" fill="none">
                             <g clip-path="url(#clip0_5_3880)">
@@ -621,8 +601,6 @@ class Genius_Reviews_Render
                     </span>
                 </div>
             </form>
-
-            <!-- Contenu -->
             <?php if ($is_all_mode): ?>
                 <?php
                 $q_products = $query['q_products'];
@@ -642,7 +620,6 @@ class Genius_Reviews_Render
                         );
                         ?>
                     </button>
-
                     <button class="gr-tab !bg-transparent text-brand-custom hover:text-brand-custom-hover" data-tab="shop">
                         <?php
                         echo wp_kses_post(
@@ -653,17 +630,13 @@ class Genius_Reviews_Render
                         );
                         ?>
                     </button>
-
                 </div>
-
                 <div id="gr-tab-products" class="gr-tab-content">
                     <?php self::render_grid_inner($q_products, $args); ?>
                 </div>
-
                 <div id="gr-tab-shop" class="gr-tab-content hidden">
                     <?php self::render_grid_inner($q_shop, $args); ?>
                 </div>
-
                 <?php if ($total_products > ($args['limit'] ?? 12) || $total_shop > ($args['limit'] ?? 12)): ?>
                     <div class="flex justify-center mt-6">
                         <button id="gr-load-more" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover"
@@ -674,12 +647,10 @@ class Genius_Reviews_Render
                         </button>
                     </div>
                 <?php endif; ?>
-
             <?php else: ?>
                 <div id="gr-tab-products" class="gr-tab-content">
                     <?php self::render_grid_inner($query, $args); ?>
                 </div>
-
                 <?php if ($count > ($args['limit'] ?? 12)): ?>
                     <div class="flex justify-center mt-6">
                         <button id="gr-load-more" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover"
@@ -689,12 +660,8 @@ class Genius_Reviews_Render
                         </button>
                     </div>
                 <?php endif; ?>
-
             <?php endif; ?>
-
-
         </div>
-
         <?php
         return ob_get_clean();
     }
@@ -716,19 +683,16 @@ class Genius_Reviews_Render
         ob_start();
 
         if (!$query->have_posts()) {
-            echo '<div class="gr-bloc text-center p-6">';
+            echo '<div class="gr-bloc text-center !p-6">';
             echo '<p class="text-gray-500">' . __('Aucun avis disponible.', 'genius-reviews') . '</p>';
             echo '</div>';
             return ob_get_clean();
         }
         ?>
 
-        <div class="gr-bloc max-w-[1260px] flex flex-col md:flex-row gap-12.5 md:items-start">
-
-            <!-- stats globales -->
+        <div class="gr-bloc !max-w-[1260px] flex flex-col md:flex-row !gap-12.5 md:items-start">
             <div class="flex flex-col items-center justify-center text-center pt-6">
                 <span class="text-xl font-bold"><?php echo esc_html(self::rating_label($avg)); ?></span>
-
                 <div class="flex gap-0.5 mt-2 mb-1">
                     <?php for ($i = 1; $i <= 5; $i++): ?>
                         <svg xmlns="http://www.w3.org/2000/svg"
@@ -742,7 +706,6 @@ class Genius_Reviews_Render
                         </svg>
                     <?php endfor; ?>
                 </div>
-
                 <span class="text-base whitespace-nowrap">
                     <?php
                     $label = sprintf(
@@ -755,7 +718,6 @@ class Genius_Reviews_Render
                     ?>
                 </span>
             </div>
-
             <div class="swiper gr-swiper md:!px-12">
                 <div class="swiper-wrapper max-w-[360px]  md:max-w-full">
                     <?php while ($query->have_posts()):
@@ -766,7 +728,6 @@ class Genius_Reviews_Render
                     <?php endwhile;
                     wp_reset_postdata(); ?>
                 </div>
-
                 <div
                     class="swiper-button-prev !left-0 after:!hidden bg-white border border-gray-300 rounded-full p-2 hover:border-brand-custom group">
                     <svg xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11" fill="none"
@@ -783,11 +744,8 @@ class Genius_Reviews_Render
                             stroke-linejoin="round" />
                     </svg>
                 </div>
-
             </div>
         </div>
-
-
         <?php
         return ob_get_clean();
     }
@@ -805,7 +763,7 @@ class Genius_Reviews_Render
     {
         ob_start();
         ?>
-        <div class="gr-badge cursor-pointer flex items-center gap-2 my-2">
+        <div class="gr-badge cursor-pointer flex items-center !gap-2 !my-2">
             <div class="flex gap-0.5">
                 <?php echo self::render_stars(round($avg), "w-4 h-4"); ?>
             </div>
@@ -852,9 +810,8 @@ class Genius_Reviews_Render
     private static function render_no_reviews()
     {
         ob_start(); ?>
-        <div class="gr-bloc max-w-[1260px] p-4 md:p-12.5 mx-auto space-y-8.5 flex flex-col items-center gap-3 py-6 text-center">
+        <div class="gr-bloc !max-w-[1260px] !p-4 md:!p-12.5 !mx-auto !space-y-8.5 flex flex-col items-center gap-3 py-6 text-center">
             <span class="font-bold !m-0 text-lg"><?php esc_html_e('Avis de nos clients', 'genius-reviews'); ?></span>
-
             <div class="flex flex-col !m-0">
                 <div class="flex gap-0.5">
                     <?php for ($i = 1; $i <= 5; $i++): ?>
@@ -868,24 +825,21 @@ class Genius_Reviews_Render
                     <?php endfor; ?>
                 </div>
             </div>
-
             <p class="text-sm"><?php esc_html_e('Aucun avis pour le moment', 'genius-reviews'); ?></p>
-
             <?php
             $lang = substr(get_locale(), 0, 2);
-
             $gr_slugs = [
-                'fr' => 'questionnaire-feedback',
-                'nl' => 'feedbackvragenlijst',
-                'de' => 'fragebogen-feedback',
-                'it' => 'questionario-di-feedback',
-                'es' => 'cuestionario-de-opinion',
+                    'fr' => 'questionnaire-feedback',
+                    'nl' => 'feedbackvragenlijst',
+                    'de' => 'fragebogen-feedback',
+                    'it' => 'questionario-di-feedback',
+                    'es' => 'cuestionario-de-opinion',
+                    'sv' => 'frageformular-feedback',
+                    'pl' => 'kwestionariusz-feedback',     
             ];
-
             $target_slug = isset($gr_slugs[$lang]) ? $gr_slugs[$lang] : $gr_slugs['fr'];
             $target_url = home_url('/' . $target_slug . '/');
             ?>
-
             <?php if (is_user_logged_in()): ?>
                 <a href="<?php echo esc_url($target_url); ?>" class="gr-btn bg-brand-custom hover:bg-brand-custom-hover">
                     <?php _e('Écrire un avis', 'genius-reviews'); ?>

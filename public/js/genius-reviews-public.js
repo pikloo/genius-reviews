@@ -1,7 +1,3 @@
-import Swiper from 'swiper/bundle';
-import 'swiper/css/bundle';
-
-
 (function ($) {
 	'use strict';
 
@@ -16,8 +12,6 @@ import 'swiper/css/bundle';
 		//Go to review bloc
 		if (sortParam) {
 			const sortBlock = $('.gr-bloc');
-			console.log(sortBlock)
-
 			if (sortBlock.length) {
 				$('html, body').animate(
 					{ scrollTop: sortBlock.offset().top - 100 },
@@ -121,11 +115,11 @@ import 'swiper/css/bundle';
 
 
 		// Carousel
-		if ($('.gr-swiper').length) {
+		if (typeof Swiper !== 'undefined' && $('.gr-swiper').length) {
 			$('.gr-swiper').each(function () {
 				const $el = $(this);
 
-				const swiper = new Swiper($el[0], {
+				new Swiper($el[0], {
 					slidesPerView: "auto",
 					autoplay: {
 						delay: 5000,

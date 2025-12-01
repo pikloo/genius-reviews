@@ -2,6 +2,7 @@
  * All of the CSS for your admin-specific functionality should be
  * included in this file.
  */
+@source "../classes/**/*.php" "../admin/**/*.php";
 @import "tailwindcss";
 
 @theme {

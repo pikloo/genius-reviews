@@ -3,8 +3,9 @@
  * included in this file.
  */
 
+@source "../classes/**/*.php" "../public/**/*.php" "../admin/**/*.php" "../public/js/**/*.js";
+@source "../classes/**/*.php" "../public/**/*.php" "../admin/**/*.php" "../public/js/**/*.js";
 @import "tailwindcss";
-@import "swiper/swiper-bundle.css";
 
 @theme {
   --font-sans: 'Lato', ui-sans-serif, system-ui, sans-serif;
@@ -87,5 +88,3 @@
 .hover\:text-brand-custom-hover:hover {
   color: var(--color-brand-custom-hover, var(--color-brand-hover)) !important;
 }
-
-

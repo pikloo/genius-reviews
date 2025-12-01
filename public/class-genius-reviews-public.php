@@ -76,7 +76,20 @@ class Genius_Reviews_Public
 		 */
 
 
-		wp_enqueue_style($this->plugin_name, plugin_dir_url(__FILE__) . 'build/style-public.css', array(), $this->version, 'all');
+		wp_enqueue_style(
+			'gr-swiper',
+			'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.css',
+			[],
+			'12.0.2'
+		);
+
+		wp_enqueue_style(
+			$this->plugin_name,
+			plugin_dir_url(__FILE__) . 'build/style-public.css',
+			['gr-swiper'],
+			$this->version,
+			'all'
+		);
 
 		wp_enqueue_style(
 			'gr-lato',
@@ -106,7 +119,21 @@ class Genius_Reviews_Public
 		 * class.
 		 */
 
-		wp_enqueue_script($this->plugin_name, plugin_dir_url(__FILE__) . 'build/genius-reviews-public.bundle.js', array('jquery'), $this->version, false);
+		wp_enqueue_script(
+			'gr-swiper',
+			'https://cdn.jsdelivr.net/npm/swiper@12/swiper-bundle.min.js',
+			[],
+			'12.0.2',
+			true
+		);
+
+		wp_enqueue_script(
+			$this->plugin_name,
+			plugin_dir_url(__FILE__) . 'build/genius-reviews-public.bundle.js',
+			['jquery', 'gr-swiper'],
+			$this->version,
+			true
+		);
 
 		wp_localize_script($this->plugin_name, 'GR_PUBLIC', [
 			'ajax'  => admin_url('admin-ajax.php'),
