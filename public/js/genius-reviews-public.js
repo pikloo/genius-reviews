@@ -115,33 +115,37 @@
 
 
 		// Carousel
-		if (typeof Swiper !== 'undefined' && $('.gr-swiper').length) {
-			$('.gr-swiper').each(function () {
+		if (typeof Splide !== 'undefined' && $('.gr-splide').length) {
+			$('.gr-splide').each(function () {
 				const $el = $(this);
-
-				new Swiper($el[0], {
-					slidesPerView: "auto",
-					autoplay: {
-						delay: 5000,
-						disableOnInteraction: false,
-					},
-					loop: true,
-					spaceBetween: 30,
+				const splide = new Splide($el[0], {
+					type: 'loop',
+					perPage: 3,
+					perMove: 1,
+					gap: '30px',
+					arrows: false,
+					pagination: false,
+					autoplay: true,
+					interval: 5000,
+					pauseOnHover: true,
 					breakpoints: {
-						768: {
-							slidesPerView: 2,
-						},
 						1024: {
-							slidesPerView: 3,
-							spaceBetween: 50
+							perPage: 2,
 						},
-					},
-					navigation: {
-						nextEl: $el.find('.swiper-button-next')[0],
-						prevEl: $el.find('.swiper-button-prev')[0],
+						768: {
+							perPage: 1,
+							gap: '20px',
+						},
 					},
 				});
 
+				splide.mount();
+
+				const goNext = () => splide.go('>');
+				const goPrev = () => splide.go('<');
+
+				$el.find('.gr-splide-button-next').on('click', goNext);
+				$el.find('.gr-splide-button-prev').on('click', goPrev);
 			});
 		}
 

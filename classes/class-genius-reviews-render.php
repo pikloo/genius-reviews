@@ -357,12 +357,12 @@ class Genius_Reviews_Render
         }
 
         ob_start(); ?>
-        <div class="break-inside-avoid flex flex-col gap-2 h-full w-full">
-            <div class="flex items-center justify-between">
-                <div class="flex gap-0.5">
-                    <?php echo self::render_stars($rating, 'w-4.5 h-4.5'); ?>
+        <div class="gr-review-card">
+            <div class="gr-review-card-header">
+                <div class="gr-review-card-stars">
+                    <?php echo self::render_stars($rating, 'gr-review-card-star'); ?>
                 </div>
-                <div class="text-xs text-gray-medium">
+                <div class="gr-review-card-date">
                     <?php
                     if ($date) {
                         $timestamp = strtotime($date);
@@ -382,26 +382,26 @@ class Genius_Reviews_Render
                 <?php $product = wc_get_product($product_id); ?>
                 <?php if ($product): ?>
                     <a href="<?php echo esc_url(get_permalink($product_id)); ?>"
-                        class="text-brand-custom hover:text-brand-custom-hover hover:underline">
+                        class="gr-review-card-product">
                         <?php echo esc_html($product->get_name()); ?>
                     </a>
                 <?php endif; ?>
             <?php endif; ?>
-            <p class="!font-semibold text-base leading-[26px]"><?php echo esc_html($title); ?></p>
+            <p class="gr-review-card-title"><?php echo esc_html($title); ?></p>
             <?php if ($mode !== 'slider' && count($picture_urls) > 1): ?>
-                <div class="flex flex-wrap gap-2">
+                <div class="gr-review-card-gallery">
                     <?php foreach ($picture_urls as $picture_url): ?>
                         <img src="<?php echo esc_url($picture_url); ?>" alt="<?php echo esc_attr($title); ?>"
-                            class="w-24 h-24 rounded-lg object-cover flex-shrink-0" loading="lazy" />
+                            class="gr-review-card-thumb" loading="lazy" />
                     <?php endforeach; ?>
                 </div>
             <?php elseif ($mode !== 'slider' && count($picture_urls) === 1): ?>
-                <div class="w-full aspect-[360/198.33] max-h-[198.33px] flex-shrink-0 self-stretch">
+                <div class="gr-review-card-media">
                     <img src="<?php echo esc_url($picture_urls[0]); ?>" alt="<?php echo esc_attr($title); ?>" class="review-img"
                         loading="lazy" />
                 </div>
             <?php elseif ($mode === 'grid' && has_post_thumbnail($post_id)): ?>
-                <div class="w-full aspect-[360/198.33] max-h-[198.33px] flex-shrink-0 self-stretch">
+                <div class="gr-review-card-media">
                     <?php echo get_the_post_thumbnail(
                         $post_id,
                         'medium',
@@ -415,19 +415,19 @@ class Genius_Reviews_Render
                 $truncated = mb_strlen($content) > $limit;
                 $excerpt_display = $truncated ? mb_substr($content, 0, $limit) . '…' : $content;
                 ?>
-                <p class="text-[14px] gr-excerpt line-clamp-none flex flex-col gap-1 items-start">
+                <p class="gr-review-card-excerpt gr-excerpt">
                     <?php echo esc_html($excerpt_display); ?>
                     <?php if ($truncated): ?>
-                        <span class="hidden gr-full-text"><?php echo esc_html($content); ?></span>
-                        <button type="button" class="gr-read-more text-brand-custom text-sm ml-1 hover:underline">
+                        <span class="gr-review-card-full-text gr-full-text"><?php echo esc_html($content); ?></span>
+                        <button type="button" class="gr-review-card-read-more gr-read-more">
                             <?php _e('Voir plus', 'genius-reviews'); ?>
                         </button>
                     <?php endif; ?>
                 </p>
             <?php else: ?>
-                <p class="text-[14px]"><?php echo esc_html($content); ?></p>
+                <p class="gr-review-card-content"><?php echo esc_html($content); ?></p>
             <?php endif; ?>
-            <p class="text-gray-medium text-sm leading-[22px]">
+            <p class="gr-review-card-author">
                 <?php echo esc_html($reviewer ?: __('Client', 'genius-reviews')); ?>
             </p>
         </div>
@@ -690,10 +690,10 @@ class Genius_Reviews_Render
         }
         ?>
 
-        <div class="gr-bloc !max-w-[1260px] flex flex-col md:flex-row !gap-12.5 md:items-start">
-            <div class="flex flex-col items-center justify-center text-center pt-6">
-                <span class="text-xl font-bold"><?php echo esc_html(self::rating_label($avg)); ?></span>
-                <div class="flex gap-0.5 mt-2 mb-1">
+        <div class="gr-bloc gr-carousel">
+            <div class="gr-carousel-rating">
+                <span class="gr-carousel-label"><?php echo esc_html(self::rating_label($avg)); ?></span>
+                <div class="gr-carousel-stars">
                     <?php for ($i = 1; $i <= 5; $i++): ?>
                         <svg xmlns="http://www.w3.org/2000/svg"
                             class="w-5 h-5 <?php echo $i <= round($avg) ? 'text-brand' : 'text-gray-light'; ?>" viewBox="0 0 25 25"
@@ -706,7 +706,7 @@ class Genius_Reviews_Render
                         </svg>
                     <?php endfor; ?>
                 </div>
-                <span class="text-base whitespace-nowrap">
+                <span class="gr-carousel-count">
                     <?php
                     $label = sprintf(
                         __('Basé sur %1$s%3$s avis%2$s', 'genius-reviews'),
@@ -718,31 +718,33 @@ class Genius_Reviews_Render
                     ?>
                 </span>
             </div>
-            <div class="swiper gr-swiper md:!px-12">
-                <div class="swiper-wrapper max-w-[360px]  md:max-w-full">
-                    <?php while ($query->have_posts()):
-                        $query->the_post(); ?>
-                        <div class="swiper-slide px-10 md:px-0">
-                            <?php echo self::review_card(get_the_ID(), 'slider'); ?>
-                        </div>
-                    <?php endwhile;
-                    wp_reset_postdata(); ?>
-                </div>
-                <div
-                    class="swiper-button-prev !left-0 after:!hidden bg-white border border-gray-300 rounded-full p-2 hover:border-brand-custom group">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11" fill="none"
-                        class="stroke-gray-400 -translate-x-[1px] group-hover:stroke-brand-custom">
-                        <path d="M5.21641 9.45946L1.16235 5.4054L5.21641 1.35135" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
-                </div>
-                <div
-                    class="swiper-button-next !right-0 after:!hidden bg-white border border-gray-300 rounded-full p-2 hover:border-brand-custom group">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11" fill="none"
-                        class="rotate-180 translate-x-[1px] stroke-gray-400 group-hover:stroke-brand-custom">
-                        <path d="M5.21641 9.45946L1.16235 5.4054L5.21641 1.35135" stroke-width="1.5" stroke-linecap="round"
-                            stroke-linejoin="round" />
-                    </svg>
+            <div class="gr-carousel-slider">
+                <div class="splide gr-splide">
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            <?php while ($query->have_posts()):
+                                $query->the_post(); ?>
+                                <li class="splide__slide gr-carousel-slide">
+                                    <?php echo self::review_card(get_the_ID(), 'slider'); ?>
+                                </li>
+                            <?php endwhile;
+                            wp_reset_postdata(); ?>
+                        </ul>
+                    </div>
+                    <div class="gr-splide-button gr-splide-button-prev">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11" fill="none"
+                            class="gr-splide-button-icon">
+                            <path d="M5.21641 9.45946L1.16235 5.4054L5.21641 1.35135" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
+                    <div class="gr-splide-button gr-splide-button-next">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="6" height="11" viewBox="0 0 6 11" fill="none"
+                            class="gr-splide-button-icon gr-splide-button-icon-next">
+                            <path d="M5.21641 9.45946L1.16235 5.4054L5.21641 1.35135" stroke-width="1.5" stroke-linecap="round"
+                                stroke-linejoin="round" />
+                        </svg>
+                    </div>
                 </div>
             </div>
         </div>
@@ -763,11 +765,11 @@ class Genius_Reviews_Render
     {
         ob_start();
         ?>
-        <div class="gr-badge cursor-pointer flex items-center !gap-2 !my-2">
-            <div class="flex gap-0.5">
-                <?php echo self::render_stars(round($avg), "w-4 h-4"); ?>
+        <div class="gr-badge">
+            <div class="gr-badge-stars">
+                <?php echo self::render_stars(round($avg), "gr-badge-star-size"); ?>
             </div>
-            <span class="text-xs">
+            <span class="gr-badge-count">
                 <?php
                 $label = sprintf(
                     _n('%s avis', '%s avis', (int) $count, 'genius-reviews'),
@@ -786,7 +788,7 @@ class Genius_Reviews_Render
     private static function render_grid_inner(WP_Query $query, $args)
     {
         ?>
-        <div class="gr-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 space-y-10"
+        <div class="gr-grid"
             data-product-id="<?php echo esc_attr($args['product_id'] ?? 0); ?>">
             <?php
             while ($query->have_posts()) {
@@ -810,12 +812,12 @@ class Genius_Reviews_Render
     private static function render_no_reviews()
     {
         ob_start(); ?>
-        <div class="gr-bloc !max-w-[1260px] !p-4 md:!p-12.5 !mx-auto !space-y-8.5 flex flex-col items-center gap-3 py-6 text-center">
-            <span class="font-bold !m-0 text-lg"><?php esc_html_e('Avis de nos clients', 'genius-reviews'); ?></span>
-            <div class="flex flex-col !m-0">
-                <div class="flex gap-0.5">
+        <div class="gr-bloc gr-no-reviews">
+            <span class="gr-no-reviews-title"><?php esc_html_e('Avis de nos clients', 'genius-reviews'); ?></span>
+            <div class="gr-no-reviews-stars-wrapper">
+                <div class="gr-no-reviews-stars">
                     <?php for ($i = 1; $i <= 5; $i++): ?>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-light" viewBox="0 0 25 25" fill="none">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="gr-no-reviews-star" viewBox="0 0 25 25" fill="none">
                             <path d="M25 0H0V25H25V0Z" fill="currentColor" />
                             <path
                                 d="M12.1792 4L14.1858 10.1756H20.6792L15.4259 13.9923L13.8026 15.1718L12.1792 16.3512L6.92591 20.168L8.93249 13.9923L3.6792 10.1756H10.1726L12.1792 4Z"
@@ -825,7 +827,7 @@ class Genius_Reviews_Render
                     <?php endfor; ?>
                 </div>
             </div>
-            <p class="text-sm"><?php esc_html_e('Aucun avis pour le moment', 'genius-reviews'); ?></p>
+            <p class="gr-no-reviews-text"><?php esc_html_e('Aucun avis pour le moment', 'genius-reviews'); ?></p>
             <?php
             $lang = substr(get_locale(), 0, 2);
             $gr_slugs = [
@@ -848,7 +850,7 @@ class Genius_Reviews_Render
                 <?php
                 $login_url = function_exists('wc_get_page_permalink') ? wc_get_page_permalink('myaccount') : wp_login_url(get_permalink());
                 ?>
-                <p class="text-sm text-gray-500 mt-4">
+                <p class="gr-no-reviews-login">
                     <?php
                     echo wp_kses_post(
                         sprintf(

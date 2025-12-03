@@ -4,7 +4,6 @@
  */
 
 @source "../classes/**/*.php" "../public/**/*.php" "../admin/**/*.php" "../public/js/**/*.js";
-@source "../classes/**/*.php" "../public/**/*.php" "../admin/**/*.php" "../public/js/**/*.js";
 @import "tailwindcss";
 
 @theme {
@@ -45,16 +44,203 @@
   background: var(--color-brand-hover);
 }
 
-.gr-bloc .swiper-button-prev,
-.gr-bloc .swiper-button-next {
-  svg {
-    fill: none !important;
-  }
+.gr-badge {
+  @apply flex items-center cursor-pointer;
+  @apply !gap-2 !my-2;
 }
 
-.gr-bloc  .swiper-button-prev,
-.gr-bloc  .swiper-button-next {
-  @apply !size-7.5 !top-[75px];
+.gr-badge-stars {
+  @apply flex gap-0.5;
+}
+
+.gr-badge-count {
+  @apply text-xs;
+}
+
+.gr-badge-star-size {
+  @apply w-4 h-4;
+}
+
+.gr-splide {
+  @apply relative w-full min-w-0;
+}
+
+.gr-splide .splide__track {
+  @apply py-2;
+}
+
+.gr-splide .splide__list {
+  @apply flex items-stretch;
+}
+
+.gr-splide .splide__slide {
+  @apply flex flex-col h-full;
+}
+
+.gr-splide-button {
+  @apply absolute flex items-center justify-center size-9 rounded-full bg-white border border-gray-300 cursor-pointer transition-colors duration-150 shadow-sm;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.gr-splide-button:hover {
+  border-color: var(--color-brand-custom, var(--color-brand));
+}
+
+.gr-splide-button-prev {
+  @apply -left-10;
+}
+
+.gr-splide-button-next {
+  @apply -right-10;
+}
+
+.gr-splide-button-icon {
+  @apply stroke-gray-400 transition-colors duration-150;
+}
+
+.gr-splide-button:hover .gr-splide-button-icon {
+  stroke: var(--color-brand-custom, var(--color-brand));
+}
+
+.gr-splide-button-icon-next {
+  @apply rotate-180;
+}
+
+.gr-review-card {
+  @apply break-inside-avoid flex flex-col gap-2 h-full w-full;
+}
+
+.gr-review-card-header {
+  @apply flex items-center justify-between;
+}
+
+.gr-review-card-stars {
+  @apply flex gap-0.5;
+}
+
+.gr-review-card-star {
+  @apply w-[18px] h-[18px];
+}
+
+.gr-review-card-date {
+  @apply text-xs text-gray-medium;
+}
+
+.gr-review-card-product {
+  @apply text-sm;
+  color: var(--color-brand-custom, var(--color-brand));
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.gr-review-card-product:hover {
+  color: var(--color-brand-custom-hover, var(--color-brand-hover));
+  text-decoration: underline;
+}
+
+.gr-review-card-title {
+  @apply !font-semibold text-base leading-[26px];
+}
+
+.gr-review-card-gallery {
+  @apply flex flex-wrap gap-2;
+}
+
+.gr-review-card-thumb {
+  @apply w-24 h-24 rounded-lg object-cover flex-shrink-0;
+}
+
+.gr-review-card-media {
+  @apply w-full aspect-[360/198.33] max-h-[198.33px] flex-shrink-0 self-stretch;
+}
+
+.gr-review-card-excerpt {
+  @apply text-[14px] line-clamp-none flex flex-col gap-1 items-start;
+}
+
+.gr-review-card-full-text {
+  @apply hidden;
+}
+
+.gr-review-card-read-more {
+  @apply text-sm ml-1;
+  color: var(--color-brand-custom, var(--color-brand));
+  text-decoration: none;
+  transition: color 0.2s ease-in-out;
+}
+
+.gr-review-card-read-more:hover {
+  color: var(--color-brand-custom-hover, var(--color-brand-hover));
+  text-decoration: underline;
+}
+
+.gr-review-card-content {
+  @apply text-[14px];
+}
+
+.gr-review-card-author {
+  @apply text-gray-medium text-sm leading-[22px];
+}
+
+.gr-carousel {
+  @apply w-full !max-w-[1260px] mx-auto flex flex-col md:flex-row !gap-12.5 md:items-start;
+}
+
+.gr-carousel-rating {
+  @apply flex flex-col items-center md:items-start text-center md:text-left pt-6 gap-2 md:flex-none;
+}
+
+.gr-carousel-label {
+  @apply text-xl font-bold;
+}
+
+.gr-carousel-stars {
+  @apply flex gap-0.5 mt-2 mb-1;
+}
+
+.gr-carousel-count {
+  @apply text-base whitespace-nowrap;
+}
+
+.gr-carousel-slider {
+  @apply w-full md:flex-1 relative min-w-0 px-10;
+}
+
+.gr-carousel-slide {
+  @apply h-full max-w-[360px];
+}
+
+.gr-grid {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10;
+}
+
+.gr-no-reviews {
+  @apply !max-w-[1260px] !p-4 md:!p-12.5 !mx-auto !space-y-8.5 flex flex-col items-center gap-3 py-6 text-center;
+}
+
+.gr-no-reviews-title {
+  @apply font-bold text-lg !m-0;
+}
+
+.gr-no-reviews-stars-wrapper {
+  @apply flex flex-col !m-0;
+}
+
+.gr-no-reviews-stars {
+  @apply flex gap-0.5;
+}
+
+.gr-no-reviews-star {
+  @apply w-5 h-5 text-gray-light;
+}
+
+.gr-no-reviews-text {
+  @apply text-sm;
+}
+
+.gr-no-reviews-login {
+  @apply text-sm text-gray-500 mt-4;
 }
 
 .gr-tab{

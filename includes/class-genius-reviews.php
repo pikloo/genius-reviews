@@ -81,6 +81,7 @@ class Genius_Reviews
 		$this->define_admin_hooks();
 		$this->define_public_hooks();
 		$this->register_cpt_hooks();
+		$this->define_maintenance_hooks();
 	}
 
 	/**
@@ -301,6 +302,89 @@ class Genius_Reviews
 		$this->loader->add_action('before_delete_post', 'Genius_Reviews_CPT', 'sync_product_on_status_change');
 		$this->loader->add_action('trashed_post', 'Genius_Reviews_CPT', 'sync_product_on_status_change');
 		$this->loader->add_action('untrashed_post', 'Genius_Reviews_CPT', 'sync_product_on_status_change');
+	}
+
+	/**
+	 * Register miscellaneous maintenance hooks (cache clearing, etc.).
+	 *
+	 * @since 1.2.0.6
+	 * @return void
+	 */
+	private function define_maintenance_hooks()
+	{
+		$this->loader->add_action('upgrader_process_complete', $this, 'purge_wp_rocket_after_update', 10, 2);
+		$this->loader->add_action('admin_init', $this, 'purge_wp_rocket_on_first_load');
+	}
+
+	/**
+	 * Flush WP Rocket cache after the plugin has been updated.
+	 *
+	 * @param WP_Upgrader $upgrader   Upgrader instance.
+	 * @param array       $hook_extra Additional context.
+	 * @return void
+	 */
+	public function purge_wp_rocket_after_update($upgrader, $hook_extra)
+	{
+		if (empty($hook_extra['type']) || $hook_extra['type'] !== 'plugin') {
+			return;
+		}
+
+		if (empty($hook_extra['plugins'])) {
+			return;
+		}
+
+		$plugin_file = plugin_basename(GR_PATH . 'genius-reviews.php');
+
+		if (!in_array($plugin_file, (array) $hook_extra['plugins'], true)) {
+			return;
+		}
+
+		$this->clear_wp_rocket_cache();
+	}
+
+	/**
+	 * Trigger WP Rocket cache and CSS cleanup (if available).
+	 *
+	 * @return void
+	 */
+	public function clear_wp_rocket_cache()
+	{
+		if (function_exists('rocket_clean_domain')) {
+			rocket_clean_domain();
+		}
+
+		if (function_exists('rocket_clean_cache_busting')) {
+			rocket_clean_cache_busting();
+		}
+
+		if (function_exists('rocket_clean_files')) {
+			rocket_clean_files('css');
+		} elseif (function_exists('rocket_clean_minify')) {
+			rocket_clean_minify();
+		}
+	}
+
+	/**
+	 * Purge cache automatically the first time an admin loads the dashboard after install/update.
+	 *
+	 * Uses an option flag to avoid repeated purges.
+	 *
+	 * @return void
+	 */
+	public function purge_wp_rocket_on_first_load()
+	{
+		if (!current_user_can('manage_options')) {
+			return;
+		}
+
+		$flag = 'gr_wp_rocket_cache_needs_flush';
+
+		if (get_option($flag)) {
+			return;
+		}
+
+		$this->clear_wp_rocket_cache();
+		update_option($flag, 1, false);
 	}
 
 	/**

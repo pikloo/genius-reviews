@@ -53,6 +53,9 @@ Oui, un widget “Genius Reviews” est inclus.
 
 == Changelog ==
 = 1.2.1 =
+* Remplacement swiper par splide , suppression des style inline pour fichier css public
+
+= 1.2.0.5 =
 * Appel Swiper CDN
 
 = 1.2.0.4 =
