@@ -5,7 +5,7 @@ Tags: reviews, woocommerce, testimonials, import, csv, json-ld, schema
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,8 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.1.1 =
+* Scope Prefix post css pour éviter les confli
 = 1.2.1 =
 * Remplacement swiper par splide , suppression des style inline pour fichier css public
 

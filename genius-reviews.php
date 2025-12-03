@@ -16,9 +16,9 @@
  * Plugin Name:       Genius Reviews
  * Plugin URI:        http://example.com/genius-reviews-uri/
  * Description: Import d’avis via CSV, affichage sur les fiches produits WooCommerce, JSON-LD optimisé SEO.
- * Version:           1.2.1
+ * Version:           1.2.1.1
  * Author:            Ingenius Agency
- * Author URI:        http://example.com/
+ * Author URI:        https://ingenius.agency/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
  * Text Domain:       genius-reviews
@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define( 'GENIUS_REVIEWS_VERSION', '1.2.1' );
+define( 'GENIUS_REVIEWS_VERSION', '1.2.1.1' );
 define( 'GR_PATH', plugin_dir_path( __FILE__ ) );
 
 
@@ -98,3 +98,15 @@ $updateChecker = PucFactory::buildUpdateChecker(
 
 
 $updateChecker->setBranch('master');
+
+$github_token = get_option('gr_github_token', '');
+
+if (defined('GR_GITHUB_TOKEN') && GR_GITHUB_TOKEN) {
+	$github_token = GR_GITHUB_TOKEN;
+}
+
+$github_token = apply_filters('gr_github_token', $github_token);
+
+if (!empty($github_token) && is_string($github_token)) {
+	$updateChecker->setAuthentication(trim($github_token));
+}

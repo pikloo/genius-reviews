@@ -30,6 +30,11 @@ class Genius_Reviews_Admin_Page
 			if (isset($_POST['gr_color_brand_custom'])) {
 				update_option('gr_color_brand_custom', sanitize_hex_color($_POST['gr_color_brand_custom']));
 			}
+
+			if (isset($_POST['gr_github_token'])) {
+				$token = sanitize_text_field(wp_unslash($_POST['gr_github_token']));
+				update_option('gr_github_token', $token);
+			}
 			echo '<div class="notice notice-success is-dismissible"><p>' . __('Options sauvegardées.', 'genius-reviews') . '</p></div>';
 		}
 
@@ -38,6 +43,7 @@ class Genius_Reviews_Admin_Page
 		$active_badge_on_collection_page = (int) get_option('gr_option_active_badge_on_collection_page', 0);
 
 		$color_brand_custom = get_option('gr_color_brand_custom', '#58AF59');
+		$github_token = get_option('gr_github_token', '');
 		?>
 		<div class="wrap !p-0">
 			<div class="tw bg-white container mx-auto p-6">
@@ -147,6 +153,24 @@ class Genius_Reviews_Admin_Page
 						<?php _e('Utilisée pour les boutons et accents (hover auto-généré).', 'genius-reviews'); ?>
 					</span>
 				</div>
+			</div>
+
+			<div class="p-4 border rounded-xl">
+				<label for="gr-github-token" class="block text-sm font-medium text-gray-900 mb-2">
+					<?php _e('Token GitHub (mises à jour automatiques)', 'genius-reviews'); ?>
+				</label>
+				<p class="text-sm text-gray-600 mb-3">
+					<?php _e('Nécessaire si le dépôt GitHub du plugin est privé. Utilisez un token PAT (classic) avec accès lecture.', 'genius-reviews'); ?>
+				</p>
+				<input type="password"
+					   id="gr-github-token"
+					   name="gr_github_token"
+					   value="<?php echo esc_attr($github_token); ?>"
+					   placeholder="ghp_xxxxxxxxxxxxxxxxxxxxx"
+					   class="w-full border rounded-lg px-3 py-2">
+				<p class="text-xs text-gray-500 mt-2">
+					<?php _e('Laissez vide pour désactiver l’authentification. Les tokens sont stockés tels quels dans la base de données.', 'genius-reviews'); ?>
+				</p>
 			</div>
 
 			<div class="p-4 border rounded-xl">
