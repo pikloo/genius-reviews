@@ -325,19 +325,19 @@ class Genius_Reviews
 	 */
 	public function purge_wp_rocket_after_update($upgrader, $hook_extra)
 	{
-		if (empty($hook_extra['type']) || $hook_extra['type'] !== 'plugin') {
-			return;
-		}
+		// if (empty($hook_extra['type']) || $hook_extra['type'] !== 'plugin') {
+		// 	return;
+		// }
 
-		if (empty($hook_extra['plugins'])) {
-			return;
-		}
+		// if (empty($hook_extra['plugins'])) {
+		// 	return;
+		// }
 
-		$plugin_file = plugin_basename(GR_PATH . 'genius-reviews.php');
+		// $plugin_file = plugin_basename(GR_PATH . 'genius-reviews.php');
 
-		if (!in_array($plugin_file, (array) $hook_extra['plugins'], true)) {
-			return;
-		}
+		// if (!in_array($plugin_file, (array) $hook_extra['plugins'], true)) {
+		// 	return;
+		// }
 
 		$this->clear_wp_rocket_cache();
 	}
@@ -357,10 +357,12 @@ class Genius_Reviews
 			rocket_clean_cache_busting();
 		}
 
-		if (function_exists('rocket_clean_files')) {
-			rocket_clean_files('css');
-		} elseif (function_exists('rocket_clean_minify')) {
+		if (function_exists('rocket_clean_minify')) {
 			rocket_clean_minify();
+		}
+
+		if (function_exists('run_rocket_sitemap_preload')) {
+			run_rocket_sitemap_preload();
 		}
 	}
 
@@ -377,14 +379,7 @@ class Genius_Reviews
 			return;
 		}
 
-		$flag = 'gr_wp_rocket_cache_needs_flush';
-
-		if (get_option($flag)) {
-			return;
-		}
-
 		$this->clear_wp_rocket_cache();
-		update_option($flag, 1, false);
 	}
 
 	/**

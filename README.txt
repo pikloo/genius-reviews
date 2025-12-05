@@ -52,8 +52,13 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.1.2 =
+* Fix flush WP rocket
+
+
 = 1.2.1.1 =
-* Scope Prefix post css pour éviter les confli
+* Scope Prefix post css pour éviter les conflits
+
 = 1.2.1 =
 * Remplacement swiper par splide , suppression des style inline pour fichier css public
 
