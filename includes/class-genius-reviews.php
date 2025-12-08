@@ -364,6 +364,10 @@ class Genius_Reviews
 		if (function_exists('run_rocket_sitemap_preload')) {
 			run_rocket_sitemap_preload();
 		}
+
+		if(function_exists('truncate_used_css')){
+			truncate_used_css();
+		}
 	}
 
 	/**
