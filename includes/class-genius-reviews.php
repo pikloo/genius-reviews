@@ -305,7 +305,7 @@ class Genius_Reviews
 	}
 
 	/**
-	 * Register miscellaneous maintenance hooks (cache clearing, etc.).
+	 * Register miscellaneous maintenance hooks.
 	 *
 	 * @since 1.2.0.6
 	 * @return void
@@ -325,33 +325,47 @@ class Genius_Reviews
 	 */
 	public function purge_wp_rocket_after_update($upgrader, $hook_extra)
 	{
-		// if (empty($hook_extra['type']) || $hook_extra['type'] !== 'plugin') {
-		// 	return;
-		// }
+		if (empty($hook_extra['type']) || 'plugin' !== $hook_extra['type']) {
+			return;
+		}
 
-		// if (empty($hook_extra['plugins'])) {
-		// 	return;
-		// }
+		$updated_plugins = [];
 
-		// $plugin_file = plugin_basename(GR_PATH . 'genius-reviews.php');
+		if (!empty($hook_extra['plugins']) && is_array($hook_extra['plugins'])) {
+			$updated_plugins = $hook_extra['plugins'];
+		} elseif (!empty($hook_extra['plugin'])) {
+			$updated_plugins = [$hook_extra['plugin']];
+		}
 
-		// if (!in_array($plugin_file, (array) $hook_extra['plugins'], true)) {
-		// 	return;
-		// }
+		if (empty($updated_plugins)) {
+			return;
+		}
 
-		$this->clear_wp_rocket_cache();
+		$plugin_basename = plugin_basename(GR_PATH . 'genius-reviews.php');
+
+		if (!in_array($plugin_basename, $updated_plugins, true)) {
+			return;
+		}
+
+		update_option('gr_wp_rocket_cache_needs_flush', 1, false);
+
+		if ($this->clear_wp_rocket_cache()) {
+			update_option('gr_wp_rocket_cache_needs_flush', 0, false);
+		}
 	}
 
 	/**
-	 * Trigger WP Rocket cache and CSS cleanup (if available).
+	 * Trigger WP Rocket cache and CSS cleanup.
 	 *
-	 * @return void
+	 * @return bool True if WP Rocket tools were executed, false otherwise.
 	 */
 	public function clear_wp_rocket_cache()
 	{
-		if (function_exists('rocket_clean_domain')) {
-			rocket_clean_domain();
+		if (!function_exists('rocket_clean_domain')) {
+			return false;
 		}
+
+		rocket_clean_domain();
 
 		if (function_exists('rocket_clean_cache_busting')) {
 			rocket_clean_cache_busting();
@@ -365,15 +379,15 @@ class Genius_Reviews
 			run_rocket_sitemap_preload();
 		}
 
-		if(function_exists('truncate_used_css')){
+		if (function_exists('truncate_used_css')) {
 			truncate_used_css();
 		}
+
+		return true;
 	}
 
 	/**
 	 * Purge cache automatically the first time an admin loads the dashboard after install/update.
-	 *
-	 * Uses an option flag to avoid repeated purges.
 	 *
 	 * @return void
 	 */
@@ -383,7 +397,13 @@ class Genius_Reviews
 			return;
 		}
 
+		if (!get_option('gr_wp_rocket_cache_needs_flush', 0)) {
+			return;
+		}
+
 		$this->clear_wp_rocket_cache();
+
+		update_option('gr_wp_rocket_cache_needs_flush', 0, false);
 	}
 
 	/**

@@ -82,6 +82,6 @@ class Genius_Reviews_Activator
 		add_option('gr_color_brand_custom', '#58AF59');
 
 		// Demande de purge WP Rocket au prochain chargement back-office.
-		update_option('gr_wp_rocket_cache_needs_flush', 0, false);
+		update_option('gr_wp_rocket_cache_needs_flush', 1, false);
 	}
 }

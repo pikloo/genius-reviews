@@ -52,6 +52,9 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.1.4 =
+* Mise à jour système de purge
+
 = 1.2.1.3 =
 * Suppression du CSS inutilisé à l'upload
 
