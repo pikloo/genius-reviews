@@ -52,6 +52,9 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.1.5 =
+* Option affiché tous les avis du sites sur FP si le produit n'a pas d'avis
+
 = 1.2.1.4 =
 * Mise à jour système de purge
 

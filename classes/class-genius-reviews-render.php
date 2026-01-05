@@ -56,6 +56,7 @@ class Genius_Reviews_Render
         }
 
         $sort_args = Genius_Reviews_Query_Helper::map_sort($args['sort']);
+        $sort_meta_query = isset($sort_args['meta_query']) ? $sort_args['meta_query'] : null;
 
         $q_args = [
             'post_type' => 'genius_review',
@@ -77,9 +78,8 @@ class Genius_Reviews_Render
             ];
         }
 
-        // Fusionne meta_query éventuelle issue du tri
-        if (!empty($sort_args['meta_query'])) {
-            $q_args['meta_query'][] = $sort_args['meta_query'];
+        if (!empty($sort_meta_query)) {
+            $q_args['meta_query'][] = $sort_meta_query;
             unset($sort_args['meta_query']);
         }
 
@@ -87,11 +87,42 @@ class Genius_Reviews_Render
 
         $q = new WP_Query($q_args);
 
+        $fallback_reviews_all = (int) get_option('gr_option_fallback_reviews_all', 0);
+
+        if (!$q->have_posts() && $fallback_reviews_all && $args['product_id']) {
+            $fallback_meta_query = [
+                [
+                    'key' => '_gr_curated',
+                    'value' => 'ok',
+                    'compare' => '=',
+                ],
+            ];
+
+            if (!empty($sort_meta_query)) {
+                $fallback_meta_query[] = $sort_meta_query;
+            }
+
+            $fallback_query = new WP_Query(array_merge([
+                'post_type' => 'genius_review',
+                'posts_per_page' => $args['limit'],
+                'post_status' => 'publish',
+                'meta_query' => $fallback_meta_query,
+            ], $sort_args));
+
+            $stats = Genius_Reviews_Query_Helper::get_global_stats();
+
+            if ($fallback_query->have_posts() && $stats['count'] > 0) {
+                return self::grid_all_reviews([
+                    'limit' => $args['limit'],
+                    'sort' => $args['sort'],
+                ]);
+            }
+        }
+
         if (!$q->have_posts()) {
             return self::render_no_reviews();
         }
 
-        // Stats produit basées uniquement sur curated "ok"
         $avg = (float) get_post_meta($args['product_id'], '_gr_avg_rating', true);
         $count = (int) get_post_meta($args['product_id'], '_gr_review_count', true);
 

@@ -25,6 +25,7 @@ class Genius_Reviews_Admin_Page
 			update_option('gr_option_active_reviews_on_product_page', !empty($_POST['gr_option_active_reviews_on_product_page']) ? 1 : 0);
 			update_option('gr_option_active_badge_on_product_page', !empty($_POST['gr_option_active_badge_on_product_page']) ? 1 : 0);
 			update_option('gr_option_active_badge_on_collection_page', !empty($_POST['gr_option_active_badge_on_collection_page']) ? 1 : 0);
+			update_option('gr_option_fallback_reviews_all', !empty($_POST['gr_option_fallback_reviews_all']) ? 1 : 0);
 
 
 			if (isset($_POST['gr_color_brand_custom'])) {
@@ -37,6 +38,7 @@ class Genius_Reviews_Admin_Page
 		$active_reviews_on_product_page   = (int) get_option('gr_option_active_reviews_on_product_page', 0);
 		$active_badge_on_product_page = (int) get_option('gr_option_active_badge_on_product_page', 0);
 		$active_badge_on_collection_page = (int) get_option('gr_option_active_badge_on_collection_page', 0);
+		$fallback_reviews_all = (int) get_option('gr_option_fallback_reviews_all', 0);
 
 		$color_brand_custom = get_option('gr_color_brand_custom', '#58AF59');
 		?>
@@ -84,6 +86,27 @@ class Genius_Reviews_Admin_Page
 							   value="1"
 							   class="sr-only peer"
 							   <?php checked($active_reviews_on_product_page, 1); ?>>
+						<span class="absolute inset-y-0 start-0 m-[2px] size-5 rounded-full bg-white shadow transition-[inset-inline-start] peer-checked:start-5"></span>
+					</label>
+				</div>
+			</div>
+
+			<div class="p-4 border rounded-xl">
+				<label for="gr-option-fallback-reviews-all" class="block text-sm font-medium text-gray-900 mb-1">
+					<?php _e('Afficher des avis globaux si le produit n\'en a pas', 'genius-reviews'); ?>
+				</label>
+				<div class="flex items-center justify-between">
+					<p class="text-sm text-gray-600 max-w-6/10">
+						<?php _e('Si la fiche produit n’a aucun avis, afficher les avis globaux du catalogue à la place (la moyenne du produit ne change pas).', 'genius-reviews'); ?>
+					</p>
+					<label for="gr-option-fallback-reviews-all"
+						   class="relative block h-6 w-11 rounded-full bg-gray-300 transition-colors cursor-pointer has-[:checked]:bg-[var(--color-brand)]">
+						<input type="checkbox"
+							   id="gr-option-fallback-reviews-all"
+							   name="gr_option_fallback_reviews_all"
+							   value="1"
+							   class="sr-only peer"
+							   <?php checked($fallback_reviews_all, 1); ?>>
 						<span class="absolute inset-y-0 start-0 m-[2px] size-5 rounded-full bg-white shadow transition-[inset-inline-start] peer-checked:start-5"></span>
 					</label>
 				</div>

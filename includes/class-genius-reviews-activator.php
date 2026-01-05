@@ -79,6 +79,7 @@ class Genius_Reviews_Activator
 		add_option('gr_option_active_reviews_on_product_page', 1);
 		add_option('gr_option_active_badge_on_product_page', 1);
 		add_option('gr_option_active_badge_on_collection_page', 1);
+		add_option('gr_option_fallback_reviews_all', 0);
 		add_option('gr_color_brand_custom', '#58AF59');
 
 		// Demande de purge WP Rocket au prochain chargement back-office.
