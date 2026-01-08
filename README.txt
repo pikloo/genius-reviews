@@ -52,6 +52,9 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.1.7 =
+* Fix badge
+
 = 1.2.1.6 =
 * Parametre sans espace pour shortcode reviews grid et affichage badge use_count_global quand option active
 

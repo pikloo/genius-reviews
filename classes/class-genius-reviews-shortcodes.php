@@ -53,8 +53,11 @@ class Genius_Reviews_Shortcodes
     {
         global $product;
 
+        $default_use_global_count = (int) get_option('gr_option_fallback_reviews_all', 0);
+
         $atts = shortcode_atts([
             'product_id' => 0,
+            'use_global_count' => $default_use_global_count,
         ], $atts, 'genius_reviews_badge');
 
         if (empty($atts['product_id']) && function_exists('is_product') && is_product() && $product) {
