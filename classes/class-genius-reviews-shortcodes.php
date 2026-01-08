@@ -15,6 +15,7 @@ class Genius_Reviews_Shortcodes
         $atts = shortcode_atts([
             'product_id' => 0,
             'limit' => 6,
+            'remove_spacing' => 0,
         ], $atts, 'genius_reviews_grid');
 
         if (empty($atts['product_id']) && function_exists('is_product') && is_product() && $product) {

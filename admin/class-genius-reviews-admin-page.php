@@ -191,6 +191,12 @@ class Genius_Reviews_Admin_Page
 								<?php _e('Copier', 'genius-reviews'); ?>
 							</button>
 						</div>
+						<div class="flex items-center gap-2 mt-1">
+							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_grid remove_spacing="1"]</code>
+							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy='[genius_reviews_grid remove_spacing="1"]'>
+								<?php _e('Copier', 'genius-reviews'); ?>
+							</button>
+						</div>
 					</li>
 
 					<li>
@@ -239,7 +245,6 @@ class Genius_Reviews_Admin_Page
 		</div>
 	</div>
 
-	<!-- SUBMIT -->
 	<div class="pt-2 border-t">
 		<button type="submit" class="gr-btn">
 			<?php _e('Sauvegarder', 'genius-reviews'); ?>
@@ -247,7 +252,6 @@ class Genius_Reviews_Admin_Page
 	</div>
 </form>
 
-				<!-- Synchronisation -->
 				<div class="bg-white border rounded-2xl shadow-sm p-6 space-y-4 my-8">
 					<h2 class="text-lg font-medium"><?php _e('Synchronisation', 'genius-reviews'); ?></h2>
 					<p class="text-sm text-gray-600">
@@ -266,7 +270,6 @@ class Genius_Reviews_Admin_Page
 				</div>
 
 <script>
-	// Petit copier/coller pour les shortcodes
 	document.querySelectorAll('.gr-copy').forEach(btn => {
 		btn.addEventListener('click', () => {
 			const txt = btn.getAttribute('data-copy') || '';

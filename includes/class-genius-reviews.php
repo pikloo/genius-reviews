@@ -246,6 +246,7 @@ class Genius_Reviews
 		$active_reviews_on_product_page = get_option('gr_option_active_reviews_on_product_page');
 		$active_badge_on_product_page = get_option('gr_option_active_badge_on_product_page');
 		$active_badge_on_collection_page = get_option('gr_option_active_badge_on_collection_page');
+		$fallback_reviews_all = get_option('gr_option_fallback_reviews_all');
 
 
 		$this->loader->add_action('init', 'Genius_Reviews', 'register_shortcodes');
@@ -266,14 +267,20 @@ class Genius_Reviews
 		}
 
 		if ($active_badge_on_product_page != 0) {
-			add_action('woocommerce_single_product_summary', function () {
+			add_action('woocommerce_single_product_summary', function () use ($fallback_reviews_all) {
 				global $product;
 				if (!$product)
 					return;
 
-				echo Genius_Reviews_Render::badge([
+				$badge_args = [
 					'product_id' => $product->get_id(),
-				]);
+				];
+
+				if (!empty($fallback_reviews_all)) {
+					$badge_args['use_global_count'] = 1;
+				}
+
+				echo Genius_Reviews_Render::badge($badge_args);
 			}, 6);
 		}
 

@@ -47,6 +47,7 @@ class Genius_Reviews_Render
             'product_id' => 0,
             'limit' => 6,
             'sort' => 'date_desc',
+            'remove_spacing' => 0,
         ];
 
         $args = wp_parse_args($args, $defaults);
@@ -239,6 +240,7 @@ class Genius_Reviews_Render
      *
      * @param array $args {
      *     @type int $product_id ID du produit concerné.
+     *     @type int $use_global_count Affiche les stats globales (boutique) si activé.
      * }
      * @return string HTML du badge, vide si aucune donnée.
      */
@@ -246,19 +248,39 @@ class Genius_Reviews_Render
     {
         $defaults = [
             'product_id' => 0,
+            'use_global_count' => 0,
         ];
         $args = wp_parse_args($args, $defaults);
 
-        if (!$args['product_id'])
+        $is_global = !empty($args['use_global_count']);
+
+        if (!$args['product_id'] && !$is_global)
             return '';
 
-        $avg = get_post_meta($args['product_id'], '_gr_avg_rating', true);
-        $count = get_post_meta($args['product_id'], '_gr_review_count', true);
+        $avg = $args['product_id']
+            ? get_post_meta($args['product_id'], '_gr_avg_rating', true)
+            : '';
 
-        if (empty($avg) || empty($count))
+        if (!empty($avg)) {
+            $count = get_post_meta($args['product_id'], '_gr_review_count', true);
+            if (empty($count)) {
+                return '';
+            }
+            return self::render_badge($count, $avg, false);
+        }
+
+        if (!$is_global) {
             return '';
+        }
 
-        return self::render_badge($count, $avg);
+        $stats = Genius_Reviews_Query_Helper::get_global_stats();
+        $avg = $stats['avg'];
+        $count = $stats['count'];
+        if (empty($avg) || empty($count)) {
+            return '';
+        }
+
+        return self::render_badge($count, $avg, true);
     }
 
     /**
@@ -412,8 +434,7 @@ class Genius_Reviews_Render
             <?php if ($mode === 'all' && $product_id > 0): ?>
                 <?php $product = wc_get_product($product_id); ?>
                 <?php if ($product): ?>
-                    <a href="<?php echo esc_url(get_permalink($product_id)); ?>"
-                        class="gr-review-card-product">
+                    <a href="<?php echo esc_url(get_permalink($product_id)); ?>" class="gr-review-card-product">
                         <?php echo esc_html($product->get_name()); ?>
                     </a>
                 <?php endif; ?>
@@ -490,7 +511,13 @@ class Genius_Reviews_Render
         $total = max(1, array_sum($counts_by_rating));
         ?>
 
-        <div class="gr-bloc !max-w-[1260px] !p-4 md:!p-12.5 !mx-auto !space-y-8.5">
+        <?php
+        $grid_classes = 'gr-bloc !space-y-8.5';
+        if (empty($args['remove_spacing'])) {
+            $grid_classes .= ' !max-w-[1260px] !mx-auto !p-4 md:!p-12.5';
+        }
+        ?>
+        <div class="<?php echo esc_attr($grid_classes); ?>">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
                     <div class="flex flex-col gap-2">
@@ -566,7 +593,7 @@ class Genius_Reviews_Render
                     'it' => 'questionario-di-feedback',
                     'es' => 'cuestionario-de-opinion',
                     'sv' => 'frageformular-feedback',
-                    'pl' => 'kwestionariusz-feedback',     
+                    'pl' => 'kwestionariusz-feedback',
                 ];
                 $target_slug = isset($gr_slugs[$lang]) ? $gr_slugs[$lang] : $gr_slugs['fr'];
                 $target_url = home_url('/' . $target_slug . '/');
@@ -788,11 +815,12 @@ class Genius_Reviews_Render
      *
      * Utilisé sur les pages produits et collections.
      *
-     * @param int   $count Nombre total d’avis.
-     * @param float $avg   Note moyenne du produit.
+     * @param int   $count     Nombre total d’avis.
+     * @param float $avg       Note moyenne du produit.
+     * @param bool  $is_global Badge boutique.
      * @return string HTML du badge.
      */
-    private static function render_badge($count, $avg)
+    private static function render_badge($count, $avg, $is_global = false)
     {
         ob_start();
         ?>
@@ -806,6 +834,9 @@ class Genius_Reviews_Render
                     _n('%s avis', '%s avis', (int) $count, 'genius-reviews'),
                     number_format_i18n((int) $count)
                 );
+                if ($is_global) {
+                    $label .= ' (' . __('Boutique', 'genius-reviews') . ')';
+                }
                 echo esc_html($label);
                 ?>
             </span>
@@ -819,8 +850,7 @@ class Genius_Reviews_Render
     private static function render_grid_inner(WP_Query $query, $args)
     {
         ?>
-        <div class="gr-grid"
-            data-product-id="<?php echo esc_attr($args['product_id'] ?? 0); ?>">
+        <div class="gr-grid" data-product-id="<?php echo esc_attr($args['product_id'] ?? 0); ?>">
             <?php
             while ($query->have_posts()) {
                 $query->the_post();
@@ -862,13 +892,13 @@ class Genius_Reviews_Render
             <?php
             $lang = substr(get_locale(), 0, 2);
             $gr_slugs = [
-                    'fr' => 'questionnaire-feedback',
-                    'nl' => 'feedbackvragenlijst',
-                    'de' => 'fragebogen-feedback',
-                    'it' => 'questionario-di-feedback',
-                    'es' => 'cuestionario-de-opinion',
-                    'sv' => 'frageformular-feedback',
-                    'pl' => 'kwestionariusz-feedback',     
+                'fr' => 'questionnaire-feedback',
+                'nl' => 'feedbackvragenlijst',
+                'de' => 'fragebogen-feedback',
+                'it' => 'questionario-di-feedback',
+                'es' => 'cuestionario-de-opinion',
+                'sv' => 'frageformular-feedback',
+                'pl' => 'kwestionariusz-feedback',
             ];
             $target_slug = isset($gr_slugs[$lang]) ? $gr_slugs[$lang] : $gr_slugs['fr'];
             $target_url = home_url('/' . $target_slug . '/');
