@@ -52,6 +52,9 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.1.8 =
+* Fix remove_spacing all reviews
+
 = 1.2.1.7 =
 * Fix badge
 

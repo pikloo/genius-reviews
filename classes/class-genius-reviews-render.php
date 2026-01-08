@@ -296,6 +296,7 @@ class Genius_Reviews_Render
         $defaults = [
             'limit' => 12,
             'sort' => 'date_desc',
+            'remove_spacing' => 0,
         ];
         $args = wp_parse_args($args, $defaults);
 
