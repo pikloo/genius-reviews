@@ -116,6 +116,7 @@ class Genius_Reviews_Render
                 return self::grid_all_reviews([
                     'limit' => $args['limit'],
                     'sort' => $args['sort'],
+                    'remove_spacing' => $args['remove_spacing'] ?? 0,
                 ]);
             }
         }
