@@ -52,6 +52,14 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.1.10 =
+* Ajout du mode compact sur le shortcode slider via `mode="compact"` (colonne, gap réduit, 1 slide par vue) + centrage du bloc note en compact
+* Admin `genius_review` : nouvelles colonnes `Product ID`, `Title`, `Note`, `Validation` (curated), colonnes triables
+* Admin `genius_review` : `Product ID` cliquable vers l’édition de l’avis + filtres par note et par validation
+* Page `gr-options` : ajout de l’exemple shortcode compact dans la liste des shortcodes
+* Affichage auto des avis sur fiche produit déplacé pour sortir du layout en colonnes et se placer juste après le contenu principal
+* Badge aligné sur les autres blocs : calcul basé uniquement sur les avis `curated = ok`
+
 = 1.2.1.9 =
 * Fix remove_spacing all reviews new version
 

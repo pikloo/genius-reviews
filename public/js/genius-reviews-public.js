@@ -118,17 +118,16 @@
 		if (typeof Splide !== 'undefined' && $('.gr-splide').length) {
 			$('.gr-splide').each(function () {
 				const $el = $(this);
-				const splide = new Splide($el[0], {
-					type: 'loop',
-					perPage: 3,
-					perMove: 1,
-					gap: '30px',
-					arrows: false,
-					pagination: false,
-					autoplay: true,
-					interval: 5000,
-					pauseOnHover: true,
-					breakpoints: {
+				const mode = ($el.data('mode') || '').toString();
+				const isCompact = mode === 'compact';
+				const breakpoints = isCompact
+					? {
+						768: {
+							perPage: 1,
+							gap: '20px',
+						},
+					}
+					: {
 						1024: {
 							perPage: 2,
 						},
@@ -136,7 +135,18 @@
 							perPage: 1,
 							gap: '20px',
 						},
-					},
+					};
+				const splide = new Splide($el[0], {
+					type: 'loop',
+					perPage: isCompact ? 1 : 3,
+					perMove: 1,
+					gap: isCompact ? '20px' : '30px',
+					arrows: false,
+					pagination: false,
+					autoplay: true,
+					interval: 5000,
+					pauseOnHover: true,
+					breakpoints,
 				});
 
 				splide.mount();

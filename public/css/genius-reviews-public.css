@@ -187,6 +187,14 @@
   @apply w-full !max-w-[1260px] mx-auto flex flex-col md:flex-row !gap-12.5 md:items-start;
 }
 
+.gr-carousel.gr-carousel-compact {
+  @apply md:flex-col !gap-6;
+}
+
+.gr-carousel.gr-carousel-compact .gr-carousel-rating {
+  @apply md:items-center md:text-center;
+}
+
 .gr-carousel-rating {
   @apply flex flex-col items-center md:items-start text-center md:text-left pt-6 gap-2 md:flex-none;
 }
@@ -209,6 +217,13 @@
 
 .gr-carousel-slide {
   @apply h-full max-w-[360px];
+}
+
+.gr-single-product-reviews {
+  width: 100%;
+  clear: both;
+  grid-column: 1 / -1;
+  flex: 0 0 100%;
 }
 
 .gr-grid {

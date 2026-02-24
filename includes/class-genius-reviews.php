@@ -259,11 +259,13 @@ class Genius_Reviews
 					return;
 
 
+				echo '<div class="gr-single-product-reviews">';
 				echo Genius_Reviews_Render::grid([
 					'product_id' => $product->get_id(),
 					'limit' => 6,
 				]);
-			}, 14);
+				echo '</div>';
+			}, 1);
 		}
 
 		if ($active_badge_on_product_page != 0) {
@@ -309,6 +311,11 @@ class Genius_Reviews
 		$this->loader->add_action('before_delete_post', 'Genius_Reviews_CPT', 'sync_product_on_status_change');
 		$this->loader->add_action('trashed_post', 'Genius_Reviews_CPT', 'sync_product_on_status_change');
 		$this->loader->add_action('untrashed_post', 'Genius_Reviews_CPT', 'sync_product_on_status_change');
+		$this->loader->add_filter('manage_edit-genius_review_columns', 'Genius_Reviews_CPT', 'admin_columns');
+		$this->loader->add_action('manage_genius_review_posts_custom_column', 'Genius_Reviews_CPT', 'render_admin_column', 10, 2);
+		$this->loader->add_filter('manage_edit-genius_review_sortable_columns', 'Genius_Reviews_CPT', 'admin_sortable_columns');
+		$this->loader->add_action('restrict_manage_posts', 'Genius_Reviews_CPT', 'admin_filters_markup');
+		$this->loader->add_action('pre_get_posts', 'Genius_Reviews_CPT', 'admin_handle_query');
 	}
 
 	/**

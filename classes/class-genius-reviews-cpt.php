@@ -3,6 +3,10 @@ if (! defined('ABSPATH')) exit;
 
 class Genius_Reviews_CPT
 {
+    private static function curated_truthy_values()
+    {
+        return ['1', 'ok', 'true', 'yes', 'on'];
+    }
 
     private static function get_meta_fields()
     {
@@ -272,6 +276,154 @@ class Genius_Reviews_CPT
 			Genius_Reviews_Ajax::recalc_product($product_id);
 		}
 	}
+
+    public static function admin_columns($columns)
+    {
+        return [
+            'cb' => $columns['cb'],
+            'title' => __('Title', 'genius-reviews'),
+            'gr_product_id' => __('Product ID', 'genius-reviews'),
+            'gr_rating' => __('Note', 'genius-reviews'),
+            'gr_curated' => __('Validation', 'genius-reviews'),
+            'date' => $columns['date'],
+        ];
+    }
+
+    public static function render_admin_column($column, $post_id)
+    {
+        if ($column === 'gr_product_id') {
+            $product_id = (int) get_post_meta($post_id, '_gr_product_id', true);
+            if ($product_id > 0) {
+                $edit_link = get_edit_post_link($post_id);
+                if (!empty($edit_link)) {
+                    echo '<a href="' . esc_url($edit_link) . '">' . esc_html((string) $product_id) . '</a>';
+                    return;
+                }
+                echo esc_html((string) $product_id);
+                return;
+            }
+            echo '—';
+            return;
+        }
+
+        if ($column === 'gr_rating') {
+            $rating = get_post_meta($post_id, '_gr_rating', true);
+            echo $rating !== '' ? esc_html((string) $rating) : '—';
+            return;
+        }
+
+        if ($column === 'gr_curated') {
+            $raw = strtolower((string) get_post_meta($post_id, '_gr_curated', true));
+            $is_validated = in_array($raw, self::curated_truthy_values(), true);
+            echo $is_validated
+                ? esc_html__('Validé', 'genius-reviews')
+                : esc_html__('Non validé', 'genius-reviews');
+        }
+    }
+
+    public static function admin_sortable_columns($columns)
+    {
+        $columns['title'] = 'title';
+        $columns['gr_product_id'] = 'gr_product_id';
+        $columns['gr_rating'] = 'gr_rating';
+        $columns['gr_curated'] = 'gr_curated';
+        return $columns;
+    }
+
+    public static function admin_filters_markup($post_type)
+    {
+        if ($post_type !== 'genius_review') {
+            return;
+        }
+
+        $selected_rating = isset($_GET['gr_filter_rating'])
+            ? sanitize_text_field(wp_unslash($_GET['gr_filter_rating']))
+            : '';
+        $selected_curated = isset($_GET['gr_filter_curated'])
+            ? sanitize_text_field(wp_unslash($_GET['gr_filter_curated']))
+            : '';
+        ?>
+        <select name="gr_filter_rating">
+            <option value=""><?php esc_html_e('Toutes les notes', 'genius-reviews'); ?></option>
+            <?php for ($i = 5; $i >= 1; $i--): ?>
+                <option value="<?php echo esc_attr((string) $i); ?>" <?php selected($selected_rating, (string) $i); ?>>
+                    <?php echo esc_html((string) $i); ?>
+                </option>
+            <?php endfor; ?>
+        </select>
+        <select name="gr_filter_curated">
+            <option value=""><?php esc_html_e('Toutes les validations', 'genius-reviews'); ?></option>
+            <option value="1" <?php selected($selected_curated, '1'); ?>><?php esc_html_e('Validés', 'genius-reviews'); ?></option>
+            <option value="0" <?php selected($selected_curated, '0'); ?>><?php esc_html_e('Non validés', 'genius-reviews'); ?></option>
+        </select>
+        <?php
+    }
+
+    public static function admin_handle_query($query)
+    {
+        if (!is_admin() || !($query instanceof WP_Query) || !$query->is_main_query()) {
+            return;
+        }
+
+        if ($query->get('post_type') !== 'genius_review') {
+            return;
+        }
+
+        $orderby = $query->get('orderby');
+        if ($orderby === 'gr_product_id') {
+            $query->set('meta_key', '_gr_product_id');
+            $query->set('orderby', 'meta_value_num');
+        } elseif ($orderby === 'gr_rating') {
+            $query->set('meta_key', '_gr_rating');
+            $query->set('orderby', 'meta_value_num');
+        } elseif ($orderby === 'gr_curated') {
+            $query->set('meta_key', '_gr_curated');
+            $query->set('orderby', 'meta_value');
+        }
+
+        $meta_query = (array) $query->get('meta_query');
+
+        $rating_filter = isset($_GET['gr_filter_rating'])
+            ? sanitize_text_field(wp_unslash($_GET['gr_filter_rating']))
+            : '';
+        if ($rating_filter !== '' && is_numeric($rating_filter)) {
+            $meta_query[] = [
+                'key' => '_gr_rating',
+                'value' => (string) $rating_filter,
+                'compare' => '=',
+                'type' => 'NUMERIC',
+            ];
+        }
+
+        $curated_filter = isset($_GET['gr_filter_curated'])
+            ? sanitize_text_field(wp_unslash($_GET['gr_filter_curated']))
+            : '';
+        $truthy_values = self::curated_truthy_values();
+        if ($curated_filter === '1') {
+            $meta_query[] = [
+                'key' => '_gr_curated',
+                'value' => $truthy_values,
+                'compare' => 'IN',
+            ];
+        } elseif ($curated_filter === '0') {
+            $meta_query[] = [
+                'relation' => 'OR',
+                [
+                    'key' => '_gr_curated',
+                    'compare' => 'NOT EXISTS',
+                ],
+                [
+                    'key' => '_gr_curated',
+                    'value' => $truthy_values,
+                    'compare' => 'NOT IN',
+                ],
+            ];
+        }
+
+        if (!empty($meta_query)) {
+            $query->set('meta_query', $meta_query);
+        }
+    }
 
 
 	// /**

@@ -184,8 +184,10 @@ class Genius_Reviews_Render
         $defaults = [
             'limit' => 12,
             'sort' => 'rating_desc',
+            'mode' => '',
         ];
         $args = wp_parse_args($args, $defaults);
+        $args['mode'] = sanitize_key((string) ($args['mode'] ?? ''));
 
         $sort_args = Genius_Reviews_Query_Helper::map_sort($args['sort']);
 
@@ -218,7 +220,7 @@ class Genius_Reviews_Render
             return;
         }
 
-        $html = self::render_carousel($q, $avg, $count);
+        $html = self::render_carousel($q, $avg, $count, $args);
 
         // Inject JSON-LD si pas sur une page produit
         if (!is_product()) {
@@ -258,13 +260,11 @@ class Genius_Reviews_Render
         if (!$args['product_id'] && !$is_global)
             return '';
 
-        $avg = $args['product_id']
-            ? get_post_meta($args['product_id'], '_gr_avg_rating', true)
-            : '';
-
-        if (!empty($avg)) {
-            $count = get_post_meta($args['product_id'], '_gr_review_count', true);
-            if (empty($count)) {
+        if (!$is_global && !empty($args['product_id'])) {
+            $stats = Genius_Reviews_Query_Helper::get_product_stats((int) $args['product_id']);
+            $avg = (float) ($stats['avg'] ?? 0);
+            $count = (int) ($stats['count'] ?? 0);
+            if ($count < 1 || $avg <= 0) {
                 return '';
             }
             return self::render_badge($count, $avg, false);
@@ -738,9 +738,14 @@ class Genius_Reviews_Render
      * @param int      $count Nombre total d’avis.
      * @return string HTML du carrousel complet.
      */
-    private static function render_carousel(WP_Query $query, $avg, $count)
+    private static function render_carousel(WP_Query $query, $avg, $count, $args = [])
     {
         ob_start();
+        $mode = sanitize_key((string) ($args['mode'] ?? ''));
+        $carousel_classes = 'gr-bloc gr-carousel';
+        if ($mode === 'compact') {
+            $carousel_classes .= ' gr-carousel-compact';
+        }
 
         if (!$query->have_posts()) {
             echo '<div class="gr-bloc text-center !p-6">';
@@ -750,7 +755,7 @@ class Genius_Reviews_Render
         }
         ?>
 
-        <div class="gr-bloc gr-carousel">
+        <div class="<?php echo esc_attr($carousel_classes); ?>">
             <div class="gr-carousel-rating">
                 <span class="gr-carousel-label"><?php echo esc_html(self::rating_label($avg)); ?></span>
                 <div class="gr-carousel-stars">
@@ -779,7 +784,7 @@ class Genius_Reviews_Render
                 </span>
             </div>
             <div class="gr-carousel-slider">
-                <div class="splide gr-splide">
+                <div class="splide gr-splide" data-mode="<?php echo esc_attr($mode); ?>">
                     <div class="splide__track">
                         <ul class="splide__list">
                             <?php while ($query->have_posts()):

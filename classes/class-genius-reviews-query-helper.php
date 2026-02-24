@@ -106,5 +106,55 @@ class Genius_Reviews_Query_Helper
             ];
     }
 
+    /**
+     * Calcule les statistiques d'un produit (moyenne et nombre d'avis) en ne gardant
+     * que les avis validés (_gr_curated = ok).
+     *
+     * @param int $product_id
+     * @return array ['avg' => float, 'count' => int]
+     */
+    public static function get_product_stats($product_id)
+    {
+        $product_id = (int) $product_id;
+        if ($product_id <= 0) {
+            return ['avg' => 0, 'count' => 0];
+        }
+
+        $q = new WP_Query([
+            'post_type' => 'genius_review',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'post_status' => 'publish',
+            'no_found_rows' => true,
+            'meta_query' => [
+                [
+                    'key' => '_gr_product_id',
+                    'value' => $product_id,
+                    'compare' => '=',
+                ],
+                [
+                    'key' => '_gr_curated',
+                    'value' => 'ok',
+                    'compare' => '=',
+                ],
+            ],
+        ]);
+
+        $total = 0.0;
+        $count = 0;
+        foreach ($q->posts as $review_id) {
+            $rating = (float) get_post_meta($review_id, '_gr_rating', true);
+            if ($rating > 0) {
+                $total += $rating;
+                $count++;
+            }
+        }
+
+        return [
+            'avg' => $count ? round($total / $count, 2) : 0,
+            'count' => $count,
+        ];
+    }
+
 
 }
