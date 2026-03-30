@@ -71,6 +71,35 @@ class Genius_Reviews_Shortcodes
     }
 
     /**
+     * Shortcode [genius_reviews_summary]
+     *
+     * Affiche un résumé compact réutilisable.
+     */
+    public static function summary($atts = [])
+    {
+        global $product;
+
+        $atts = shortcode_atts([
+            'product_id' => 0,
+            'scope' => 'global',
+            'stars' => 1,
+            'average' => 1,
+            'count' => 1,
+            'separator' => 'sur',
+            'count_prefix' => '+ de',
+            'count_suffix' => __('avis vérifiés', 'genius-reviews'),
+        ], $atts, 'genius_reviews_summary');
+
+        if (empty($atts['product_id']) && $atts['scope'] !== 'global' && function_exists('is_product') && is_product() && $product) {
+            $atts['product_id'] = $product->get_id();
+        }
+
+        ob_start();
+        echo Genius_Reviews_Render::summary($atts);
+        return ob_get_clean();
+    }
+
+    /**
      * Shortcode [genius_reviews_all limit="12"]
      * Affiche les avis produits + avis boutique avec onglets.
      */

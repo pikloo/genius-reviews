@@ -65,6 +65,31 @@
   flex: 0 0 1rem;
 }
 
+.gr-summary-rating {
+  @apply inline-flex items-center font-sans;
+  gap: 0.35rem;
+  line-height: 1;
+}
+
+.gr-summary-rating-stars {
+  @apply inline-flex items-center;
+  gap: 1px;
+}
+
+.gr-summary-rating-average {
+  @apply text-base font-bold;
+}
+
+.gr-summary-rating-text {
+  @apply inline-flex items-center text-base;
+  gap: 0.25rem;
+}
+
+.gr-summary-rating-count,
+.gr-summary-rating-suffix {
+  @apply font-bold;
+}
+
 .gr-splide {
   @apply relative w-full min-w-0;
 }

@@ -65,6 +65,7 @@ Oui, un widget “Genius Reviews” est inclus.
 
 = 1.2.1.9 =
 * Fix remove_spacing all reviews new version
+* Shortcode summary
 
 = 1.2.1.7 =
 * Fix badge

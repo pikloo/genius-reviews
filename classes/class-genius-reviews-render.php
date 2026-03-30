@@ -285,6 +285,72 @@ class Genius_Reviews_Render
     }
 
     /**
+     * Affiche un résumé compact réutilisable.
+     *
+     * @param array $args {
+     *     @type int    $product_id    ID du produit.
+     *     @type string $scope         global|product
+     *     @type int    $stars         Affiche les étoiles.
+     *     @type int    $average       Affiche la moyenne.
+     *     @type int    $count         Affiche le compteur.
+     *     @type string $separator     Texte entre moyenne et compteur.
+     *     @type string $count_prefix  Texte avant le nombre d'avis.
+     *     @type string $count_suffix  Texte après le nombre d'avis.
+     * }
+     * @return string
+     */
+    public static function summary($args = [])
+    {
+        $defaults = [
+            'product_id' => 0,
+            'scope' => 'global',
+            'stars' => 1,
+            'average' => 1,
+            'count' => 1,
+            'separator' => 'sur',
+            'count_prefix' => '+ de',
+            'count_suffix' => __('avis vérifiés', 'genius-reviews'),
+        ];
+
+        $args = wp_parse_args($args, $defaults);
+
+        $scope = sanitize_key((string) $args['scope']);
+        $product_id = (int) $args['product_id'];
+        $show_stars = !empty($args['stars']);
+        $show_average = !empty($args['average']);
+        $show_count = !empty($args['count']);
+        $separator = sanitize_text_field((string) $args['separator']);
+        $count_prefix = sanitize_text_field((string) $args['count_prefix']);
+        $count_suffix = sanitize_text_field((string) $args['count_suffix']);
+
+        if ($scope === 'product' && $product_id > 0) {
+            $stats = Genius_Reviews_Query_Helper::get_product_stats($product_id);
+        } else {
+            $stats = Genius_Reviews_Query_Helper::get_global_stats();
+        }
+
+        $avg = (float) ($stats['avg'] ?? 0);
+        $count = (int) ($stats['count'] ?? 0);
+
+        if ($avg <= 0 || $count < 1) {
+            return '';
+        }
+
+        return self::render_summary(
+            $avg,
+            $count,
+            [
+                'show_stars' => $show_stars,
+                'show_average' => $show_average,
+                'show_count' => $show_count,
+                'separator' => $separator,
+                'count_prefix' => $count_prefix,
+                'count_suffix' => $count_suffix,
+            ]
+        );
+    }
+
+    /**
      * Affiche une grille complète avec onglets :
      * - Avis Produits (product_id > 0)
      * - Avis Boutique (product_id = 0)
@@ -848,6 +914,62 @@ class Genius_Reviews_Render
                 ?>
             </span>
         </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Rendu compact réutilisable.
+     *
+     * @param float $avg
+     * @param int   $count
+     * @param array $args
+     * @return string
+     */
+    private static function render_summary($avg, $count, $args = [])
+    {
+        $defaults = [
+            'show_stars' => true,
+            'show_average' => true,
+            'show_count' => true,
+            'separator' => 'sur',
+            'count_prefix' => '+ de',
+            'count_suffix' => __('avis vérifiés', 'genius-reviews'),
+        ];
+
+        $args = wp_parse_args($args, $defaults);
+        $rounded_avg = max(1, min(5, round($avg)));
+        $formatted_avg = number_format_i18n($avg, 1);
+        $formatted_count = number_format_i18n($count);
+
+        ob_start();
+        ?>
+        <span class="gr-summary-rating" aria-label="<?php echo esc_attr(sprintf(__('Note moyenne de %1$s sur 5 basee sur %2$s avis', 'genius-reviews'), $formatted_avg, $formatted_count)); ?>">
+            <?php if (!empty($args['show_stars'])): ?>
+                <span class="gr-summary-rating-stars" aria-hidden="true">
+                    <?php echo self::render_stars($rounded_avg, 'gr-summary-rating-star'); ?>
+                </span>
+            <?php endif; ?>
+
+            <?php if (!empty($args['show_average'])): ?>
+                <span class="gr-summary-rating-average"><?php echo esc_html($formatted_avg); ?></span>
+            <?php endif; ?>
+
+            <?php if (!empty($args['show_count'])): ?>
+                <span class="gr-summary-rating-text">
+                    <?php if (!empty($args['show_average']) && $args['separator'] !== ''): ?>
+                        <span class="gr-summary-rating-separator"><?php echo esc_html($args['separator']); ?></span>
+                    <?php endif; ?>
+                    <?php if ($args['count_prefix'] !== ''): ?>
+                        <span class="gr-summary-rating-prefix"><?php echo esc_html($args['count_prefix']); ?></span>
+                    <?php endif; ?>
+                    <span class="gr-summary-rating-count"><?php echo esc_html($formatted_count); ?></span>
+                    <?php if ($args['count_suffix'] !== ''): ?>
+                        <span class="gr-summary-rating-suffix"><?php echo esc_html($args['count_suffix']); ?></span>
+                    <?php endif; ?>
+                </span>
+            <?php endif; ?>
+        </span>
         <?php
         return ob_get_clean();
     }
