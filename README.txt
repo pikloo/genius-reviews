@@ -52,6 +52,9 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.1.11 =
+* Fix taille svg compatible FF
+
 = 1.2.1.10 =
 * Ajout du mode compact sur le shortcode slider via `mode="compact"` (colonne, gap réduit, 1 slide par vue) + centrage du bloc note en compact
 * Admin `genius_review` : nouvelles colonnes `Product ID`, `Title`, `Note`, `Validation` (curated), colonnes triables

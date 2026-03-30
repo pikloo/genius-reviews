@@ -58,7 +58,11 @@
 }
 
 .gr-badge-star-size {
-  @apply w-4 h-4;
+  width: 1rem;
+  height: 1rem;
+  min-width: 1rem;
+  min-height: 1rem;
+  flex: 0 0 1rem;
 }
 
 .gr-splide {
@@ -120,7 +124,11 @@
 }
 
 .gr-review-card-star {
-  @apply w-[18px] h-[18px];
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  flex: 0 0 18px;
 }
 
 .gr-review-card-date {
@@ -247,7 +255,12 @@
 }
 
 .gr-no-reviews-star {
-  @apply w-5 h-5 text-gray-light;
+  width: 1.25rem;
+  height: 1.25rem;
+  min-width: 1.25rem;
+  min-height: 1.25rem;
+  flex: 0 0 1.25rem;
+  @apply text-gray-light;
 }
 
 .gr-no-reviews-text {
