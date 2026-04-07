@@ -10,6 +10,7 @@
     const $rows = $('#gr-product-rows');
 
     let total = 0;
+    let importId = '';
 
     $form.on('submit', function (e) {
       e.preventDefault();
@@ -29,8 +30,9 @@
         success: (res) => {
           if (res.success) {
             total = res.data.total - 1;
+            importId = res.data.import_id || '';
             $stats.text(`Fichier chargé (${total} lignes).`);
-            processChunk(0); // on démarre à 0
+            processChunk();
           } else {
             alert('Erreur: ' + JSON.stringify(res.data));
           }
@@ -48,7 +50,8 @@
         data: {
           action: 'gr_process_chunk',
           nonce: GR_ADMIN.nonce,
-          chunk: 150
+          chunk: 150,
+          import_id: importId
         },
         success: (res) => {
           if (!res.success) {

@@ -52,6 +52,9 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.1.12 =
+* Suppression "Lato" & remplacement transient par user meta temporaire pour l'import admin
+
 = 1.2.1.11 =
 * Fix taille svg compatible FF
 

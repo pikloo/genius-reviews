@@ -8,8 +8,6 @@ class Genius_Reviews_Ajax
     //--------IMPORT CSV-------//
     public static function ajax_upload_csv()
     {
-        error_log('file :' . print_r($_FILES, true));
-
         check_ajax_referer('gr_import_nonce', 'nonce');
         if (!current_user_can('manage_woocommerce'))
             wp_send_json_error('perm');
@@ -31,9 +29,13 @@ class Genius_Reviews_Ajax
             'rows' => 0,
             'per_product' => [],
         ];
-        set_transient(self::state_key(), $state, HOUR_IN_SECONDS);
+        $import_id = wp_generate_uuid4();
+        self::save_import_state($import_id, $state);
 
-        wp_send_json_success(['total' => self::count_lines($uploaded['file'])]);
+        wp_send_json_success([
+            'total' => self::count_lines($uploaded['file']),
+            'import_id' => $import_id,
+        ]);
     }
 
     public static function ajax_process_chunk()
@@ -43,7 +45,8 @@ class Genius_Reviews_Ajax
             wp_send_json_error('perm');
         }
 
-        $state = get_transient(self::state_key());
+        $import_id = isset($_POST['import_id']) ? sanitize_text_field(wp_unslash($_POST['import_id'])) : '';
+        $state = self::get_import_state($import_id);
         if (!$state || empty($state['file'])) {
             wp_send_json_error(['msg' => 'state-missing']);
         }
@@ -217,9 +220,9 @@ class Genius_Reviews_Ajax
                 $state['per_product'][$pid]['avg'] = (float) get_post_meta($pid, '_gr_avg_rating', true);
                 $state['per_product'][$pid]['count'] = (int) get_post_meta($pid, '_gr_review_count', true);
             }
-            set_transient(self::state_key(), $state, MINUTE_IN_SECONDS);
+            self::delete_import_state($import_id);
         } else {
-            set_transient(self::state_key(), $state, HOUR_IN_SECONDS);
+            self::save_import_state($import_id, $state);
         }
 
         $progress_step = $total > 0 ? round(100 / $total, 2) : 0;
@@ -359,9 +362,42 @@ class Genius_Reviews_Ajax
         return array_keys($normalized);
     }
 
-    private static function state_key()
+    private static function save_import_state($import_id, $state)
     {
-        return 'gr_state_' . get_current_user_id();
+        if ($import_id === '') {
+            return false;
+        }
+
+        return update_user_meta(get_current_user_id(), self::state_key($import_id), $state);
+    }
+
+    private static function get_import_state($import_id)
+    {
+        if ($import_id === '') {
+            return false;
+        }
+
+        return get_user_meta(get_current_user_id(), self::state_key($import_id), true);
+    }
+
+    private static function delete_import_state($import_id)
+    {
+        if ($import_id === '') {
+            return false;
+        }
+
+        return delete_user_meta(get_current_user_id(), self::state_key($import_id));
+    }
+
+    private static function state_key($import_id = '')
+    {
+        $user_id = get_current_user_id();
+
+        if ($import_id === '') {
+            return 'gr_state_' . $user_id;
+        }
+
+        return 'gr_state_' . $user_id . '_' . $import_id;
     }
 
     private static function count_lines($file)

@@ -91,12 +91,6 @@ class Genius_Reviews_Public
 			'all'
 		);
 
-		wp_enqueue_style(
-			'gr-lato',
-			'https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap',
-			[],
-			null
-		);
 	}
 
 	/**
