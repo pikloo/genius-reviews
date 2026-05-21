@@ -32,6 +32,10 @@ class Genius_Reviews_Admin_Page
 				update_option('gr_color_brand_custom', sanitize_hex_color($_POST['gr_color_brand_custom']));
 			}
 
+			if (isset($_POST['gr_term_schema_refresh_interval']) && is_callable(['Genius_Reviews_Term_Schema_Cache', 'set_refresh_interval'])) {
+				Genius_Reviews_Term_Schema_Cache::set_refresh_interval((int) $_POST['gr_term_schema_refresh_interval']);
+			}
+
 			echo '<div class="notice notice-success is-dismissible"><p>' . __('Options sauvegardées.', 'genius-reviews') . '</p></div>';
 		}
 
@@ -41,6 +45,12 @@ class Genius_Reviews_Admin_Page
 		$fallback_reviews_all = (int) get_option('gr_option_fallback_reviews_all', 0);
 
 		$color_brand_custom = get_option('gr_color_brand_custom', '#58AF59');
+		$term_schema_refresh_interval = is_callable(['Genius_Reviews_Term_Schema_Cache', 'get_refresh_interval'])
+			? Genius_Reviews_Term_Schema_Cache::get_refresh_interval()
+			: WEEK_IN_SECONDS;
+		$term_schema_refresh_choices = is_callable(['Genius_Reviews_Term_Schema_Cache', 'get_refresh_interval_choices'])
+			? Genius_Reviews_Term_Schema_Cache::get_refresh_interval_choices()
+			: [];
 		?>
 		<div class="wrap !p-0">
 			<div class="tw bg-white container mx-auto p-6">
@@ -248,6 +258,24 @@ class Genius_Reviews_Admin_Page
 					<?php _e('Paramètres de tri disponibles : date_desc, date_asc, rating_desc, rating_asc.', 'genius-reviews'); ?>
 				</p>
 			</div>
+
+			<div class="p-4 border rounded-xl">
+				<label for="gr-term-schema-refresh-interval" class="block text-sm font-medium text-gray-900 mb-2">
+					<?php _e('Cache schémas catégories', 'genius-reviews'); ?>
+				</label>
+				<select id="gr-term-schema-refresh-interval"
+						name="gr_term_schema_refresh_interval"
+						class="block w-full border rounded-lg px-3 py-2">
+					<?php foreach ($term_schema_refresh_choices as $interval => $label): ?>
+						<option value="<?php echo esc_attr((string) $interval); ?>" <?php selected($term_schema_refresh_interval, (int) $interval); ?>>
+							<?php echo esc_html($label); ?>
+						</option>
+					<?php endforeach; ?>
+				</select>
+				<p class="text-xs text-gray-500 mt-2">
+					<?php _e('Fréquence du recalcul automatique des JSON-LD catégories et attributs produits.', 'genius-reviews'); ?>
+				</p>
+			</div>
 		</div>
 	</div>
 
@@ -272,6 +300,26 @@ class Genius_Reviews_Admin_Page
 							<?php _e('Synchroniser les notes produits', 'genius-reviews'); ?>
 						</button>
 						<span id="gr-sync-status" class="text-sm text-gray-600"></span>
+					</div>
+					<div class="flex flex-col gap-3 sm:flex-row sm:items-center pt-3 border-t">
+						<button type="button"
+							id="gr-refresh-term-schema"
+							class="gr-btn w-full sm:w-auto"
+							data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
+							data-nonce="<?php echo esc_attr(wp_create_nonce('gr_refresh_term_schema_cache')); ?>">
+							<?php _e('Tester le cron des schémas catégories', 'genius-reviews'); ?>
+						</button>
+						<span id="gr-term-schema-status" class="text-sm text-gray-600"></span>
+					</div>
+					<div class="flex flex-col gap-3 sm:flex-row sm:items-center pt-3 border-t">
+						<button type="button"
+							id="gr-clear-term-schema"
+							class="gr-btn w-full sm:w-auto"
+							data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
+							data-nonce="<?php echo esc_attr(wp_create_nonce('gr_clear_term_schema_cache')); ?>">
+							<?php _e('Vider le cache des schémas', 'genius-reviews'); ?>
+						</button>
+						<span id="gr-clear-term-schema-status" class="text-sm text-gray-600"></span>
 					</div>
 				</div>
 
@@ -331,6 +379,101 @@ class Genius_Reviews_Admin_Page
 				.then(() => {
 					syncBtn.disabled = false;
 					syncBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+				});
+		});
+	}
+
+	const termSchemaBtn = document.getElementById('gr-refresh-term-schema');
+	if (termSchemaBtn) {
+		const termSchemaStatus = document.getElementById('gr-term-schema-status');
+		const runningLabel = '<?php echo esc_js(__('Recalcul des schémas en cours…', 'genius-reviews')); ?>';
+		const successLabel = '<?php echo esc_js(__('Recalcul terminé : %schemas schéma(s), %skipped ignoré(s), %terms terme(s) parcouru(s).', 'genius-reviews')); ?>';
+		const errorLabel = '<?php echo esc_js(__('Erreur lors du recalcul des schémas.', 'genius-reviews')); ?>';
+
+		termSchemaBtn.addEventListener('click', () => {
+			const ajaxUrl = termSchemaBtn.getAttribute('data-ajax');
+			const nonce = termSchemaBtn.getAttribute('data-nonce');
+			if (!ajaxUrl || !nonce) {
+				return;
+			}
+
+			termSchemaBtn.disabled = true;
+			termSchemaBtn.classList.add('opacity-70', 'cursor-not-allowed');
+			termSchemaStatus.textContent = runningLabel;
+
+			const body = 'action=gr_refresh_term_schema_cache&nonce=' + encodeURIComponent(nonce);
+
+			fetch(ajaxUrl, {
+				method: 'POST',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+				},
+				body
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (!data || !data.success) {
+						throw new Error('schema_refresh_failed');
+					}
+
+					const stats = data.data || {};
+					termSchemaStatus.textContent = successLabel
+						.replace('%schemas', parseInt(stats.schemas || 0, 10))
+						.replace('%skipped', parseInt(stats.skipped || 0, 10))
+						.replace('%terms', parseInt(stats.terms || 0, 10));
+				})
+				.catch(() => {
+					termSchemaStatus.textContent = errorLabel;
+				})
+				.then(() => {
+					termSchemaBtn.disabled = false;
+					termSchemaBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+				});
+		});
+	}
+
+	const clearTermSchemaBtn = document.getElementById('gr-clear-term-schema');
+	if (clearTermSchemaBtn) {
+		const clearTermSchemaStatus = document.getElementById('gr-clear-term-schema-status');
+		const runningLabel = '<?php echo esc_js(__('Vidage du cache en cours…', 'genius-reviews')); ?>';
+		const successLabel = '<?php echo esc_js(__('Cache des schémas vidé.', 'genius-reviews')); ?>';
+		const errorLabel = '<?php echo esc_js(__('Erreur lors du vidage du cache.', 'genius-reviews')); ?>';
+
+		clearTermSchemaBtn.addEventListener('click', () => {
+			const ajaxUrl = clearTermSchemaBtn.getAttribute('data-ajax');
+			const nonce = clearTermSchemaBtn.getAttribute('data-nonce');
+			if (!ajaxUrl || !nonce) {
+				return;
+			}
+
+			clearTermSchemaBtn.disabled = true;
+			clearTermSchemaBtn.classList.add('opacity-70', 'cursor-not-allowed');
+			clearTermSchemaStatus.textContent = runningLabel;
+
+			const body = 'action=gr_clear_term_schema_cache&nonce=' + encodeURIComponent(nonce);
+
+			fetch(ajaxUrl, {
+				method: 'POST',
+				credentials: 'same-origin',
+				headers: {
+					'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+				},
+				body
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (!data || !data.success) {
+						throw new Error('schema_clear_failed');
+					}
+					clearTermSchemaStatus.textContent = successLabel;
+				})
+				.catch(() => {
+					clearTermSchemaStatus.textContent = errorLabel;
+				})
+				.then(() => {
+					clearTermSchemaBtn.disabled = false;
+					clearTermSchemaBtn.classList.remove('opacity-70', 'cursor-not-allowed');
 				});
 		});
 	}

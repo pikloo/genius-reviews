@@ -32,6 +32,11 @@ class Genius_Reviews_Deactivator
 	 */
 	public static function deactivate()
 	{
+		if (!class_exists('Genius_Reviews_Term_Schema_Cache')) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'classes/class-genius-reviews-term-schema-cache.php';
+		}
+
+		Genius_Reviews_Term_Schema_Cache::clear_schedule();
 		flush_rewrite_rules();
 	}
 }

@@ -132,6 +132,10 @@ class Genius_Reviews
 		// Page Options/Import (menu + vue + ajax)
 		require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-genius-reviews-admin-page.php';
 
+		// Cache JSON-LD catégories et attributs produit
+		require_once plugin_dir_path(dirname(__FILE__)) . 'classes/class-genius-reviews-term-schema-cache.php';
+		Genius_Reviews_Term_Schema_Cache::init();
+
 		//Output JSON LD
 		require_once plugin_dir_path(dirname(__FILE__)) . 'classes/class-genius-reviews-output-json-ld.php';
 
@@ -207,6 +211,8 @@ class Genius_Reviews
 		$this->loader->add_action('wp_ajax_gr_upload_csv', 'Genius_Reviews_Ajax', 'ajax_upload_csv');
 		$this->loader->add_action('wp_ajax_gr_process_chunk', 'Genius_Reviews_Ajax', 'ajax_process_chunk');
 		$this->loader->add_action('wp_ajax_gr_sync_products', 'Genius_Reviews_Ajax', 'ajax_sync_products');
+		$this->loader->add_action('wp_ajax_gr_refresh_term_schema_cache', 'Genius_Reviews_Ajax', 'ajax_refresh_term_schema_cache');
+		$this->loader->add_action('wp_ajax_gr_clear_term_schema_cache', 'Genius_Reviews_Ajax', 'ajax_clear_term_schema_cache');
 		add_filter('upload_mimes', [$this, 'allow_csv_uploads']);
 
 	}
@@ -328,6 +334,31 @@ class Genius_Reviews
 	{
 		$this->loader->add_action('upgrader_process_complete', $this, 'purge_wp_rocket_after_update', 10, 2);
 		$this->loader->add_action('admin_init', $this, 'purge_wp_rocket_on_first_load');
+		$this->loader->add_action('admin_init', $this, 'maybe_install_term_schema_cache');
+	}
+
+	/**
+	 * Ensure DB upgrades also run after plugin updates, not only activation.
+	 *
+	 * @return void
+	 */
+	public function maybe_install_term_schema_cache()
+	{
+		$installed_version = get_option('gr_term_schema_cache_version', '');
+
+		if (is_callable(['Genius_Reviews_Term_Schema_Cache', 'schedule_refresh'])) {
+			Genius_Reviews_Term_Schema_Cache::schedule_refresh();
+		}
+
+		if ($installed_version === GENIUS_REVIEWS_VERSION) {
+			return;
+		}
+
+		if (is_callable(['Genius_Reviews_Term_Schema_Cache', 'install'])) {
+			Genius_Reviews_Term_Schema_Cache::install();
+			Genius_Reviews_Term_Schema_Cache::queue_refresh();
+			update_option('gr_term_schema_cache_version', GENIUS_REVIEWS_VERSION, false);
+		}
 	}
 
 	/**

@@ -5,7 +5,7 @@ Tags: reviews, woocommerce, testimonials, import, csv, json-ld, schema
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.1
+Stable tag: 1.2.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -52,6 +52,16 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.2 =
+* Ajout d'un cache JSON-LD pour les pages catégories WooCommerce et attributs produits (`pa_*`) avec recalcul par cron.
+* Génération d'un schéma `Product` agrégé pour les catégories et attributs avec `AggregateOffer` et `aggregateRating` calculé depuis les avis Genius Reviews.
+* Calcul des notes catégories/attributs via moyenne pondérée des metas `_gr_avg_rating` et `_gr_review_count`.
+* Injection du schéma catégories/attributs uniquement si au moins 3 avis sont disponibles.
+* Fusion des notes Genius Reviews dans le schéma `Product` RankMath pour éviter les doublons sur les fiches produits.
+
+= 1.2.1.13 =
+* Correction style badge et fix génération données enrichies compatible rank math
+
 = 1.2.1.12 =
 * Suppression "Lato" & remplacement transient par user meta temporaire pour l'import admin
 

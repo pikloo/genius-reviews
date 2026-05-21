@@ -220,6 +220,9 @@ class Genius_Reviews_Ajax
                 $state['per_product'][$pid]['avg'] = (float) get_post_meta($pid, '_gr_avg_rating', true);
                 $state['per_product'][$pid]['count'] = (int) get_post_meta($pid, '_gr_review_count', true);
             }
+            if (is_callable(['Genius_Reviews_Term_Schema_Cache', 'queue_refresh'])) {
+                Genius_Reviews_Term_Schema_Cache::queue_refresh();
+            }
             self::delete_import_state($import_id);
         } else {
             self::save_import_state($import_id, $state);
@@ -278,6 +281,46 @@ class Genius_Reviews_Ajax
         ]);
     }
 
+    public static function ajax_refresh_term_schema_cache()
+    {
+        check_ajax_referer('gr_refresh_term_schema_cache', 'nonce');
+        if (!current_user_can('manage_woocommerce')) {
+            wp_send_json_error('perm');
+        }
+
+        if (!is_callable(['Genius_Reviews_Term_Schema_Cache', 'refresh'])) {
+            wp_send_json_error('schema-cache-unavailable');
+        }
+
+        $stats = Genius_Reviews_Term_Schema_Cache::refresh();
+
+        wp_send_json_success([
+            'terms' => isset($stats['terms']) ? (int) $stats['terms'] : 0,
+            'schemas' => isset($stats['schemas']) ? (int) $stats['schemas'] : 0,
+            'skipped' => isset($stats['skipped']) ? (int) $stats['skipped'] : 0,
+        ]);
+    }
+
+    public static function ajax_clear_term_schema_cache()
+    {
+        check_ajax_referer('gr_clear_term_schema_cache', 'nonce');
+        if (!current_user_can('manage_woocommerce')) {
+            wp_send_json_error('perm');
+        }
+
+        if (!is_callable(['Genius_Reviews_Term_Schema_Cache', 'clear_cache'])) {
+            wp_send_json_error('schema-cache-unavailable');
+        }
+
+        $cleared = Genius_Reviews_Term_Schema_Cache::clear_cache();
+
+        if (!$cleared) {
+            wp_send_json_error('clear-failed');
+        }
+
+        wp_send_json_success();
+    }
+
 
     public static function recalc_product($product_id)
     {
@@ -312,6 +355,10 @@ class Genius_Reviews_Ajax
         $avg = $count ? round($total / $count, 2) : 0;
         update_post_meta($product_id, '_gr_avg_rating', $avg);
         update_post_meta($product_id, '_gr_review_count', $count);
+
+        if (is_callable(['Genius_Reviews_Term_Schema_Cache', 'queue_refresh'])) {
+            Genius_Reviews_Term_Schema_Cache::queue_refresh();
+        }
     }
 
     private static function generate_uid($data)

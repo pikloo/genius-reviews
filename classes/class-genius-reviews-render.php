@@ -222,16 +222,6 @@ class Genius_Reviews_Render
 
         $html = self::render_carousel($q, $avg, $count, $args);
 
-        // Inject JSON-LD si pas sur une page produit
-        if (!is_product()) {
-            $json = Genius_Reviews_Output_Json_Ld::output_slider_jsonld($q->posts);
-            if ($json) {
-                add_action('wp_footer', function () use ($json) {
-                    echo '<script type=\"application/ld+json\">' . $json . '</script>';
-                }, 5);
-            }
-        }
-
         return $html;
     }
 
@@ -255,22 +245,23 @@ class Genius_Reviews_Render
         ];
         $args = wp_parse_args($args, $defaults);
 
-        $is_global = !empty($args['use_global_count']);
+        $allow_global_fallback = !empty($args['use_global_count']);
+        $product_id = (int) $args['product_id'];
 
-        if (!$args['product_id'] && !$is_global)
+        if (!$product_id && !$allow_global_fallback)
             return '';
 
-        if (!$is_global && !empty($args['product_id'])) {
-            $stats = Genius_Reviews_Query_Helper::get_product_stats((int) $args['product_id']);
+        if ($product_id) {
+            $stats = Genius_Reviews_Query_Helper::get_product_stats($product_id);
             $avg = (float) ($stats['avg'] ?? 0);
             $count = (int) ($stats['count'] ?? 0);
-            if ($count < 1 || $avg <= 0) {
-                return '';
+
+            if ($count > 0 && $avg > 0) {
+                return self::render_badge($count, $avg, false);
             }
-            return self::render_badge($count, $avg, false);
         }
 
-        if (!$is_global) {
+        if (!$allow_global_fallback) {
             return '';
         }
 
@@ -423,15 +414,6 @@ class Genius_Reviews_Render
         $counts_by_rating = $stats['counts_by_rating'];
 
         $args['mode'] = 'all';
-
-        $all_reviews = array_merge($q_products->posts, $q_shop->posts);
-        $json = Genius_Reviews_Output_Json_Ld::output_slider_jsonld($all_reviews);
-
-        if ($json) {
-            add_action('wp_footer', function () use ($json) {
-                echo '<script type="application/ld+json">' . $json . '</script>';
-            }, 5);
-        }
 
         return self::render_grid(
             [

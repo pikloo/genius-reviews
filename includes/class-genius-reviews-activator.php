@@ -65,9 +65,15 @@ class Genius_Reviews_Activator
 	{
 		// Enregistre le CPT
 		if (!class_exists('Genius_Reviews_CPT')) {
-			require_once plugin_dir_path(__FILE__) . 'class-genius-reviews-cpt.php';
+			require_once plugin_dir_path(dirname(__FILE__)) . 'classes/class-genius-reviews-cpt.php';
 		}
 		Genius_Reviews_CPT::register();
+
+		if (!class_exists('Genius_Reviews_Term_Schema_Cache')) {
+			require_once plugin_dir_path(dirname(__FILE__)) . 'classes/class-genius-reviews-term-schema-cache.php';
+		}
+		Genius_Reviews_Term_Schema_Cache::install();
+		Genius_Reviews_Term_Schema_Cache::queue_refresh();
 
 		flush_rewrite_rules();
 
