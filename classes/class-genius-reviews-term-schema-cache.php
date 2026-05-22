@@ -301,6 +301,42 @@ class Genius_Reviews_Term_Schema_Cache
     }
 
     /**
+     * Get cached rating stats for a term, warming the cache for this term if needed.
+     *
+     * @param WP_Term $term
+     * @return array
+     */
+    public static function get_term_stats(WP_Term $term)
+    {
+        global $wpdb;
+
+        self::get_or_refresh_schema($term);
+
+        $table = self::get_table_name();
+        $row = $wpdb->get_row(
+            $wpdb->prepare(
+                "SELECT rating_value, review_count FROM {$table} WHERE term_id = %d AND taxonomy = %s AND review_count >= %d LIMIT 1",
+                (int) $term->term_id,
+                (string) $term->taxonomy,
+                self::MIN_REVIEWS
+            ),
+            ARRAY_A
+        );
+
+        if (empty($row)) {
+            return [
+                'avg' => 0,
+                'count' => 0,
+            ];
+        }
+
+        return [
+            'avg' => (float) $row['rating_value'],
+            'count' => (int) $row['review_count'],
+        ];
+    }
+
+    /**
      * Refresh one term immediately, then return its cached schema.
      *
      * This is used as a narrow fallback when the weekly cron has not warmed the cache yet.

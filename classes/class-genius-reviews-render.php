@@ -242,8 +242,32 @@ class Genius_Reviews_Render
         $defaults = [
             'product_id' => 0,
             'use_global_count' => 0,
+            'scope' => 'product',
+            'term_id' => 0,
+            'taxonomy' => '',
+            'mode' => '',
         ];
         $args = wp_parse_args($args, $defaults);
+
+        $mode = sanitize_key((string) $args['mode']);
+        $scope = sanitize_key((string) $args['scope']);
+
+        if ($scope === 'category') {
+            $term = self::resolve_badge_term($args);
+            if (!$term instanceof WP_Term || !is_callable(['Genius_Reviews_Term_Schema_Cache', 'get_term_stats'])) {
+                return '';
+            }
+
+            $stats = Genius_Reviews_Term_Schema_Cache::get_term_stats($term);
+            $avg = (float) ($stats['avg'] ?? 0);
+            $count = (int) ($stats['count'] ?? 0);
+
+            if ($count < 1 || $avg <= 0) {
+                return '';
+            }
+
+            return self::render_badge($count, $avg, false, $mode);
+        }
 
         $allow_global_fallback = !empty($args['use_global_count']);
         $product_id = (int) $args['product_id'];
@@ -257,7 +281,7 @@ class Genius_Reviews_Render
             $count = (int) ($stats['count'] ?? 0);
 
             if ($count > 0 && $avg > 0) {
-                return self::render_badge($count, $avg, false);
+                return self::render_badge($count, $avg, false, $mode);
             }
         }
 
@@ -272,7 +296,31 @@ class Genius_Reviews_Render
             return '';
         }
 
-        return self::render_badge($count, $avg, true);
+        return self::render_badge($count, $avg, true, $mode);
+    }
+
+    /**
+     * Resolve term for category badge.
+     *
+     * @param array $args
+     * @return WP_Term|null
+     */
+    private static function resolve_badge_term($args)
+    {
+        $term_id = (int) ($args['term_id'] ?? 0);
+        $taxonomy = sanitize_key((string) ($args['taxonomy'] ?? ''));
+
+        if ($term_id > 0 && $taxonomy !== '') {
+            $term = get_term($term_id, $taxonomy);
+            return $term instanceof WP_Term ? $term : null;
+        }
+
+        $queried = get_queried_object();
+        if ($queried instanceof WP_Term && ($queried->taxonomy === 'product_cat' || strpos($queried->taxonomy, 'pa_') === 0)) {
+            return $queried;
+        }
+
+        return null;
     }
 
     /**
@@ -873,15 +921,32 @@ class Genius_Reviews_Render
      * @param int   $count     Nombre total d’avis.
      * @param float $avg       Note moyenne du produit.
      * @param bool  $is_global Badge boutique.
+     * @param string $mode     Variante d'affichage.
      * @return string HTML du badge.
      */
-    private static function render_badge($count, $avg, $is_global = false)
+    private static function render_badge($count, $avg, $is_global = false, $mode = '')
     {
+        $mode = sanitize_key((string) $mode);
+        $rounded_avg = max(1, min(5, round((float) $avg)));
+
         ob_start();
+        if ($mode === 'compact_rating') {
+            ?>
+            <div class="gr-badge gr-badge-compact-rating" aria-label="<?php echo esc_attr(sprintf(__('Excellent %s base sur %s avis', 'genius-reviews'), number_format_i18n((float) $avg, 1), number_format_i18n((int) $count))); ?>">
+                <span class="gr-badge-rating-label">
+                    <?php echo esc_html(sprintf(__('Excellent %s', 'genius-reviews'), number_format_i18n((float) $avg, 1))); ?>
+                </span>
+                <div class="gr-badge-stars" aria-hidden="true">
+                    <?php echo self::render_stars($rounded_avg, "gr-badge-star-size"); ?>
+                </div>
+            </div>
+            <?php
+            return ob_get_clean();
+        }
         ?>
         <div class="gr-badge">
             <div class="gr-badge-stars">
-                <?php echo self::render_stars(round($avg), "gr-badge-star-size"); ?>
+                <?php echo self::render_stars($rounded_avg, "gr-badge-star-size"); ?>
             </div>
             <span class="gr-badge-count">
                 <?php

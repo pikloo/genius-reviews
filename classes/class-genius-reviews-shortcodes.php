@@ -59,9 +59,13 @@ class Genius_Reviews_Shortcodes
         $atts = shortcode_atts([
             'product_id' => 0,
             'use_global_count' => $default_use_global_count,
+            'scope' => 'product',
+            'term_id' => 0,
+            'taxonomy' => '',
+            'mode' => '',
         ], $atts, 'genius_reviews_badge');
 
-        if (empty($atts['product_id']) && function_exists('is_product') && is_product() && $product) {
+        if (empty($atts['product_id']) && $atts['scope'] !== 'category' && function_exists('is_product') && is_product() && $product) {
             $atts['product_id'] = $product->get_id();
         }
 

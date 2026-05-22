@@ -60,6 +60,23 @@
   flex: 0 0 1rem;
 }
 
+.gr-badge-compact-rating {
+  @apply inline-flex !my-0;
+  gap: 0.35rem !important;
+}
+
+.gr-badge-compact-rating .gr-badge-stars {
+  gap: 1px;
+}
+
+.gr-badge-rating-label {
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  color: #111;
+  white-space: nowrap;
+}
+
 .gr-summary-rating {
   @apply inline-flex items-center;
   gap: 0.35rem;

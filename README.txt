@@ -52,6 +52,9 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.2.1 =
+* Ajout scope category pour le shortcode bagde
+
 = 1.2.2 =
 * Ajout d'un cache JSON-LD pour les pages catégories WooCommerce et attributs produits (`pa_*`) avec recalcul par cron.
 * Génération d'un schéma `Product` agrégé pour les catégories et attributs avec `AggregateOffer` et `aggregateRating` calculé depuis les avis Genius Reviews.

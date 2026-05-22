@@ -239,6 +239,18 @@ class Genius_Reviews_Admin_Page
 								<?php _e('Copier', 'genius-reviews'); ?>
 							</button>
 						</div>
+						<div class="flex items-center gap-2 mt-1">
+							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_badge scope="category" mode="compact_rating"]</code>
+							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy='[genius_reviews_badge scope="category" mode="compact_rating"]'>
+								<?php _e('Copier', 'genius-reviews'); ?>
+							</button>
+						</div>
+						<div class="flex items-center gap-2 mt-1">
+							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_badge scope="category" term_id="12" taxonomy="product_cat" mode="compact_rating"]</code>
+							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy='[genius_reviews_badge scope="category" term_id="12" taxonomy="product_cat" mode="compact_rating"]'>
+								<?php _e('Copier', 'genius-reviews'); ?>
+							</button>
+						</div>
 					</li>
 
 					<li>
