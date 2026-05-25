@@ -462,6 +462,7 @@ class Genius_Reviews
 		add_shortcode('genius_reviews_grid', ['Genius_Reviews_Shortcodes', 'grid']);
 		add_shortcode('genius_reviews_slider', ['Genius_Reviews_Shortcodes', 'slider']);
 		add_shortcode('genius_reviews_badge', ['Genius_Reviews_Shortcodes', 'badge']);
+		add_shortcode('genius_reviews_category_badge', ['Genius_Reviews_Shortcodes', 'category_badge']);
 		add_shortcode('genius_reviews_summary', ['Genius_Reviews_Shortcodes', 'summary']);
 		add_shortcode('genius_reviews_all', ['Genius_Reviews_Shortcodes', 'grid_all_reviews']);
 

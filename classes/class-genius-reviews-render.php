@@ -4,6 +4,57 @@ if (!defined('ABSPATH'))
 
 class Genius_Reviews_Render
 {
+    private static function default_star_colors()
+    {
+        return [
+            5 => '#58AF59',
+            4 => '#92D329',
+            3 => '#FFCE0C',
+            2 => '#FF9232',
+            1 => '#EB3531',
+        ];
+    }
+
+    private static function star_color_style($filled, $rating)
+    {
+        $rating = max(1, min(5, (int) round($rating)));
+        $default_star_colors = self::default_star_colors();
+
+        if (!$filled) {
+            return 'color: var(--color-star-empty-custom, #E5E5E5);';
+        }
+
+        return 'color: var(--color-star-' . $rating . '-custom, ' . $default_star_colors[$rating] . ');';
+    }
+
+    public static function render_star_svg($filled, $rating, $classes = '', $size = 22, $attrs = [])
+    {
+        $rating = max(1, min(5, (int) round($rating)));
+        $size = in_array((int) $size, [16, 18, 22], true) ? (int) $size : 22;
+        $state_class = $filled ? 'gr-star-filled gr-star-rating-' . $rating : 'gr-star-empty';
+        $attrs = is_array($attrs) ? $attrs : [];
+        $attrs['class'] = trim($classes . ' ' . $state_class);
+        $attrs['style'] = trim((isset($attrs['style']) ? $attrs['style'] . ' ' : '') . self::star_color_style($filled, $rating));
+        $attrs['width'] = (string) $size;
+        $attrs['height'] = (string) $size;
+        $attrs['viewBox'] = '0 0 25 25';
+        $attrs['fill'] = 'none';
+
+        $attr_html = '';
+        foreach ($attrs as $name => $value) {
+            if ($value === null || $value === '') {
+                continue;
+            }
+            $attr_html .= ' ' . esc_attr($name) . '="' . esc_attr((string) $value) . '"';
+        }
+
+        return '<svg xmlns="http://www.w3.org/2000/svg"' . $attr_html . '>
+            <path d="M25 0H0V25H25V0Z" fill="currentColor"/>
+            <path d="M12.1792 4L14.1858 10.1756H20.6792L15.4259 13.9923L13.8026 15.1718L12.1792 16.3512L6.92591 20.168L8.93249 13.9923L3.6792 10.1756H10.1726L12.1792 4Z" fill="var(--color-star-icon-custom, #FFFFFF)"/>
+            <path d="M18 20L15.5 13.5L12.5 16L18 20Z" fill="var(--color-star-icon-custom, #FFFFFF)"/>
+        </svg>';
+    }
+
 
     /**
      * Injecte les couleurs de marque (principale et hover) dans le <head>.
@@ -15,7 +66,15 @@ class Genius_Reviews_Render
     {
         $color = get_option('gr_color_brand_custom', '#58AF59');
         if (!$color)
-            return;
+            $color = '#58AF59';
+
+        $star_color = get_option('gr_color_star_custom', '#58AF59');
+        $star_icon_color = get_option('gr_color_star_icon_custom', '#FFFFFF');
+        $star_empty_color = get_option('gr_color_star_empty_custom', '#E5E5E5');
+        $star_level_colors = self::default_star_colors();
+        foreach ($star_level_colors as $level => $default_color) {
+            $star_level_colors[$level] = get_option('gr_color_star_' . $level . '_custom', $default_color);
+        }
 
         // Génère automatiquement la couleur de hover
         $hover = self::adjust_brightness($color, -20);
@@ -24,6 +83,14 @@ class Genius_Reviews_Render
         :root {
             --color-brand-custom: ' . esc_html($color) . ';
             --color-brand-custom-hover: ' . esc_html($hover) . ';
+            --color-star-custom: ' . esc_html($star_color) . ';
+            --color-star-icon-custom: ' . esc_html($star_icon_color) . ';
+            --color-star-empty-custom: ' . esc_html($star_empty_color) . ';
+            --color-star-5-custom: ' . esc_html($star_level_colors[5]) . ';
+            --color-star-4-custom: ' . esc_html($star_level_colors[4]) . ';
+            --color-star-3-custom: ' . esc_html($star_level_colors[3]) . ';
+            --color-star-2-custom: ' . esc_html($star_level_colors[2]) . ';
+            --color-star-1-custom: ' . esc_html($star_level_colors[1]) . ';
         }
     </style>';
     }
@@ -511,7 +578,7 @@ class Genius_Reviews_Render
         <div class="gr-review-card">
             <div class="gr-review-card-header">
                 <div class="gr-review-card-stars">
-                    <?php echo self::render_stars($rating, 'gr-review-card-star'); ?>
+                    <?php echo self::render_stars($rating, 'gr-review-card-star', 18); ?>
                 </div>
                 <div class="gr-review-card-date">
                     <?php
@@ -604,7 +671,6 @@ class Genius_Reviews_Render
         $is_all_mode = isset($args['mode']) && $args['mode'] === 'all' && is_array($query);
 
         ob_start();
-        $colors = self::rating_colors();
         $counts_by_rating = isset($counts_by_rating) ? $counts_by_rating : [];
         $total = max(1, array_sum($counts_by_rating));
         ?>
@@ -623,15 +689,8 @@ class Genius_Reviews_Render
                         <div class="flex gap-2 items-center">
                             <div class="flex gap-0.5">
                                 <?php
-                                $color_class = self::avg_color_class($avg);
-                                for ($i = 1; $i <= 5; $i++) {
-                                    $class = $i <= round($avg) ? $color_class : 'text-gray-light';
-                                    echo '<svg xmlns="http://www.w3.org/2000/svg" class="w-5.5 h-5.5 ' . $class . '" viewBox="0 0 25 25" fill="none">
-                    <path d="M25 0H0V25H25V0Z" fill="currentColor"/>
-                    <path d="M12.1792 4L14.1858 10.1756H20.6792L15.4259 13.9923L13.8026 15.1718L12.1792 16.3512L6.92591 20.168L8.93249 13.9923L3.6792 10.1756H10.1726L12.1792 4Z" fill="white"/>
-                    <path d="M18.0229 20.4999L15.9604 14.3124L12.8667 16.7187L18.0229 20.4999Z" fill="white"/>
-                </svg>';
-                                }
+                                $rounded_avg = max(1, min(5, (int) round($avg)));
+                                echo self::render_stars($rounded_avg, '', 22);
                                 ?>
                             </div>
                             <span class="text-base font-medium"><?php echo number_format($avg, 1); ?></span>
@@ -651,28 +710,19 @@ class Genius_Reviews_Render
                 </div>
                 <div class="space-y-0.5">
                     <div class="space-y-0.5">
+                        <?php $default_star_colors = self::default_star_colors(); ?>
                         <?php for ($i = 5; $i >= 1; $i--):
                             $percent = ($counts_by_rating[$i] / $total) * 100;
-                            $text_class = $colors[$i]['text'];
-                            $bg_class = $colors[$i]['bg'];
+                            $bar_style = 'width: ' . $percent . '%; background-color: var(--color-star-' . $i . '-custom, ' . $default_star_colors[$i] . ');';
                             ?>
                             <div class="flex items-center gap-2.5">
                                 <div class="flex gap-0.5">
                                     <?php for ($j = 1; $j <= 5; $j++): ?>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="15" viewBox="0 0 16 15"
-                                            class="<?php echo $j <= $i ? $text_class : 'text-gray-light'; ?>">
-                                            <path d="M15.5 0H0.5V15H15.5V0Z" fill="currentColor" />
-                                            <path
-                                                d="M7.80752 2.40002L9.01147 6.10539H12.9075L9.75555 8.39543L8.78153 9.1031L7.80752 9.81076L4.65555 12.1008L5.85949 8.39543L2.70752 6.10539H6.60357L7.80752 2.40002Z"
-                                                fill="white" />
-                                            <path d="M11.3137 12.2999L10.0762 8.58746L8.21997 10.0312L11.3137 12.2999Z" fill="white" />
-                                        </svg>
+                                        <?php echo self::render_star_svg($j <= $i, $i, '', 16); ?>
                                     <?php endfor; ?>
                                 </div>
                                 <div class="flex-1 h-3 w-[126px] bg-gray-light rounded-full overflow-hidden">
-                                    <div class="h-full rounded-full <?php echo $bg_class; ?>"
-                                        style="width: <?php echo $percent; ?>%">
-                                    </div>
+                                    <div class="h-full rounded-full" style="<?php echo esc_attr($bar_style); ?>"></div>
                                 </div>
 
                                 <div class="w-6 text-right text-gray-medium text-sm">
@@ -855,17 +905,10 @@ class Genius_Reviews_Render
             <div class="gr-carousel-rating">
                 <span class="gr-carousel-label"><?php echo esc_html(self::rating_label($avg)); ?></span>
                 <div class="gr-carousel-stars">
-                    <?php for ($i = 1; $i <= 5; $i++): ?>
-                        <svg xmlns="http://www.w3.org/2000/svg"
-                            class="w-5 h-5 <?php echo $i <= round($avg) ? 'text-brand' : 'text-gray-light'; ?>" viewBox="0 0 25 25"
-                            fill="none">
-                            <path d="M25 0H0V25H25V0Z" fill="currentColor" />
-                            <path
-                                d="M12.1792 4L14.1858 10.1756H20.6792L15.4259 13.9923L13.8026 15.1718L12.1792 16.3512L6.92591 20.168L8.93249 13.9923L3.6792 10.1756H10.1726L12.1792 4Z"
-                                fill="white" />
-                            <path d="M18.0229 20.4999L15.9604 14.3124L12.8667 16.7187L18.0229 20.4999Z" fill="white" />
-                        </svg>
-                    <?php endfor; ?>
+                    <?php
+                    $rounded_avg = max(1, min(5, (int) round($avg)));
+                    echo self::render_stars($rounded_avg, '', 22);
+                    ?>
                 </div>
                 <span class="gr-carousel-count">
                     <?php
@@ -937,7 +980,7 @@ class Genius_Reviews_Render
                     <?php echo esc_html(sprintf(__('Excellent %s', 'genius-reviews'), number_format_i18n((float) $avg, 1))); ?>
                 </span>
                 <div class="gr-badge-stars" aria-hidden="true">
-                    <?php echo self::render_stars($rounded_avg, "gr-badge-star-size"); ?>
+                    <?php echo self::render_stars($rounded_avg, "gr-badge-star-size", 16); ?>
                 </div>
             </div>
             <?php
@@ -946,7 +989,7 @@ class Genius_Reviews_Render
         ?>
         <div class="gr-badge">
             <div class="gr-badge-stars">
-                <?php echo self::render_stars($rounded_avg, "gr-badge-star-size"); ?>
+                <?php echo self::render_stars($rounded_avg, "gr-badge-star-size", 16); ?>
             </div>
             <span class="gr-badge-count">
                 <?php
@@ -994,7 +1037,7 @@ class Genius_Reviews_Render
         <span class="gr-summary-rating" aria-label="<?php echo esc_attr(sprintf(__('Note moyenne de %1$s sur 5 basee sur %2$s avis', 'genius-reviews'), $formatted_avg, $formatted_count)); ?>">
             <?php if (!empty($args['show_stars'])): ?>
                 <span class="gr-summary-rating-stars" aria-hidden="true">
-                    <?php echo self::render_stars($rounded_avg, 'gr-summary-rating-star'); ?>
+                    <?php echo self::render_stars($rounded_avg, 'gr-summary-rating-star', 18); ?>
                 </span>
             <?php endif; ?>
 
@@ -1054,13 +1097,7 @@ class Genius_Reviews_Render
             <div class="gr-no-reviews-stars-wrapper">
                 <div class="gr-no-reviews-stars">
                     <?php for ($i = 1; $i <= 5; $i++): ?>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="gr-no-reviews-star" viewBox="0 0 25 25" fill="none">
-                            <path d="M25 0H0V25H25V0Z" fill="currentColor" />
-                            <path
-                                d="M12.1792 4L14.1858 10.1756H20.6792L15.4259 13.9923L13.8026 15.1718L12.1792 16.3512L6.92591 20.168L8.93249 13.9923L3.6792 10.1756H10.1726L12.1792 4Z"
-                                fill="white" />
-                            <path d="M18.0229 20.4999L15.9604 14.3124L12.8667 16.7187L18.0229 20.4999Z" fill="white" />
-                        </svg>
+                        <?php echo self::render_star_svg(false, 1, 'gr-no-reviews-star', 22); ?>
                     <?php endfor; ?>
                 </div>
             </div>
@@ -1103,24 +1140,6 @@ class Genius_Reviews_Render
         return ob_get_clean();
     }
 
-
-
-    /**
-     * Retourne les classes de couleur associées à chaque note (1 à 5).
-     *
-     * @return array Tableau associatif des classes CSS pour chaque rating.
-     */
-    private static function rating_colors()
-    {
-        return [
-            5 => ['text' => 'text-rating-5', 'bg' => 'bg-rating-5'],
-            4 => ['text' => 'text-rating-4', 'bg' => 'bg-rating-4'],
-            3 => ['text' => 'text-rating-3', 'bg' => 'bg-rating-3'],
-            2 => ['text' => 'text-rating-2', 'bg' => 'bg-rating-2'],
-            1 => ['text' => 'text-rating-1', 'bg' => 'bg-rating-1'],
-        ];
-    }
-
     /**
      * Génère le code SVG des étoiles pour une note donnée.
      *
@@ -1128,34 +1147,14 @@ class Genius_Reviews_Render
      * @param string $size   Classes CSS de taille à appliquer.
      * @return string HTML contenant les 5 étoiles.
      */
-    private static function render_stars($rating, $size = 'w-5 h-5')
+    private static function render_stars($rating, $classes = '', $size = 22)
     {
-        $colors = self::rating_colors();
         ob_start();
+        $rating = max(1, min(5, (int) round($rating)));
         for ($i = 1; $i <= 5; $i++) {
-            $class = $i <= $rating ? $colors[$rating]['text'] : 'text-gray-light';
-            echo '<svg xmlns="http://www.w3.org/2000/svg" class="' . $size . ' ' . $class . '" viewBox="0 0 25 25">
-            <path d="M25 0H0V25H25V0Z" fill="currentColor"/>
-            <path d="M12.1792 4L14.1858 10.1756H20.6792L15.4259 13.9923L13.8026 15.1718L12.1792 16.3512L6.92591 20.168L8.93249 13.9923L3.6792 10.1756H10.1726L12.1792 4Z" fill="white"/>
-            <path d="M18.0229 20.4999L15.9604 14.3124L12.8667 16.7187L18.0229 20.4999Z" fill="white"/>
-        </svg>';
+            echo self::render_star_svg($i <= $rating, $rating, $classes, $size);
         }
         return ob_get_clean();
-    }
-
-    /**
-     * Retourne la classe de couleur correspondant à la moyenne des notes.
-     *
-     * Permet de colorer les étoiles en fonction de la moyenne générale.
-     *
-     * @param float $avg Note moyenne du produit.
-     * @return string Classe CSS de couleur
-     */
-    private static function avg_color_class($avg)
-    {
-        $colors = self::rating_colors();
-        $rounded = max(1, min(5, round($avg)));
-        return $colors[$rounded]['text'];
     }
 
     /**

@@ -52,6 +52,11 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.2.2 =
+* Ajout des couleurs personnalisables pour les étoiles par note, l’état inactif et le symbole interne.
+* Centralisation du SVG des étoiles pour tous les shortcodes.
+* Réorganisation de la page Options & Import.
+
 = 1.2.2.1 =
 * Ajout scope category pour le shortcode bagde
 

@@ -2,6 +2,41 @@
   'use strict';
 
   $(document).ready(function () {
+    if (window.Coloris) {
+      Coloris({
+        el: '[data-coloris]',
+        theme: 'polaroid',
+        alpha: false,
+        format: 'hex'
+      });
+    }
+
+    const $starEmptyColor = $('#gr-color-star-empty-custom');
+    const $starIconColor = $('#gr-color-star-icon-custom');
+    const $starLevelInputs = $('[data-gr-star-level-input]');
+
+    $starLevelInputs.on('input change', function () {
+      const color = $(this).val();
+      const level = $(this).attr('data-gr-star-level-input');
+      if (/^#[0-9a-f]{6}$/i.test(color)) {
+        $(`[data-gr-star-level="${level}"][data-gr-star-state="filled"]`).css('color', color);
+      }
+    });
+
+    $starEmptyColor.on('input change', function () {
+      const color = $(this).val();
+      if (/^#[0-9a-f]{6}$/i.test(color)) {
+        $('[data-gr-star-state="empty"]').css('color', color);
+      }
+    });
+
+    $starIconColor.on('input change', function () {
+      const color = $(this).val();
+      if (/^#[0-9a-f]{6}$/i.test(color)) {
+        document.documentElement.style.setProperty('--color-star-icon-custom', color);
+      }
+    });
+
     const $form = $('#gr-upload-form');
     const $progress = $('#gr-progress');
     const $percent = $('#gr-progress-percent');
@@ -72,14 +107,14 @@
           $rows.empty();
           Object.entries(d.perProduct).forEach(([pid, info]) => {
             $rows.append(`
-          <tr>
-            <td class="py-1">${info.name}</td>
-            <td class="py-1">${pid}</td>
-            <td class="py-1">${info.added}</td>
-            <td class="py-1">${info.updated}</td>
-            <td class="py-1">${info.skipped}</td>
-            <td class="py-1">${info.avg || '-'}</td>
-            <td class="py-1">${info.count || '-'}</td>
+          <tr class="text-gray-700">
+            <td class="px-4 py-3 font-medium text-gray-900">${info.name}</td>
+            <td class="px-4 py-3">${pid}</td>
+            <td class="px-4 py-3">${info.added}</td>
+            <td class="px-4 py-3">${info.updated}</td>
+            <td class="px-4 py-3">${info.skipped}</td>
+            <td class="px-4 py-3">${info.avg || '-'}</td>
+            <td class="px-4 py-3">${info.count || '-'}</td>
           </tr>
         `);
           });

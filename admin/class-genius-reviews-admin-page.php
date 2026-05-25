@@ -29,7 +29,33 @@ class Genius_Reviews_Admin_Page
 
 
 			if (isset($_POST['gr_color_brand_custom'])) {
-				update_option('gr_color_brand_custom', sanitize_hex_color($_POST['gr_color_brand_custom']));
+				update_option('gr_color_brand_custom', sanitize_hex_color($_POST['gr_color_brand_custom']) ?: '#58AF59');
+			}
+
+			if (isset($_POST['gr_color_star_custom'])) {
+				update_option('gr_color_star_custom', sanitize_hex_color($_POST['gr_color_star_custom']) ?: '#58AF59');
+			}
+
+			if (isset($_POST['gr_color_star_icon_custom'])) {
+				update_option('gr_color_star_icon_custom', sanitize_hex_color($_POST['gr_color_star_icon_custom']) ?: '#FFFFFF');
+			}
+
+			foreach ([5, 4, 3, 2, 1] as $rating_color_level) {
+				$field_name = 'gr_color_star_' . $rating_color_level . '_custom';
+				if (isset($_POST[$field_name])) {
+					$default_colors = [
+						5 => '#58AF59',
+						4 => '#92D329',
+						3 => '#FFCE0C',
+						2 => '#FF9232',
+						1 => '#EB3531',
+					];
+					update_option($field_name, sanitize_hex_color($_POST[$field_name]) ?: $default_colors[$rating_color_level]);
+				}
+			}
+
+			if (isset($_POST['gr_color_star_empty_custom'])) {
+				update_option('gr_color_star_empty_custom', sanitize_hex_color($_POST['gr_color_star_empty_custom']) ?: '#E5E5E5');
 			}
 
 			if (isset($_POST['gr_term_schema_refresh_interval']) && is_callable(['Genius_Reviews_Term_Schema_Cache', 'set_refresh_interval'])) {
@@ -45,6 +71,16 @@ class Genius_Reviews_Admin_Page
 		$fallback_reviews_all = (int) get_option('gr_option_fallback_reviews_all', 0);
 
 		$color_brand_custom = get_option('gr_color_brand_custom', '#58AF59');
+		$color_star_custom = get_option('gr_color_star_custom', '#58AF59');
+		$color_star_icon_custom = get_option('gr_color_star_icon_custom', '#FFFFFF');
+		$color_star_levels = [
+			5 => get_option('gr_color_star_5_custom', '#58AF59'),
+			4 => get_option('gr_color_star_4_custom', '#92D329'),
+			3 => get_option('gr_color_star_3_custom', '#FFCE0C'),
+			2 => get_option('gr_color_star_2_custom', '#FF9232'),
+			1 => get_option('gr_color_star_1_custom', '#EB3531'),
+		];
+		$color_star_empty_custom = get_option('gr_color_star_empty_custom', '#E5E5E5');
 		$term_schema_refresh_interval = is_callable(['Genius_Reviews_Term_Schema_Cache', 'get_refresh_interval'])
 			? Genius_Reviews_Term_Schema_Cache::get_refresh_interval()
 			: WEEK_IN_SECONDS;
@@ -57,7 +93,7 @@ class Genius_Reviews_Admin_Page
 				<h1 class="text-2xl font-semibold mb-6"><?php _e('Genius Reviews — Options & Import CSV', 'genius-reviews'); ?></h1>
 
 				<!-- Options -->
-				<form method="post" class="mb-8 bg-white border rounded-2xl shadow-sm p-6 space-y-6">
+				<form method="post" class="mb-8 bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-6">
 	<?php wp_nonce_field('gr_save_options', 'gr_options_nonce'); ?>
 
 	<!-- HEADER -->
@@ -80,7 +116,12 @@ class Genius_Reviews_Admin_Page
 
 	<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
 		<div class="space-y-4">
-			<div class="p-4 border rounded-xl">
+			<div class="flex items-center justify-between">
+				<h3 class="text-base font-semibold text-gray-900"><?php _e('Affichage automatique', 'genius-reviews'); ?></h3>
+				<span class="text-xs text-gray-500"><?php _e('Boutique', 'genius-reviews'); ?></span>
+			</div>
+
+			<div class="p-4 border border-gray-200 rounded-xl">
 				<label for="gr-option-reviews-on-product-page" class="block text-sm font-medium text-gray-900 mb-1">
 					<?php _e('Activer la grille des avis sur la page produit', 'genius-reviews'); ?>
 				</label>
@@ -101,7 +142,7 @@ class Genius_Reviews_Admin_Page
 				</div>
 			</div>
 
-			<div class="p-4 border rounded-xl">
+			<div class="p-4 border border-gray-200 rounded-xl">
 				<label for="gr-option-fallback-reviews-all" class="block text-sm font-medium text-gray-900 mb-1">
 					<?php _e('Afficher des avis globaux si le produit n\'en a pas', 'genius-reviews'); ?>
 				</label>
@@ -122,7 +163,7 @@ class Genius_Reviews_Admin_Page
 				</div>
 			</div>
 
-			<div class="p-4 border rounded-xl">
+			<div class="p-4 border border-gray-200 rounded-xl">
 				<label for="gr-option-badge-on-product-page" class="block text-sm font-medium text-gray-900 mb-1">
 					<?php _e('Activer le badge d\'avis sur la page produit', 'genius-reviews'); ?>
 				</label>
@@ -143,7 +184,7 @@ class Genius_Reviews_Admin_Page
 				</div>
 			</div>
 
-			<div class="p-4 border rounded-xl">
+			<div class="p-4 border border-gray-200 rounded-xl">
 				<label for="gr-option-badge-on-collection-page" class="block text-sm font-medium text-gray-900 mb-1">
 					<?php _e('Activer le badge d\'avis sur la page collection', 'genius-reviews'); ?>
 				</label>
@@ -166,112 +207,117 @@ class Genius_Reviews_Admin_Page
 		</div>
 
 		<div class="space-y-4">
-			<div class="p-4 border rounded-xl">
-				<label for="gr-color-brand-custom" class="block text-sm font-medium text-gray-900 mb-2">
-					<?php _e('Couleur principale', 'genius-reviews'); ?>
-				</label>
-				<div class="flex items-center gap-3">
-					<input type="text"
-						   id="gr-color-brand-custom"
-						   name="gr_color_brand_custom"
-						   value="<?php echo esc_attr($color_brand_custom); ?>"
-						   class="border rounded cursor-pointer p-0"
-						   data-coloris>
-					<span class="text-sm text-gray-600">
-						<?php _e('Utilisée pour les boutons et accents (hover auto-généré).', 'genius-reviews'); ?>
-					</span>
+			<div class="p-4 border border-gray-200 rounded-xl">
+				<div class="flex items-start justify-between gap-4 mb-4">
+					<div>
+						<h3 class="text-base font-semibold text-gray-900"><?php _e('Apparence', 'genius-reviews'); ?></h3>
+						<p class="text-sm text-gray-600 mt-1">
+							<?php _e('Personnalisez les accents et les étoiles affichés côté boutique.', 'genius-reviews'); ?>
+						</p>
+					</div>
+					<div class="space-y-0.5" aria-hidden="true" data-gr-star-level-preview>
+						<?php foreach ([5, 4, 3, 2, 1] as $preview_level): ?>
+							<div class="flex gap-0.5">
+								<?php for ($i = 1; $i <= 5; $i++): ?>
+									<?php
+									echo Genius_Reviews_Render::render_star_svg(
+										$i <= $preview_level,
+										$preview_level,
+										'',
+										22,
+										[
+											'data-gr-star-level' => (string) $preview_level,
+											'data-gr-star-state' => $i <= $preview_level ? 'filled' : 'empty',
+											'style' => 'color: ' . ($i <= $preview_level ? $color_star_levels[$preview_level] : $color_star_empty_custom) . ';',
+										]
+									);
+									?>
+								<?php endfor; ?>
+							</div>
+						<?php endforeach; ?>
+					</div>
+				</div>
+
+				<div class="grid grid-cols-1 gap-4">
+					<div>
+						<label for="gr-color-brand-custom" class="block text-sm font-medium text-gray-900 mb-2">
+							<?php _e('Couleur principale', 'genius-reviews'); ?>
+						</label>
+						<div class="flex items-center gap-3">
+							<input type="text"
+								   id="gr-color-brand-custom"
+								   name="gr_color_brand_custom"
+								   value="<?php echo esc_attr($color_brand_custom); ?>"
+								   class="border rounded cursor-pointer p-0"
+								   data-coloris>
+							<span class="text-sm text-gray-600">
+								<?php _e('Boutons, liens et accents. Le hover est auto-généré.', 'genius-reviews'); ?>
+							</span>
+						</div>
+					</div>
+
+					<div>
+						<div class="flex items-center justify-between gap-3 mb-2">
+							<label class="block text-sm font-medium text-gray-900">
+								<?php _e('Couleurs des étoiles par note', 'genius-reviews'); ?>
+							</label>
+							<span class="text-xs text-gray-500"><?php _e('5 à 1 étoiles', 'genius-reviews'); ?></span>
+						</div>
+						<div class="grid grid-cols-1 gap-2">
+							<?php foreach ([5, 4, 3, 2, 1] as $color_level): ?>
+								<div class="flex items-center gap-3">
+									<span class="text-sm text-gray-700 w-[126px]">
+										<?php echo esc_html(sprintf(_n('%d étoile', '%d étoiles', $color_level, 'genius-reviews'), $color_level)); ?>
+									</span>
+									<input type="text"
+										   id="gr-color-star-<?php echo esc_attr((string) $color_level); ?>-custom"
+										   name="gr_color_star_<?php echo esc_attr((string) $color_level); ?>_custom"
+										   value="<?php echo esc_attr($color_star_levels[$color_level]); ?>"
+										   class="border rounded cursor-pointer p-0"
+										   data-coloris
+										   data-gr-star-level-input="<?php echo esc_attr((string) $color_level); ?>">
+								</div>
+							<?php endforeach; ?>
+						</div>
+					</div>
+
+					<div>
+						<label for="gr-color-star-icon-custom" class="block text-sm font-medium text-gray-900 mb-2">
+							<?php _e('Couleur de l’étoile', 'genius-reviews'); ?>
+						</label>
+						<div class="flex items-center gap-3">
+							<input type="text"
+								   id="gr-color-star-icon-custom"
+								   name="gr_color_star_icon_custom"
+								   value="<?php echo esc_attr($color_star_icon_custom); ?>"
+								   class="border rounded cursor-pointer p-0"
+								   data-coloris>
+							<span class="text-sm text-gray-600">
+								<?php _e('Couleur du symbole étoile à l’intérieur du carré.', 'genius-reviews'); ?>
+							</span>
+						</div>
+					</div>
+
+					<div>
+						<label for="gr-color-star-empty-custom" class="block text-sm font-medium text-gray-900 mb-2">
+							<?php _e('Couleur des étoiles inactives', 'genius-reviews'); ?>
+						</label>
+						<div class="flex items-center gap-3">
+							<input type="text"
+								   id="gr-color-star-empty-custom"
+								   name="gr_color_star_empty_custom"
+								   value="<?php echo esc_attr($color_star_empty_custom); ?>"
+								   class="border rounded cursor-pointer p-0"
+								   data-coloris>
+							<span class="text-sm text-gray-600">
+								<?php _e('Utilisée pour compléter les notes inférieures à 5.', 'genius-reviews'); ?>
+							</span>
+						</div>
+					</div>
 				</div>
 			</div>
 
-			<div class="p-4 border rounded-xl">
-				<h3 class="text-sm font-semibold mb-3"><?php _e('Shortcodes disponibles', 'genius-reviews'); ?></h3>
-
-				<ul class="space-y-3">
-					<li>
-						<p class="text-xs text-gray-500 mb-1"><?php _e('Grille d’avis (produit courant ou ID précis)', 'genius-reviews'); ?></p>
-						<div class="flex items-center gap-2">
-							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_grid]</code>
-							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy="[genius_reviews_grid]">
-								<?php _e('Copier', 'genius-reviews'); ?>
-							</button>
-						</div>
-						<div class="flex items-center gap-2 mt-1">
-							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_grid product_id="123" limit="6" sort="date_desc"]</code>
-							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy='[genius_reviews_grid product_id="123" limit="6" sort="date_desc"]'>
-								<?php _e('Copier', 'genius-reviews'); ?>
-							</button>
-						</div>
-						<div class="flex items-center gap-2 mt-1">
-							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_grid remove_spacing="1"]</code>
-							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy='[genius_reviews_grid remove_spacing="1"]'>
-								<?php _e('Copier', 'genius-reviews'); ?>
-							</button>
-						</div>
-					</li>
-
-					<li>
-						<p class="text-xs text-gray-500 mb-1"><?php _e('Carrousel (sélection d’avis globales)', 'genius-reviews'); ?></p>
-						<div class="flex items-center gap-2">
-							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_slider limit="12" sort="rating_desc"]</code>
-							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy='[genius_reviews_slider limit="12" sort="rating_desc"]'>
-								<?php _e('Copier', 'genius-reviews'); ?>
-							</button>
-						</div>
-						<div class="flex items-center gap-2 mt-1">
-							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_slider limit="12" sort="rating_desc" mode="compact"]</code>
-							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy='[genius_reviews_slider limit="12" sort="rating_desc" mode="compact"]'>
-								<?php _e('Copier', 'genius-reviews'); ?>
-							</button>
-						</div>
-					</li>
-
-					<li>
-						<p class="text-xs text-gray-500 mb-1"><?php _e('Badge (produit courant ou ID précis) (dans un template/page au choix)', 'genius-reviews'); ?></p>
-						<div class="flex items-center gap-2">
-							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_badge]</code>
-							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy="[genius_reviews_badge]">
-								<?php _e('Copier', 'genius-reviews'); ?>
-							</button>
-						</div>
-						<div class="flex items-center gap-2 mt-1">
-							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_badge product_id="123"]</code>
-							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy='[genius_reviews_badge product_id="123"]'>
-								<?php _e('Copier', 'genius-reviews'); ?>
-							</button>
-						</div>
-						<div class="flex items-center gap-2 mt-1">
-							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_badge scope="category" mode="compact_rating"]</code>
-							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy='[genius_reviews_badge scope="category" mode="compact_rating"]'>
-								<?php _e('Copier', 'genius-reviews'); ?>
-							</button>
-						</div>
-						<div class="flex items-center gap-2 mt-1">
-							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_badge scope="category" term_id="12" taxonomy="product_cat" mode="compact_rating"]</code>
-							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy='[genius_reviews_badge scope="category" term_id="12" taxonomy="product_cat" mode="compact_rating"]'>
-								<?php _e('Copier', 'genius-reviews'); ?>
-							</button>
-						</div>
-					</li>
-
-					<li>
-						<p class="text-xs text-gray-500 mb-1">
-							<?php _e('Tous les avis (onglets Produits / Boutique + stats globales)', 'genius-reviews'); ?>
-						</p>
-						<div class="flex items-center gap-2">
-							<code class="px-2 py-1 bg-gray-100 rounded text-sm">[genius_reviews_all limit="12" sort="date_desc"]</code>
-							<button type="button" class="gr-copy px-2 py-1 text-xs border rounded" data-copy='[genius_reviews_all limit="12" sort="date_desc"]'>
-								<?php _e('Copier', 'genius-reviews'); ?>
-							</button>
-						</div>
-					</li>
-				</ul>
-
-				<p class="text-[11px] text-gray-500 mt-3">
-					<?php _e('Paramètres de tri disponibles : date_desc, date_asc, rating_desc, rating_asc.', 'genius-reviews'); ?>
-				</p>
-			</div>
-
-			<div class="p-4 border rounded-xl">
+			<div class="p-4 border border-gray-200 rounded-xl">
 				<label for="gr-term-schema-refresh-interval" class="block text-sm font-medium text-gray-900 mb-2">
 					<?php _e('Cache schémas catégories', 'genius-reviews'); ?>
 				</label>
@@ -298,40 +344,178 @@ class Genius_Reviews_Admin_Page
 	</div>
 </form>
 
-				<div class="bg-white border rounded-2xl shadow-sm p-6 space-y-4 my-8">
-					<h2 class="text-lg font-medium"><?php _e('Synchronisation', 'genius-reviews'); ?></h2>
-					<p class="text-sm text-gray-600">
-						<?php _e('Recalcule la moyenne et le volume d’avis stockés sur vos fiches produits.', 'genius-reviews'); ?>
-					</p>
-					<div class="flex flex-col gap-3 sm:flex-row sm:items-center">
-						<button type="button"
-							id="gr-sync-ratings"
-							class="gr-btn w-full sm:w-auto"
-							data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
-							data-nonce="<?php echo esc_attr(wp_create_nonce('gr_sync_products')); ?>">
-							<?php _e('Synchroniser les notes produits', 'genius-reviews'); ?>
-						</button>
-						<span id="gr-sync-status" class="text-sm text-gray-600"></span>
+				<div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-5 mb-8">
+	<div>
+		<div class="flex flex-col gap-2 mb-4 md:flex-row md:items-start md:justify-between">
+			<div>
+				<h3 class="text-base font-semibold text-gray-900"><?php _e('Shortcodes disponibles', 'genius-reviews'); ?></h3>
+				<p class="text-sm text-gray-600 mt-1">
+					<?php _e('Insérez les blocs d’avis où vous le souhaitez dans vos pages, templates ou builders.', 'genius-reviews'); ?>
+				</p>
+			</div>
+		</div>
+
+		<ul class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+			<li class="rounded-xl bg-gray-100 p-4">
+				<p class="text-xs font-semibold text-gray-600 mb-2"><?php _e('Grille d’avis (produit courant ou ID précis)', 'genius-reviews'); ?></p>
+				<div class="flex flex-wrap items-center gap-2">
+					<code class="px-2 py-1 bg-white rounded text-sm">[genius_reviews_grid]</code>
+					<button type="button" class="gr-copy px-2 py-1 text-xs border rounded bg-white" data-copy="[genius_reviews_grid]">
+						<?php _e('Copier', 'genius-reviews'); ?>
+					</button>
+				</div>
+				<div class="flex flex-wrap items-center gap-2 mt-2">
+					<code class="px-2 py-1 bg-white rounded text-sm">[genius_reviews_grid product_id="123" limit="6" sort="date_desc"]</code>
+					<button type="button" class="gr-copy px-2 py-1 text-xs border rounded bg-white" data-copy='[genius_reviews_grid product_id="123" limit="6" sort="date_desc"]'>
+						<?php _e('Copier', 'genius-reviews'); ?>
+					</button>
+				</div>
+				<div class="flex flex-wrap items-center gap-2 mt-2">
+					<code class="px-2 py-1 bg-white rounded text-sm">[genius_reviews_grid remove_spacing="1"]</code>
+					<button type="button" class="gr-copy px-2 py-1 text-xs border rounded bg-white" data-copy='[genius_reviews_grid remove_spacing="1"]'>
+						<?php _e('Copier', 'genius-reviews'); ?>
+					</button>
+				</div>
+			</li>
+
+			<li class="rounded-xl bg-gray-100 p-4">
+				<p class="text-xs font-semibold text-gray-600 mb-2"><?php _e('Carrousel (sélection d’avis globales)', 'genius-reviews'); ?></p>
+				<div class="flex flex-wrap items-center gap-2">
+					<code class="px-2 py-1 bg-white rounded text-sm">[genius_reviews_slider limit="12" sort="rating_desc"]</code>
+					<button type="button" class="gr-copy px-2 py-1 text-xs border rounded bg-white" data-copy='[genius_reviews_slider limit="12" sort="rating_desc"]'>
+						<?php _e('Copier', 'genius-reviews'); ?>
+					</button>
+				</div>
+				<div class="flex flex-wrap items-center gap-2 mt-2">
+					<code class="px-2 py-1 bg-white rounded text-sm">[genius_reviews_slider limit="12" sort="rating_desc" mode="compact"]</code>
+					<button type="button" class="gr-copy px-2 py-1 text-xs border rounded bg-white" data-copy='[genius_reviews_slider limit="12" sort="rating_desc" mode="compact"]'>
+						<?php _e('Copier', 'genius-reviews'); ?>
+					</button>
+				</div>
+			</li>
+
+			<li class="rounded-xl bg-gray-100 p-4">
+				<p class="text-xs font-semibold text-gray-600 mb-2"><?php _e('Badge (produit courant ou ID précis)', 'genius-reviews'); ?></p>
+				<div class="flex flex-wrap items-center gap-2">
+					<code class="px-2 py-1 bg-white rounded text-sm">[genius_reviews_badge]</code>
+					<button type="button" class="gr-copy px-2 py-1 text-xs border rounded bg-white" data-copy="[genius_reviews_badge]">
+						<?php _e('Copier', 'genius-reviews'); ?>
+					</button>
+				</div>
+				<div class="flex flex-wrap items-center gap-2 mt-2">
+					<code class="px-2 py-1 bg-white rounded text-sm">[genius_reviews_badge product_id="123"]</code>
+					<button type="button" class="gr-copy px-2 py-1 text-xs border rounded bg-white" data-copy='[genius_reviews_badge product_id="123"]'>
+						<?php _e('Copier', 'genius-reviews'); ?>
+					</button>
+				</div>
+				<div class="flex flex-wrap items-center gap-2 mt-2">
+					<code class="px-2 py-1 bg-white rounded text-sm">[genius_reviews_badge scope="category" mode="compact_rating"]</code>
+					<button type="button" class="gr-copy px-2 py-1 text-xs border rounded bg-white" data-copy='[genius_reviews_badge scope="category" mode="compact_rating"]'>
+						<?php _e('Copier', 'genius-reviews'); ?>
+					</button>
+				</div>
+				<div class="flex flex-wrap items-center gap-2 mt-2">
+					<code class="px-2 py-1 bg-white rounded text-sm">[genius_reviews_category_badge]</code>
+					<button type="button" class="gr-copy px-2 py-1 text-xs border rounded bg-white" data-copy='[genius_reviews_category_badge]'>
+						<?php _e('Copier', 'genius-reviews'); ?>
+					</button>
+				</div>
+				<div class="flex flex-wrap items-center gap-2 mt-2">
+					<code class="px-2 py-1 bg-white rounded text-sm">[genius_reviews_badge scope="category" term_id="12" taxonomy="product_cat" mode="compact_rating"]</code>
+					<button type="button" class="gr-copy px-2 py-1 text-xs border rounded bg-white" data-copy='[genius_reviews_badge scope="category" term_id="12" taxonomy="product_cat" mode="compact_rating"]'>
+						<?php _e('Copier', 'genius-reviews'); ?>
+					</button>
+				</div>
+			</li>
+
+			<li class="rounded-xl bg-gray-100 p-4">
+				<p class="text-xs font-semibold text-gray-600 mb-2">
+					<?php _e('Tous les avis (onglets Produits / Boutique + stats globales)', 'genius-reviews'); ?>
+				</p>
+				<div class="flex flex-wrap items-center gap-2">
+					<code class="px-2 py-1 bg-white rounded text-sm">[genius_reviews_all limit="12" sort="date_desc"]</code>
+					<button type="button" class="gr-copy px-2 py-1 text-xs border rounded bg-white" data-copy='[genius_reviews_all limit="12" sort="date_desc"]'>
+						<?php _e('Copier', 'genius-reviews'); ?>
+					</button>
+				</div>
+				<p class="text-[11px] text-gray-500 mt-3">
+					<?php _e('Paramètres de tri disponibles : date_desc, date_asc, rating_desc, rating_asc.', 'genius-reviews'); ?>
+				</p>
+			</li>
+			</ul>
+			</div>
 					</div>
-					<div class="flex flex-col gap-3 sm:flex-row sm:items-center pt-3 border-t">
-						<button type="button"
-							id="gr-refresh-term-schema"
-							class="gr-btn w-full sm:w-auto"
-							data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
-							data-nonce="<?php echo esc_attr(wp_create_nonce('gr_refresh_term_schema_cache')); ?>">
-							<?php _e('Tester le cron des schémas catégories', 'genius-reviews'); ?>
-						</button>
-						<span id="gr-term-schema-status" class="text-sm text-gray-600"></span>
+
+					<div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-5 my-8">
+					<div class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+						<div>
+							<h2 class="text-xl font-semibold text-gray-900"><?php _e('Synchronisation', 'genius-reviews'); ?></h2>
+							<p class="text-sm text-gray-600 mt-1">
+								<?php _e('Gardez les moyennes, volumes d’avis et schémas JSON-LD alignés avec les données importées.', 'genius-reviews'); ?>
+							</p>
+						</div>
+						<span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+							<?php esc_html_e('Maintenance', 'genius-reviews'); ?>
+						</span>
 					</div>
-					<div class="flex flex-col gap-3 sm:flex-row sm:items-center pt-3 border-t">
-						<button type="button"
-							id="gr-clear-term-schema"
-							class="gr-btn w-full sm:w-auto"
-							data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
-							data-nonce="<?php echo esc_attr(wp_create_nonce('gr_clear_term_schema_cache')); ?>">
-							<?php _e('Vider le cache des schémas', 'genius-reviews'); ?>
-						</button>
-						<span id="gr-clear-term-schema-status" class="text-sm text-gray-600"></span>
+
+					<div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+						<div class="flex flex-col justify-between gap-4 rounded-xl border border-gray-200 bg-gray-100 p-4">
+							<div>
+								<h3 class="text-sm font-semibold text-gray-900"><?php _e('Notes produits', 'genius-reviews'); ?></h3>
+								<p class="text-xs text-gray-600 mt-1">
+									<?php _e('Recalcule la moyenne et le volume stockés sur chaque fiche produit.', 'genius-reviews'); ?>
+								</p>
+							</div>
+							<div class="space-y-2">
+								<button type="button"
+									id="gr-sync-ratings"
+									class="gr-btn w-full"
+									data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
+									data-nonce="<?php echo esc_attr(wp_create_nonce('gr_sync_products')); ?>">
+									<?php _e('Synchroniser', 'genius-reviews'); ?>
+								</button>
+								<span id="gr-sync-status" class="block min-h-5 text-xs text-gray-600"></span>
+							</div>
+						</div>
+
+						<div class="flex flex-col justify-between gap-4 rounded-xl border border-gray-200 bg-gray-100 p-4">
+							<div>
+								<h3 class="text-sm font-semibold text-gray-900"><?php _e('Schémas catégories', 'genius-reviews'); ?></h3>
+								<p class="text-xs text-gray-600 mt-1">
+									<?php _e('Lance un recalcul manuel du cache JSON-LD catégories et attributs.', 'genius-reviews'); ?>
+								</p>
+							</div>
+							<div class="space-y-2">
+								<button type="button"
+									id="gr-refresh-term-schema"
+									class="gr-btn gr-btn-secondary w-full"
+									data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
+									data-nonce="<?php echo esc_attr(wp_create_nonce('gr_refresh_term_schema_cache')); ?>">
+									<?php _e('Tester le cron', 'genius-reviews'); ?>
+								</button>
+								<span id="gr-term-schema-status" class="block min-h-5 text-xs text-gray-600"></span>
+							</div>
+						</div>
+
+						<div class="flex flex-col justify-between gap-4 rounded-xl border border-gray-200 bg-gray-100 p-4">
+							<div>
+								<h3 class="text-sm font-semibold text-gray-900"><?php _e('Cache schémas', 'genius-reviews'); ?></h3>
+								<p class="text-xs text-gray-600 mt-1">
+									<?php _e('Vide le cache pour forcer une régénération propre au prochain passage.', 'genius-reviews'); ?>
+								</p>
+							</div>
+							<div class="space-y-2">
+								<button type="button"
+									id="gr-clear-term-schema"
+									class="gr-btn gr-btn-dark w-full"
+									data-ajax="<?php echo esc_url(admin_url('admin-ajax.php')); ?>"
+									data-nonce="<?php echo esc_attr(wp_create_nonce('gr_clear_term_schema_cache')); ?>">
+									<?php _e('Vider le cache', 'genius-reviews'); ?>
+								</button>
+								<span id="gr-clear-term-schema-status" class="block min-h-5 text-xs text-gray-600"></span>
+							</div>
+						</div>
 					</div>
 				</div>
 
@@ -492,59 +676,76 @@ class Genius_Reviews_Admin_Page
 </script>
 
 				<!-- Import -->
-				<div class="bg-white border rounded-2xl shadow-sm p-6 space-y-4">
-					<h2 class="text-lg font-medium mb-4"><?php _e('Import', 'genius-reviews'); ?></h2>
+				<div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-6">
+					<div class="flex flex-col gap-2 md:flex-row md:items-start md:justify-between">
+						<div>
+							<h2 class="text-xl font-semibold text-gray-900"><?php _e('Import CSV', 'genius-reviews'); ?></h2>
+							<p class="text-sm text-gray-600 mt-1">
+								<?php _e('Importez les avis puis suivez les créations, mises à jour et lignes ignorées en temps réel.', 'genius-reviews'); ?>
+							</p>
+						</div>
+						<span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+							<?php esc_html_e('Avis produits', 'genius-reviews'); ?>
+						</span>
+					</div>
 
-					<form id="gr-upload-form" method="post" class="space-y-3" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" enctype="multipart/form-data">
+					<form id="gr-upload-form" method="post" class="grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto]" action="<?php echo esc_url(admin_url('admin-ajax.php')); ?>" enctype="multipart/form-data">
 						<input type="hidden" name="action" value="gr_upload_csv" />
 						<input type="hidden" name="nonce" value="<?php echo esc_attr(wp_create_nonce('gr_import_nonce')); ?>" />
 
-						<label class="block">
-							<span class="block text-sm font-medium mb-1">Fichier CSV</span>
-							<input class="block w-full border !rounded-lg !px-3 !py-2" type="file" name="csv" accept=".csv" required>
+						<label class="block rounded-xl border border-gray-200 bg-gray-100 p-4">
+							<span class="block text-sm font-semibold text-gray-900 mb-2"><?php _e('Fichier CSV', 'genius-reviews'); ?></span>
+							<input class="block w-full cursor-pointer rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-gray-700" type="file" name="csv" accept=".csv" required>
+							<span class="block text-xs text-gray-500 mt-2">
+								<?php _e('Format accepté : .csv avec les colonnes indiquées plus bas.', 'genius-reviews'); ?>
+							</span>
 						</label>
 
-						<button type="submit"
-							class="gr-btn">
-							<?php _e('Lancer l’import', 'genius-reviews'); ?>
-						</button>
+						<div class="flex items-end">
+							<button type="submit" class="gr-btn w-full md:w-auto">
+								<?php _e('Lancer l’import', 'genius-reviews'); ?>
+							</button>
+						</div>
 					</form>
 
-					<div id="gr-progress" class="hidden space-y-2">
-						<div class="flex justify-between text-sm">
-							<span id="gr-progress-label" class="text-slate-600"><?php _e('Préparation…', 'genius-reviews'); ?></span>
-							<span><span id="gr-progress-percent">0</span>%</span>
+					<div id="gr-progress" class="hidden rounded-xl border border-gray-200 bg-gray-100 p-4 space-y-3">
+						<div class="flex items-center justify-between gap-3 text-sm">
+							<span id="gr-progress-label" class="font-medium text-gray-700"><?php _e('Préparation…', 'genius-reviews'); ?></span>
+							<span class="rounded-full bg-white px-2 py-1 text-xs font-semibold text-gray-700"><span id="gr-progress-percent">0</span>%</span>
 						</div>
-						<div class="w-full bg-slate-200/80 rounded-full h-2 overflow-hidden">
+						<div class="h-2 w-full overflow-hidden rounded-full bg-white">
 							<div id="gr-progress-bar" class="h-2 bg-emerald-500 transition-all duration-500 ease-in-out" style="width: 0%;"></div>
 						</div>
-						<div class="text-xs text-slate-500" id="gr-stats-line"></div>
+						<div class="text-xs text-gray-600" id="gr-stats-line"></div>
 					</div>
 
-					<div id="gr-per-product" class="mt-8 bg-white border rounded-2xl shadow-sm p-6">
-						<h2 class="text-lg font-medium mb-4"><?php _e('Détail par produit', 'genius-reviews'); ?></h2>
-						<div class="overflow-x-auto">
+					<div id="gr-per-product" class="space-y-3">
+						<div class="flex items-center justify-between gap-3">
+							<h3 class="text-base font-semibold text-gray-900"><?php _e('Détail par produit', 'genius-reviews'); ?></h3>
+							<span class="text-xs text-gray-500"><?php _e('Résultat du dernier import', 'genius-reviews'); ?></span>
+						</div>
+						<div class="overflow-x-auto rounded-xl border border-gray-200">
 							<table class="min-w-full text-sm">
-								<thead>
-									<tr class="text-left text-slate-600">
-										<th class="py-2"><?php _e('Produit', 'genius-reviews'); ?></th>
-										<th class="py-2"><?php _e('ID', 'genius-reviews'); ?></th>
-										<th class="py-2"><?php _e('Ajoutés', 'genius-reviews'); ?></th>
-										<th class="py-2"><?php _e('MàJ', 'genius-reviews'); ?></th>
-										<th class="py-2"><?php _e('Ignorés', 'genius-reviews'); ?></th>
-										<th class="py-2"><?php _e('Moyenne', 'genius-reviews'); ?></th>
-										<th class="py-2"><?php _e('Total', 'genius-reviews'); ?></th>
+								<thead class="bg-gray-100">
+									<tr class="text-left text-gray-700">
+										<th class="px-4 py-3 font-semibold"><?php _e('Produit', 'genius-reviews'); ?></th>
+										<th class="px-4 py-3 font-semibold"><?php _e('ID', 'genius-reviews'); ?></th>
+										<th class="px-4 py-3 font-semibold"><?php _e('Ajoutés', 'genius-reviews'); ?></th>
+										<th class="px-4 py-3 font-semibold"><?php _e('MàJ', 'genius-reviews'); ?></th>
+										<th class="px-4 py-3 font-semibold"><?php _e('Ignorés', 'genius-reviews'); ?></th>
+										<th class="px-4 py-3 font-semibold"><?php _e('Moyenne', 'genius-reviews'); ?></th>
+										<th class="px-4 py-3 font-semibold"><?php _e('Total', 'genius-reviews'); ?></th>
 									</tr>
 								</thead>
-								<tbody id="gr-product-rows"></tbody>
+								<tbody id="gr-product-rows" class="divide-y divide-gray-200 bg-white"></tbody>
 							</table>
 						</div>
 					</div>
 
-					<p class="mt-6 text-xs text-slate-500">
-						<?php _e('Colonnes :', 'genius-reviews'); ?>
-						<code>title, body, rating, review_date, source, curated, reviewer_name, reviewer_email, product_id, product_handle, reply, reply_date, picture_urls, ip_address, location</code>
-					</p>
+					<div class="rounded-xl bg-gray-100 p-4 text-xs text-gray-600">
+						<span class="font-semibold text-gray-700"><?php _e('Colonnes attendues :', 'genius-reviews'); ?></span>
+						<code class="mt-2 block whitespace-normal rounded bg-white px-2 py-1 text-[11px] leading-relaxed text-gray-700">title, body, rating, review_date, source, curated, reviewer_name, reviewer_email, product_id, product_handle, reply, reply_date, picture_urls, ip_address, location</code>
+					</div>
 				</div>
 
 

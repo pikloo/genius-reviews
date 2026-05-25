@@ -39,6 +39,34 @@
   background: var(--color-brand-hover);
 }
 
+.gr-star-filled {
+  color: var(--color-star-custom, #58AF59);
+}
+
+.gr-star-rating-5 {
+  color: var(--color-star-5-custom, #58AF59);
+}
+
+.gr-star-rating-4 {
+  color: var(--color-star-4-custom, #92D329);
+}
+
+.gr-star-rating-3 {
+  color: var(--color-star-3-custom, #FFCE0C);
+}
+
+.gr-star-rating-2 {
+  color: var(--color-star-2-custom, #FF9232);
+}
+
+.gr-star-rating-1 {
+  color: var(--color-star-1-custom, #EB3531);
+}
+
+.gr-star-empty {
+  color: var(--color-star-empty-custom, #E5E5E5);
+}
+
 .gr-badge {
   @apply flex items-center cursor-pointer;
   @apply !gap-2 !my-2;
@@ -53,10 +81,6 @@
 }
 
 .gr-badge-star-size {
-  width: 1rem;
-  height: 1rem;
-  min-width: 1rem;
-  min-height: 1rem;
   flex: 0 0 1rem;
 }
 
@@ -161,10 +185,6 @@
 }
 
 .gr-review-card-star {
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
-  min-height: 18px;
   flex: 0 0 18px;
 }
 
@@ -292,12 +312,7 @@
 }
 
 .gr-no-reviews-star {
-  width: 1.25rem;
-  height: 1.25rem;
-  min-width: 1.25rem;
-  min-height: 1.25rem;
-  flex: 0 0 1.25rem;
-  @apply text-gray-light;
+  flex: 0 0 22px;
 }
 
 .gr-no-reviews-text {

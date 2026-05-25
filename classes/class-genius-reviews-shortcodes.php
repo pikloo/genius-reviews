@@ -75,6 +75,31 @@ class Genius_Reviews_Shortcodes
     }
 
     /**
+     * Shortcode [genius_reviews_category_badge]
+     */
+    public static function category_badge($atts = [])
+    {
+        $atts = shortcode_atts([
+            'term_id' => 0,
+            'taxonomy' => '',
+            'mode' => 'compact_rating',
+            'debug' => 0,
+        ], $atts, 'genius_reviews_category_badge');
+
+        $atts['scope'] = 'category';
+
+        ob_start();
+        echo Genius_Reviews_Render::badge($atts);
+        $html = ob_get_clean();
+
+        if ($html === '' && !empty($atts['debug']) && current_user_can('manage_options')) {
+            return '<span class="gr-badge-debug">Genius Reviews: aucun badge categorie genere.</span>';
+        }
+
+        return $html;
+    }
+
+    /**
      * Shortcode [genius_reviews_summary]
      *
      * Affiche un résumé compact réutilisable.
