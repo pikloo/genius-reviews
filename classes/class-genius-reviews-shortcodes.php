@@ -35,6 +35,9 @@ class Genius_Reviews_Shortcodes
         $atts = shortcode_atts([
             'product_id' => 0,
             'limit' => 10,
+            'scope' => 'global',
+            'term_id' => 0,
+            'taxonomy' => '',
             'mode' => '',
         ], $atts, 'genius_reviews_slider');
 

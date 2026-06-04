@@ -301,6 +301,12 @@ msgstr "Customer reviews"
 msgid "Basé sur %1$s%3$s avis%2$s"
 msgstr "Based on %1$s%3$s reviews%2$s"
 
+#: classes/class-genius-reviews-render.php:1179
+#: classes/class-genius-reviews-render.php:1238
+#, php-format
+msgid "Note moyenne de %1$s sur 5 basee sur %2$s avis"
+msgstr "Average rating of %1$s out of 5 based on %2$s reviews"
+
 #: classes/class-genius-reviews-render.php:531
 #: classes/class-genius-reviews-render.php:847
 msgid "Écrire un avis"

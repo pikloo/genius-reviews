@@ -4,6 +4,8 @@ if (!defined('ABSPATH'))
 
 class Genius_Reviews_Render
 {
+    private static $term_product_ids_cache = [];
+
     private static function default_star_colors()
     {
         return [
@@ -243,6 +245,7 @@ class Genius_Reviews_Render
      * @param array $args {
      *     @type int    $limit Nombre d’avis à afficher.
      *     @type string $sort  Type de tri.
+     *     @type string $scope global|category.
      * }
      * @return string|null HTML du carrousel ou null si aucun avis trouvé.
      */
@@ -251,12 +254,21 @@ class Genius_Reviews_Render
         $defaults = [
             'limit' => 12,
             'sort' => 'rating_desc',
+            'scope' => 'global',
+            'term_id' => 0,
+            'taxonomy' => '',
             'mode' => '',
         ];
         $args = wp_parse_args($args, $defaults);
+        $args['limit'] = max(1, (int) $args['limit']);
         $args['mode'] = sanitize_key((string) ($args['mode'] ?? ''));
+        $scope = sanitize_key((string) ($args['scope'] ?? 'global'));
 
         $sort_args = Genius_Reviews_Query_Helper::map_sort($args['sort']);
+
+        if ($scope === 'category') {
+            return self::category_slider($args, $sort_args);
+        }
 
         $q_args = [
             'post_type' => 'genius_review',
@@ -290,6 +302,101 @@ class Genius_Reviews_Render
         $html = self::render_carousel($q, $avg, $count, $args);
 
         return $html;
+    }
+
+    /**
+     * Génère un carrousel ciblé sur la catégorie courante avec appoint boutique.
+     *
+     * @param array $args
+     * @param array $sort_args
+     * @return string|null
+     */
+    private static function category_slider($args, $sort_args)
+    {
+        $term = self::resolve_badge_term($args);
+        if (!$term instanceof WP_Term) {
+            return '';
+        }
+
+        $limit = max(3, (int) $args['limit']);
+        $product_ids = self::get_slider_term_product_ids($term);
+        $category_stats = self::get_slider_term_stats($product_ids);
+
+        $category_review_ids = [];
+        if (!empty($product_ids)) {
+            $category_review_ids = self::get_slider_review_ids(
+                $limit,
+                $sort_args,
+                [
+                    [
+                        'key' => '_gr_product_id',
+                        'value' => $product_ids,
+                        'compare' => 'IN',
+                    ],
+                ]
+            );
+        }
+
+        $review_ids = $category_review_ids;
+        $use_shop_stats = false;
+        if (empty($category_review_ids)) {
+            $shop_review_ids = self::get_slider_review_ids(
+                $limit,
+                $sort_args,
+                [
+                    [
+                        'key' => '_gr_product_id',
+                        'value' => 0,
+                        'compare' => '=',
+                    ],
+                ]
+            );
+            $review_ids = $shop_review_ids;
+            $use_shop_stats = true;
+        } elseif (count($review_ids) < 3) {
+            $shop_review_ids = self::get_slider_review_ids(
+                3 - count($review_ids),
+                $sort_args,
+                [
+                    [
+                        'key' => '_gr_product_id',
+                        'value' => 0,
+                        'compare' => '=',
+                    ],
+                ],
+                $review_ids
+            );
+            $review_ids = array_merge($review_ids, $shop_review_ids);
+        }
+
+        if (empty($review_ids)) {
+            return;
+        }
+
+        if ($use_shop_stats) {
+            $stats = self::get_slider_shop_stats();
+        } elseif ((int) ($category_stats['count'] ?? 0) > 0) {
+            $stats = $category_stats;
+        } else {
+            $stats = self::get_review_ids_stats($review_ids);
+        }
+
+        $avg = (float) ($stats['avg'] ?? 0);
+        $count = (int) ($stats['count'] ?? 0);
+        if ($count < 1 || $avg <= 0) {
+            return;
+        }
+
+        $q = new WP_Query([
+            'post_type' => 'genius_review',
+            'posts_per_page' => count($review_ids),
+            'post_status' => 'publish',
+            'post__in' => $review_ids,
+            'orderby' => 'post__in',
+            'no_found_rows' => true,
+        ]);
+
+        return self::render_carousel($q, $avg, $count, $args);
     }
 
 
@@ -388,6 +495,210 @@ class Genius_Reviews_Render
         }
 
         return null;
+    }
+
+    /**
+     * Retourne les produits publiés d'un terme, avec cache statique par requête.
+     *
+     * @param WP_Term $term
+     * @return int[]
+     */
+    private static function get_slider_term_product_ids(WP_Term $term)
+    {
+        $cache_key = $term->taxonomy . ':' . (int) $term->term_id;
+        if (isset(self::$term_product_ids_cache[$cache_key])) {
+            return self::$term_product_ids_cache[$cache_key];
+        }
+
+        $query = new WP_Query([
+            'post_type' => 'product',
+            'post_status' => 'publish',
+            'posts_per_page' => -1,
+            'fields' => 'ids',
+            'no_found_rows' => true,
+            'update_post_meta_cache' => false,
+            'update_post_term_cache' => false,
+            'tax_query' => [
+                [
+                    'taxonomy' => $term->taxonomy,
+                    'field' => 'term_id',
+                    'terms' => [(int) $term->term_id],
+                ],
+            ],
+        ]);
+
+        self::$term_product_ids_cache[$cache_key] = array_map('intval', $query->posts);
+
+        return self::$term_product_ids_cache[$cache_key];
+    }
+
+    /**
+     * Calcule les stats d'une catégorie depuis les stats produit Genius Reviews.
+     *
+     * @param int[] $product_ids
+     * @return array
+     */
+    private static function get_slider_term_stats($product_ids)
+    {
+        global $wpdb;
+
+        $product_ids = array_values(array_filter(array_unique(array_map('intval', (array) $product_ids))));
+        if (empty($product_ids)) {
+            return [
+                'avg' => 0,
+                'count' => 0,
+            ];
+        }
+
+        $weighted_total = 0.0;
+        $review_count = 0;
+
+        foreach (array_chunk($product_ids, 500) as $chunk) {
+            $placeholders = implode(',', array_fill(0, count($chunk), '%d'));
+            $rows = $wpdb->get_results(
+                $wpdb->prepare(
+                    "SELECT avg_meta.meta_value AS avg_rating, count_meta.meta_value AS review_count
+                    FROM {$wpdb->posts} AS p
+                    INNER JOIN {$wpdb->postmeta} AS avg_meta
+                        ON avg_meta.post_id = p.ID AND avg_meta.meta_key = '_gr_avg_rating'
+                    INNER JOIN {$wpdb->postmeta} AS count_meta
+                        ON count_meta.post_id = p.ID AND count_meta.meta_key = '_gr_review_count'
+                    WHERE p.ID IN ({$placeholders})
+                      AND p.post_type = 'product'
+                      AND p.post_status = 'publish'",
+                    $chunk
+                ),
+                ARRAY_A
+            );
+
+            foreach ((array) $rows as $row) {
+                $avg = (float) ($row['avg_rating'] ?? 0);
+                $count = (int) ($row['review_count'] ?? 0);
+
+                if ($avg <= 0 || $count <= 0) {
+                    continue;
+                }
+
+                $weighted_total += $avg * $count;
+                $review_count += $count;
+            }
+        }
+
+        return [
+            'avg' => $review_count ? round($weighted_total / $review_count, 2) : 0,
+            'count' => $review_count,
+        ];
+    }
+
+    /**
+     * Calcule les stats des avis boutique curés.
+     *
+     * @return array
+     */
+    private static function get_slider_shop_stats()
+    {
+        global $wpdb;
+
+        $ratings = $wpdb->get_col(
+            "SELECT rating_meta.meta_value
+            FROM {$wpdb->posts} AS p
+            INNER JOIN {$wpdb->postmeta} AS rating_meta
+                ON rating_meta.post_id = p.ID AND rating_meta.meta_key = '_gr_rating'
+            INNER JOIN {$wpdb->postmeta} AS curated_meta
+                ON curated_meta.post_id = p.ID AND curated_meta.meta_key = '_gr_curated'
+            INNER JOIN {$wpdb->postmeta} AS product_meta
+                ON product_meta.post_id = p.ID AND product_meta.meta_key = '_gr_product_id'
+            WHERE p.post_type = 'genius_review'
+              AND p.post_status = 'publish'
+              AND curated_meta.meta_value = 'ok'
+              AND product_meta.meta_value = '0'"
+        );
+
+        $ratings = array_filter(array_map('floatval', (array) $ratings), function ($rating) {
+            return $rating > 0;
+        });
+        $count = count($ratings);
+
+        return [
+            'avg' => $count ? round(array_sum($ratings) / $count, 2) : 0,
+            'count' => $count,
+        ];
+    }
+
+    /**
+     * Retourne uniquement les IDs d'avis curés pour le slider.
+     *
+     * @param int   $limit
+     * @param array $sort_args
+     * @param array $extra_meta_query
+     * @param int[] $exclude_ids
+     * @return int[]
+     */
+    private static function get_slider_review_ids($limit, $sort_args, $extra_meta_query = [], $exclude_ids = [])
+    {
+        $limit = max(0, (int) $limit);
+        if ($limit < 1) {
+            return [];
+        }
+
+        $meta_query = [
+            [
+                'key' => '_gr_curated',
+                'value' => 'ok',
+                'compare' => '=',
+            ],
+        ];
+        $meta_query = array_merge($meta_query, (array) $extra_meta_query);
+
+        if (!empty($sort_args['meta_query'])) {
+            $meta_query = array_merge($meta_query, (array) $sort_args['meta_query']);
+            unset($sort_args['meta_query']);
+        }
+
+        $q_args = array_merge([
+            'post_type' => 'genius_review',
+            'posts_per_page' => $limit,
+            'post_status' => 'publish',
+            'fields' => 'ids',
+            'no_found_rows' => true,
+            'update_post_meta_cache' => false,
+            'update_post_term_cache' => false,
+            'meta_query' => $meta_query,
+        ], $sort_args);
+
+        $exclude_ids = array_values(array_filter(array_map('intval', (array) $exclude_ids)));
+        if (!empty($exclude_ids)) {
+            $q_args['post__not_in'] = $exclude_ids;
+        }
+
+        $query = new WP_Query($q_args);
+
+        return array_map('intval', $query->posts);
+    }
+
+    /**
+     * Calcule les stats sur une petite sélection d'avis affichés.
+     *
+     * @param int[] $review_ids
+     * @return array
+     */
+    private static function get_review_ids_stats($review_ids)
+    {
+        $total = 0.0;
+        $count = 0;
+
+        foreach (array_map('intval', (array) $review_ids) as $review_id) {
+            $rating = (float) get_post_meta($review_id, '_gr_rating', true);
+            if ($rating > 0) {
+                $total += $rating;
+                $count++;
+            }
+        }
+
+        return [
+            'avg' => $count ? round($total / $count, 2) : 0,
+            'count' => $count,
+        ];
     }
 
     /**
@@ -974,10 +1285,11 @@ class Genius_Reviews_Render
 
         ob_start();
         if ($mode === 'compact_rating') {
+            $rating_label = self::rating_label((float) $avg);
             ?>
-            <div class="gr-badge gr-badge-compact-rating" aria-label="<?php echo esc_attr(sprintf(__('Excellent %s base sur %s avis', 'genius-reviews'), number_format_i18n((float) $avg, 1), number_format_i18n((int) $count))); ?>">
+            <div class="gr-badge gr-badge-compact-rating" aria-label="<?php echo esc_attr(sprintf(__('Note moyenne de %1$s sur 5 basee sur %2$s avis', 'genius-reviews'), number_format_i18n((float) $avg, 1), number_format_i18n((int) $count))); ?>">
                 <span class="gr-badge-rating-label">
-                    <?php echo esc_html(sprintf(__('Excellent %s', 'genius-reviews'), number_format_i18n((float) $avg, 1))); ?>
+                    <?php echo esc_html(sprintf('%s %s', $rating_label, number_format_i18n((float) $avg, 1))); ?>
                 </span>
                 <div class="gr-badge-stars" aria-hidden="true">
                     <?php echo self::render_stars($rounded_avg, "gr-badge-star-size", 16); ?>

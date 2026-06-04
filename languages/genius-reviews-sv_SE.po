@@ -301,6 +301,12 @@ msgstr "Kundomdömen"
 msgid "Basé sur %1$s%3$s avis%2$s"
 msgstr "Baserat på %1$s%3$s omdömen%2$s"
 
+#: classes/class-genius-reviews-render.php:1179
+#: classes/class-genius-reviews-render.php:1238
+#, php-format
+msgid "Note moyenne de %1$s sur 5 basee sur %2$s avis"
+msgstr "Genomsnittligt betyg %1$s av 5 baserat på %2$s omdömen"
+
 #: classes/class-genius-reviews-render.php:531
 #: classes/class-genius-reviews-render.php:847
 msgid "Écrire un avis"

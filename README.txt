@@ -5,7 +5,7 @@ Tags: reviews, woocommerce, testimonials, import, csv, json-ld, schema
 Requires at least: 6.0
 Tested up to: 6.7
 Requires PHP: 7.4
-Stable tag: 1.2.2
+Stable tag: 1.2.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -33,6 +33,79 @@ Fonctionnalités principales :
 3. Allez dans **Avis → Options & Import** pour configurer votre import et l’apparence.
 4. Utilisez le shortcode `[genius_reviews_grid]` ou `[genius_reviews_slider]` dans vos pages produits.
 
+== Shortcodes ==
+
+= Grille d'avis =
+
+`[genius_reviews_grid]`
+
+Affiche les avis du produit courant sur une fiche produit WooCommerce.
+
+`[genius_reviews_grid product_id="123" limit="6" sort="date_desc"]`
+
+Affiche les avis d'un produit précis.
+
+= Slider d'avis =
+
+`[genius_reviews_slider limit="12" sort="rating_desc"]`
+
+Affiche une sélection globale d'avis curés.
+
+`[genius_reviews_slider limit="12" sort="rating_desc" mode="compact"]`
+
+Affiche le slider en mode compact.
+
+`[genius_reviews_slider scope="category" limit="12" sort="rating_desc"]`
+
+Affiche les avis produits liés à la catégorie WooCommerce courante.
+
+`[genius_reviews_slider scope="category" term_id="12" taxonomy="product_cat" limit="12" sort="rating_desc"]`
+
+Affiche les avis produits d'une catégorie précise.
+
+Le slider `scope="category"` calcule la moyenne et le nombre d'avis sur les produits de la catégorie. Si la catégorie contient 1 ou 2 avis, le slider complète l'affichage avec des avis boutique pour atteindre 3 cartes, sans les intégrer aux statistiques catégorie. Si la catégorie ne contient aucun avis, le slider affiche uniquement des avis boutique et utilise les statistiques boutique.
+
+= Badge d'avis =
+
+`[genius_reviews_badge]`
+
+Affiche le badge du produit courant.
+
+`[genius_reviews_badge product_id="123"]`
+
+Affiche le badge d'un produit précis.
+
+`[genius_reviews_badge scope="category" mode="compact_rating"]`
+
+Affiche le badge de la catégorie WooCommerce courante.
+
+`[genius_reviews_badge scope="category" term_id="12" taxonomy="product_cat" mode="compact_rating"]`
+
+Affiche le badge d'une catégorie précise.
+
+= Intégration automatique sur les pages catégories =
+
+Pour afficher automatiquement le slider catégorie après la grille produits WooCommerce, ajoutez ce hook dans le `functions.php` du thème enfant ou via un plugin de snippets :
+
+    add_action('woocommerce_after_shop_loop', function () {
+        if (!function_exists('is_product_category') || !is_product_category()) {
+            return;
+        }
+
+        $term = get_queried_object();
+        if (!$term instanceof WP_Term) {
+            return;
+        }
+
+        echo do_shortcode(sprintf(
+            '[genius_reviews_slider scope="category" term_id="%d" taxonomy="%s" limit="12" sort="rating_desc"]',
+            (int) $term->term_id,
+            esc_attr($term->taxonomy)
+        ));
+    }, 20);
+
+Pour l'afficher avant la grille produits, utilisez le hook `woocommerce_before_shop_loop`.
+
 == Frequently Asked Questions ==
 
 = Où apparaissent les avis ? =
@@ -52,13 +125,19 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.2.4 =
+* Ajout du `scope="category"` sur le shortcode slider pour afficher les avis produits de la catégorie WooCommerce courante ou d'une catégorie précise.
+* Calcul des statistiques du slider catégorie sur les avis produits de la catégorie, avec appoint d'avis boutique uniquement pour compléter l'affichage.
+* Fallback du slider catégorie vers les avis boutique si la catégorie ne contient aucun avis.
+
 = 1.2.2.3 =
 * Ajout des couleurs personnalisables pour les étoiles par note, l’état inactif et le symbole interne.
 * Centralisation du SVG des étoiles pour tous les shortcodes.
 * Réorganisation de la page Options & Import.
 
 = 1.2.2.1 =
-* Ajout scope category pour le shortcode bagde
+* Ajout scope category pour le shortcode badge.
+* Ajout scope category pour le shortcode slider, avec appoint d'avis boutique si moins de 3 avis catégorie sont disponibles.
 
 = 1.2.2 =
 * Ajout d'un cache JSON-LD pour les pages catégories WooCommerce et attributs produits (`pa_*`) avec recalcul par cron.
