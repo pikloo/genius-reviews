@@ -305,7 +305,7 @@ class Genius_Reviews_Render
     }
 
     /**
-     * Génère un carrousel ciblé sur la catégorie courante avec appoint boutique.
+     * Génère un carrousel ciblé sur la catégorie courante avec appoint d'avis produits.
      *
      * @param array $args
      * @param array $sort_args
@@ -338,43 +338,34 @@ class Genius_Reviews_Render
         }
 
         $review_ids = $category_review_ids;
-        $use_shop_stats = false;
+        $use_global_product_stats = false;
         if (empty($category_review_ids)) {
-            $shop_review_ids = self::get_slider_review_ids(
+            $product_review_ids = self::get_slider_review_ids(
                 $limit,
                 $sort_args,
-                [
-                    [
-                        'key' => '_gr_product_id',
-                        'value' => 0,
-                        'compare' => '=',
-                    ],
-                ]
+                self::get_slider_product_meta_query()
             );
-            $review_ids = $shop_review_ids;
-            $use_shop_stats = true;
+            $review_ids = $product_review_ids;
+            $use_global_product_stats = true;
         } elseif (count($review_ids) < 3) {
-            $shop_review_ids = self::get_slider_review_ids(
+            $product_review_ids = self::get_slider_review_ids(
                 3 - count($review_ids),
                 $sort_args,
-                [
-                    [
-                        'key' => '_gr_product_id',
-                        'value' => 0,
-                        'compare' => '=',
-                    ],
-                ],
+                self::get_slider_product_meta_query(),
                 $review_ids
             );
-            $review_ids = array_merge($review_ids, $shop_review_ids);
+            $review_ids = array_merge($review_ids, $product_review_ids);
         }
 
         if (empty($review_ids)) {
             return;
         }
 
-        if ($use_shop_stats) {
-            $stats = self::get_slider_shop_stats();
+        if ($use_global_product_stats) {
+            $stats = self::get_slider_product_stats();
+            if ((int) ($stats['count'] ?? 0) < 1) {
+                $stats = self::get_review_ids_stats($review_ids);
+            }
         } elseif ((int) ($category_stats['count'] ?? 0) > 0) {
             $stats = $category_stats;
         } else {
@@ -591,11 +582,11 @@ class Genius_Reviews_Render
     }
 
     /**
-     * Calcule les stats des avis boutique curés.
+     * Calcule les stats des avis produits curés.
      *
      * @return array
      */
-    private static function get_slider_shop_stats()
+    private static function get_slider_product_stats()
     {
         global $wpdb;
 
@@ -611,7 +602,7 @@ class Genius_Reviews_Render
             WHERE p.post_type = 'genius_review'
               AND p.post_status = 'publish'
               AND curated_meta.meta_value = 'ok'
-              AND product_meta.meta_value = '0'"
+              AND CAST(product_meta.meta_value AS UNSIGNED) > 0"
         );
 
         $ratings = array_filter(array_map('floatval', (array) $ratings), function ($rating) {
@@ -622,6 +613,23 @@ class Genius_Reviews_Render
         return [
             'avg' => $count ? round(array_sum($ratings) / $count, 2) : 0,
             'count' => $count,
+        ];
+    }
+
+    /**
+     * Meta query des avis produits hors filtre catégorie.
+     *
+     * @return array
+     */
+    private static function get_slider_product_meta_query()
+    {
+        return [
+            [
+                'key' => '_gr_product_id',
+                'value' => 0,
+                'compare' => '>',
+                'type' => 'NUMERIC',
+            ],
         ];
     }
 
@@ -915,7 +923,15 @@ class Genius_Reviews_Render
                     </a>
                 <?php endif; ?>
             <?php endif; ?>
-            <p class="gr-review-card-title"><?php echo esc_html($title); ?></p>
+            <?php if ($title !== ''): ?>
+                <?php if ($product_id > 0): ?>
+                    <a href="<?php echo esc_url(get_permalink($product_id)); ?>" class="gr-review-card-title">
+                        <?php echo esc_html($title); ?>
+                    </a>
+                <?php else: ?>
+                    <p class="gr-review-card-title"><?php echo esc_html($title); ?></p>
+                <?php endif; ?>
+            <?php endif; ?>
             <?php if ($mode !== 'slider' && count($picture_urls) > 1): ?>
                 <div class="gr-review-card-gallery">
                     <?php foreach ($picture_urls as $picture_url): ?>

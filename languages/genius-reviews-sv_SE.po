@@ -398,3 +398,233 @@ msgstr "Rutnät med omdömen"
 msgctxt "block description"
 msgid "Affiche la grille des avis clients pour un produit."
 msgstr "Visar kundomdömen i ett rutnät för en produkt."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "5 à 1 étoiles"
+msgstr "5 till 1 stjärnor"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Affichage automatique"
+msgstr "Automatisk visning"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Afficher des avis globaux si le produit n'en a pas"
+msgstr "Visa globala omdömen om produkten saknar egna"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Apparence"
+msgstr "Utseende"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Avis produits"
+msgstr "Produktomdömen"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Badge (produit courant ou ID précis)"
+msgstr "Märke (aktuell produkt eller specifikt ID)"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Boutique"
+msgstr "Butik"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Boutons, liens et accents. Le hover est auto-généré."
+msgstr "Knappar, länkar och accenter. Hover genereras automatiskt."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Cache des schémas vidé."
+msgstr "Schemacachen har tömts."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Cache schémas"
+msgstr "Schemacache"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Cache schémas catégories"
+msgstr "Cache för kategorischeman"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Colonnes attendues :"
+msgstr "Förväntade kolumner:"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Couleur de l’étoile"
+msgstr "Stjärnfärg"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Couleur des étoiles inactives"
+msgstr "Färg för inaktiva stjärnor"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Couleur du symbole étoile à l’intérieur du carré."
+msgstr "Färg på stjärnsymbolen inuti rutan."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Couleurs des étoiles par note"
+msgstr "Stjärnfärger per betyg"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Erreur lors du recalcul des schémas."
+msgstr "Fel vid omberäkning av scheman."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Erreur lors du vidage du cache."
+msgstr "Fel vid tömning av cachen."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Fichier CSV"
+msgstr "CSV-fil"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Format accepté : .csv avec les colonnes indiquées plus bas."
+msgstr "Godkänt format: .csv med kolumnerna som anges nedan."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Fréquence du recalcul automatique des JSON-LD catégories et attributs produits."
+msgstr "Frekvens för automatisk omberäkning av JSON-LD för kategorier och produktattribut."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Gardez les moyennes, volumes d’avis et schémas JSON-LD alignés avec les données importées."
+msgstr "Håll genomsnitt, omdömesvolymer och JSON-LD-scheman synkade med importerad data."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Genius Reviews term schema interval"
+msgstr "Intervall för term-schema i Genius Reviews"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Import CSV"
+msgstr "CSV-import"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Importez les avis puis suivez les créations, mises à jour et lignes ignorées en temps réel."
+msgstr "Importera omdömen och följ skapade, uppdaterade och ignorerade rader i realtid."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Insérez les blocs d’avis où vous le souhaitez dans vos pages, templates ou builders."
+msgstr "Infoga omdömesblock där du vill i sidor, mallar eller builders."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Lance un recalcul manuel du cache JSON-LD catégories et attributs."
+msgstr "Startar en manuell omberäkning av JSON-LD-cachen för kategorier och attribut."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Maintenance"
+msgstr "Underhåll"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Non validé"
+msgstr "Ej godkänt"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Non validés"
+msgstr "Ej godkända"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Note"
+msgstr "Betyg"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Notes produits"
+msgstr "Produktbetyg"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Personnalisez les accents et les étoiles affichés côté boutique."
+msgstr "Anpassa accenter och stjärnor som visas i butiken."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Product ID"
+msgstr "Produkt-ID"
+
+#: admin/class-genius-reviews-admin-page.php
+#, php-format
+msgid "Products in %s"
+msgstr "Produkter i %s"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Recalcul des schémas en cours…"
+msgstr "Beräknar om scheman…"
+
+#: admin/class-genius-reviews-admin-page.php
+#, php-format
+msgid "Recalcul terminé : %schemas schéma(s), %skipped ignoré(s), %terms terme(s) parcouru(s)."
+msgstr "Omberäkning klar: %schemas schema(n), %skipped ignorerade, %terms term(er) bearbetade."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Recalcule la moyenne et le volume stockés sur chaque fiche produit."
+msgstr "Beräknar om genomsnitt och volym som lagras på varje produktsida."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Résultat du dernier import"
+msgstr "Resultat från senaste importen"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Schémas catégories"
+msgstr "Kategorischeman"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Si la fiche produit n’a aucun avis, afficher les avis globaux du catalogue à la place (la moyenne du produit ne change pas)."
+msgstr "Om produktsidan saknar omdömen visas globala katalogomdömen i stället (produktens genomsnitt ändras inte)."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Synchroniser"
+msgstr "Synkronisera"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Tester le cron"
+msgstr "Testa cron"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Title"
+msgstr "Titel"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Tous les jours"
+msgstr "Varje dag"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Toutes les 6 heures"
+msgstr "Var 6:e timme"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Toutes les heures"
+msgstr "Varje timme"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Toutes les notes"
+msgstr "Alla betyg"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Toutes les semaines"
+msgstr "Varje vecka"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Toutes les validations"
+msgstr "Alla valideringar"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Utilisée pour compléter les notes inférieures à 5."
+msgstr "Används för att komplettera betyg under 5."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Validation"
+msgstr "Validering"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Validé"
+msgstr "Godkänt"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Validés"
+msgstr "Godkända"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Vidage du cache en cours…"
+msgstr "Tömmer cache…"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Vide le cache pour forcer une régénération propre au prochain passage."
+msgstr "Tömmer cachen för att tvinga en ren regenerering vid nästa körning."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Vider le cache"
+msgstr "Töm cache"

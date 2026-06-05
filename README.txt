@@ -63,7 +63,7 @@ Affiche les avis produits liés à la catégorie WooCommerce courante.
 
 Affiche les avis produits d'une catégorie précise.
 
-Le slider `scope="category"` calcule la moyenne et le nombre d'avis sur les produits de la catégorie. Si la catégorie contient 1 ou 2 avis, le slider complète l'affichage avec des avis boutique pour atteindre 3 cartes, sans les intégrer aux statistiques catégorie. Si la catégorie ne contient aucun avis, le slider affiche uniquement des avis boutique et utilise les statistiques boutique.
+Le slider `scope="category"` calcule la moyenne et le nombre d'avis sur les produits de la catégorie. Si la catégorie contient 1 ou 2 avis, le slider complète l'affichage avec des avis produits pour atteindre 3 cartes, sans les intégrer aux statistiques catégorie. Si la catégorie ne contient aucun avis, le slider affiche des avis produits globaux et utilise les statistiques des avis produits globaux.
 
 = Badge d'avis =
 
@@ -125,10 +125,14 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.2.5 =
+* Complétion des traductions admin dans toutes les langues disponibles.
+* Correction du fallback du slider catégorie quand la catégorie ne contient aucun avis.
+
 = 1.2.2.4 =
 * Ajout du `scope="category"` sur le shortcode slider pour afficher les avis produits de la catégorie WooCommerce courante ou d'une catégorie précise.
-* Calcul des statistiques du slider catégorie sur les avis produits de la catégorie, avec appoint d'avis boutique uniquement pour compléter l'affichage.
-* Fallback du slider catégorie vers les avis boutique si la catégorie ne contient aucun avis.
+* Calcul des statistiques du slider catégorie sur les avis produits de la catégorie, avec appoint d'avis produits uniquement pour compléter l'affichage.
+* Fallback du slider catégorie vers les avis produits si la catégorie ne contient aucun avis.
 
 = 1.2.2.3 =
 * Ajout des couleurs personnalisables pour les étoiles par note, l’état inactif et le symbole interne.
@@ -137,7 +141,7 @@ Oui, un widget “Genius Reviews” est inclus.
 
 = 1.2.2.1 =
 * Ajout scope category pour le shortcode badge.
-* Ajout scope category pour le shortcode slider, avec appoint d'avis boutique si moins de 3 avis catégorie sont disponibles.
+* Ajout scope category pour le shortcode slider, avec appoint d'avis produits si moins de 3 avis catégorie sont disponibles.
 
 = 1.2.2 =
 * Ajout d'un cache JSON-LD pour les pages catégories WooCommerce et attributs produits (`pa_*`) avec recalcul par cron.

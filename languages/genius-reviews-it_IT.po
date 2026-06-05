@@ -398,3 +398,233 @@ msgstr "Griglia recensioni"
 msgctxt "block description"
 msgid "Affiche la grille des avis clients pour un produit."
 msgstr "Mostra la griglia delle recensioni per un prodotto."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "5 à 1 étoiles"
+msgstr "Da 5 a 1 stelle"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Affichage automatique"
+msgstr "Visualizzazione automatica"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Afficher des avis globaux si le produit n'en a pas"
+msgstr "Mostra recensioni globali se il prodotto non ne ha"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Apparence"
+msgstr "Aspetto"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Avis produits"
+msgstr "Recensioni prodotto"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Badge (produit courant ou ID précis)"
+msgstr "Badge (prodotto corrente o ID specifico)"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Boutique"
+msgstr "Negozio"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Boutons, liens et accents. Le hover est auto-généré."
+msgstr "Pulsanti, link e accenti. L’hover è generato automaticamente."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Cache des schémas vidé."
+msgstr "Cache degli schemi svuotata."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Cache schémas"
+msgstr "Cache schemi"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Cache schémas catégories"
+msgstr "Cache schemi categorie"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Colonnes attendues :"
+msgstr "Colonne previste:"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Couleur de l’étoile"
+msgstr "Colore della stella"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Couleur des étoiles inactives"
+msgstr "Colore delle stelle inattive"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Couleur du symbole étoile à l’intérieur du carré."
+msgstr "Colore del simbolo della stella all’interno del quadrato."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Couleurs des étoiles par note"
+msgstr "Colori delle stelle per voto"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Erreur lors du recalcul des schémas."
+msgstr "Errore durante il ricalcolo degli schemi."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Erreur lors du vidage du cache."
+msgstr "Errore durante lo svuotamento della cache."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Fichier CSV"
+msgstr "File CSV"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Format accepté : .csv avec les colonnes indiquées plus bas."
+msgstr "Formato accettato: .csv con le colonne indicate più sotto."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Fréquence du recalcul automatique des JSON-LD catégories et attributs produits."
+msgstr "Frequenza del ricalcolo automatico dei JSON-LD di categorie e attributi prodotto."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Gardez les moyennes, volumes d’avis et schémas JSON-LD alignés avec les données importées."
+msgstr "Mantieni medie, volumi di recensioni e schemi JSON-LD allineati con i dati importati."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Genius Reviews term schema interval"
+msgstr "Intervallo schemi termini di Genius Reviews"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Import CSV"
+msgstr "Import CSV"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Importez les avis puis suivez les créations, mises à jour et lignes ignorées en temps réel."
+msgstr "Importa le recensioni e segui creazioni, aggiornamenti e righe ignorate in tempo reale."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Insérez les blocs d’avis où vous le souhaitez dans vos pages, templates ou builders."
+msgstr "Inserisci i blocchi recensioni dove vuoi nelle pagine, nei template o nei builder."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Lance un recalcul manuel du cache JSON-LD catégories et attributs."
+msgstr "Avvia un ricalcolo manuale della cache JSON-LD di categorie e attributi."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Maintenance"
+msgstr "Manutenzione"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Non validé"
+msgstr "Non approvato"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Non validés"
+msgstr "Non approvati"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Note"
+msgstr "Valutazione"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Notes produits"
+msgstr "Valutazioni prodotto"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Personnalisez les accents et les étoiles affichés côté boutique."
+msgstr "Personalizza accenti e stelle mostrati lato negozio."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Product ID"
+msgstr "ID prodotto"
+
+#: admin/class-genius-reviews-admin-page.php
+#, php-format
+msgid "Products in %s"
+msgstr "Prodotti in %s"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Recalcul des schémas en cours…"
+msgstr "Ricalcolo degli schemi in corso…"
+
+#: admin/class-genius-reviews-admin-page.php
+#, php-format
+msgid "Recalcul terminé : %schemas schéma(s), %skipped ignoré(s), %terms terme(s) parcouru(s)."
+msgstr "Ricalcolo terminato: %schemas schema/i, %skipped ignorati, %terms termini elaborati."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Recalcule la moyenne et le volume stockés sur chaque fiche produit."
+msgstr "Ricalcola la media e il volume salvati in ogni scheda prodotto."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Résultat du dernier import"
+msgstr "Risultato dell’ultimo import"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Schémas catégories"
+msgstr "Schemi categorie"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Si la fiche produit n’a aucun avis, afficher les avis globaux du catalogue à la place (la moyenne du produit ne change pas)."
+msgstr "Se la scheda prodotto non ha recensioni, mostra al loro posto le recensioni globali del catalogo (la media del prodotto non cambia)."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Synchroniser"
+msgstr "Sincronizza"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Tester le cron"
+msgstr "Testa il cron"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Title"
+msgstr "Titolo"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Tous les jours"
+msgstr "Ogni giorno"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Toutes les 6 heures"
+msgstr "Ogni 6 ore"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Toutes les heures"
+msgstr "Ogni ora"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Toutes les notes"
+msgstr "Tutte le valutazioni"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Toutes les semaines"
+msgstr "Ogni settimana"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Toutes les validations"
+msgstr "Tutte le validazioni"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Utilisée pour compléter les notes inférieures à 5."
+msgstr "Usata per completare le valutazioni inferiori a 5."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Validation"
+msgstr "Validazione"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Validé"
+msgstr "Approvato"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Validés"
+msgstr "Approvati"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Vidage du cache en cours…"
+msgstr "Svuotamento cache in corso…"
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Vide le cache pour forcer une régénération propre au prochain passage."
+msgstr "Svuota la cache per forzare una rigenerazione pulita al prossimo passaggio."
+
+#: admin/class-genius-reviews-admin-page.php
+msgid "Vider le cache"
+msgstr "Svuota cache"
