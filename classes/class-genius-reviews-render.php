@@ -315,7 +315,7 @@ class Genius_Reviews_Render
     {
         $term = self::resolve_badge_term($args);
         if (!$term instanceof WP_Term) {
-            return '';
+            return self::product_slider($args, $sort_args);
         }
 
         $limit = max(3, (int) $args['limit']);
@@ -369,6 +369,49 @@ class Genius_Reviews_Render
         } elseif ((int) ($category_stats['count'] ?? 0) > 0) {
             $stats = $category_stats;
         } else {
+            $stats = self::get_review_ids_stats($review_ids);
+        }
+
+        $avg = (float) ($stats['avg'] ?? 0);
+        $count = (int) ($stats['count'] ?? 0);
+        if ($count < 1 || $avg <= 0) {
+            return;
+        }
+
+        $q = new WP_Query([
+            'post_type' => 'genius_review',
+            'posts_per_page' => count($review_ids),
+            'post_status' => 'publish',
+            'post__in' => $review_ids,
+            'orderby' => 'post__in',
+            'no_found_rows' => true,
+        ]);
+
+        return self::render_carousel($q, $avg, $count, $args);
+    }
+
+    /**
+     * Génère un carrousel d'avis produits globaux.
+     *
+     * @param array $args
+     * @param array $sort_args
+     * @return string|null
+     */
+    private static function product_slider($args, $sort_args)
+    {
+        $limit = max(1, (int) ($args['limit'] ?? 12));
+        $review_ids = self::get_slider_review_ids(
+            $limit,
+            $sort_args,
+            self::get_slider_product_meta_query()
+        );
+
+        if (empty($review_ids)) {
+            return;
+        }
+
+        $stats = self::get_slider_product_stats();
+        if ((int) ($stats['count'] ?? 0) < 1) {
             $stats = self::get_review_ids_stats($review_ids);
         }
 

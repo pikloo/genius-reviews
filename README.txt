@@ -63,7 +63,7 @@ Affiche les avis produits liés à la catégorie WooCommerce courante.
 
 Affiche les avis produits d'une catégorie précise.
 
-Le slider `scope="category"` calcule la moyenne et le nombre d'avis sur les produits de la catégorie. Si la catégorie contient 1 ou 2 avis, le slider complète l'affichage avec des avis produits pour atteindre 3 cartes, sans les intégrer aux statistiques catégorie. Si la catégorie ne contient aucun avis, le slider affiche des avis produits globaux et utilise les statistiques des avis produits globaux.
+Le slider `scope="category"` calcule la moyenne et le nombre d'avis sur les produits de la catégorie. Si la catégorie contient 1 ou 2 avis, le slider complète l'affichage avec des avis produits pour atteindre 3 cartes, sans les intégrer aux statistiques catégorie. Si la catégorie ne contient aucun avis, ou si le shortcode est utilisé sur la page boutique sans catégorie courante, le slider affiche des avis produits globaux et utilise les statistiques des avis produits globaux.
 
 = Badge d'avis =
 
@@ -83,17 +83,21 @@ Affiche le badge de la catégorie WooCommerce courante.
 
 Affiche le badge d'une catégorie précise.
 
-= Intégration automatique sur les pages catégories =
+= Intégration automatique sur la boutique et les catégories =
 
-Pour afficher automatiquement le slider catégorie après la grille produits WooCommerce, ajoutez ce hook dans le `functions.php` du thème enfant ou via un plugin de snippets :
+Pour afficher automatiquement le slider après la grille produits WooCommerce sur la boutique et les catégories, ajoutez ce hook dans le `functions.php` du thème enfant ou via un plugin de snippets :
 
     add_action('woocommerce_after_shop_loop', function () {
-        if (!function_exists('is_product_category') || !is_product_category()) {
+        $is_shop_page = function_exists('is_shop') && is_shop();
+        $is_category_page = function_exists('is_product_category') && is_product_category();
+
+        if (!$is_shop_page && !$is_category_page) {
             return;
         }
 
         $term = get_queried_object();
         if (!$term instanceof WP_Term) {
+            echo do_shortcode('[genius_reviews_slider scope="category" limit="12" sort="rating_desc"]');
             return;
         }
 
@@ -125,9 +129,14 @@ Oui, un widget “Genius Reviews” est inclus.
 4. Réglages d’apparence
 
 == Changelog ==
+= 1.2.2.6 =
+* Correction de l'affichage du slider `scope="category"` sur la page boutique quand aucune catégorie courante n'est disponible.
+* Mise à jour du hook d'intégration WooCommerce pour couvrir la boutique et les catégories produits.
+
 = 1.2.2.5 =
 * Complétion des traductions admin dans toutes les langues disponibles.
 * Correction du fallback du slider catégorie quand la catégorie ne contient aucun avis.
+* Fallback du slider `scope="category"` vers les avis produits globaux sur la page boutique.
 
 = 1.2.2.4 =
 * Ajout du `scope="category"` sur le shortcode slider pour afficher les avis produits de la catégorie WooCommerce courante ou d'une catégorie précise.
